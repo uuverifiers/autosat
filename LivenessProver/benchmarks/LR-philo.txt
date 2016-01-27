@@ -1,0 +1,139 @@
+// LR-philo.txt
+// Left-Right (deterministic) Dining Philosopher Protocol
+// Leters:
+// T - Thinking 
+// L - Left fork, no right fork
+// R - no left fork, Right fork
+// E - both forks held
+//
+// Leftmost philosopher (in the linearisation of the circular order) picks
+// right first, and then left.
+
+// at least three philosophers
+I0 {
+    init: s0;
+
+    s0 -> s1 T;
+    s1 -> s2 T;
+    s2 -> s3 T;
+    s3 -> s3 T;
+
+    accepting: s3;
+}
+
+closedUnderTransitions;
+
+// One philosopher eats
+F {
+    init: s0;
+
+    s0 -> s0 T;
+    s0 -> s0 L;
+    s0 -> s0 R;
+    
+    s0 -> s1 E;
+
+    s1 -> s1 T;
+    s1 -> s1 L;
+    s1 -> s1 R;
+
+    accepting: s1;
+}
+
+P1 {
+    init: s0;
+
+    // Choose first philo
+
+        // t1 - leftmost philo thinks is picked
+    s0 -> t1 T/T_;
+
+            // The second guy should not have a fork
+    t1 -> t12 T/T;
+
+    t12 -> t12 T/T;
+    t12 -> t12 L/L;
+
+        // r1 - leftmost philo (already with a right fork) is picked
+    s0 -> r1 R/R_;
+
+            // The second guy should not have a fork
+    r1 -> r12 T/T;
+
+    r12 -> r12 T/T;
+    r12 -> r12 L/L;
+
+    // Choose something other than the first philo
+
+        // t2 - leftmost philo thinks but not picked
+    s0 -> t2 T/T;
+
+    t2 -> t2 T/T;
+    t2 -> t2 L/L;
+
+        // the guy picked is thinking
+    t2 -> tt2 T/T_;
+        // the guy picked is holding a left fork
+    t2 -> tl2 L/L_;
+
+    tt2 -> tt2 T/T;
+    tt2 -> tt2 L/L;
+
+        // next to the guy P picked must not hold a left fork (or if P is the
+        // rightmost guy, then don't care, i.e., add tl2 as a final state)
+    tl2 -> tl3 T/T;
+
+    tl3 -> tl3 T/T;
+    tl3 -> tl3 L/L;
+
+        // r2 - leftmost philo with a right fork but not picked
+    s0 -> ri2 R/R;
+
+    ri2 -> r2 T/T;
+
+    r2 -> r2 T/T;
+    r2 -> r2 L/L;
+
+        // the guy picked is thinking
+    r2 -> rt2 T/T_;
+        // the guy picked is holding a left fork
+    r2 -> rl2 L/L_;
+
+    rt2 -> rt2 T/T;
+    rt2 -> rt2 L/L;
+
+        // here rl2 is not a final state unlike in the case of tl2
+    rl2 -> rl3 T/T;
+
+    rl3 -> rl3 T/T;
+    rl3 -> rl3 L/L;
+    
+    accepting: t12, r12, tt2, tl2, tl3, rt2, rl3;
+}
+
+P2 {
+    init: s0;
+
+    // Not the first process
+    s0 -> p0 T/T;
+    s0 -> p0 R/R;
+
+    p0 -> p0 T/T;
+    p0 -> p0 L/L;
+
+    p0 -> p1 T_/L;
+    p0 -> p1 L_/E;
+
+    p1 -> p1 T/T;
+    p1 -> p1 L/L;
+
+    // The first process
+    s0 -> p1 T_/R;
+    s0 -> p1 R_/E;
+
+    accepting: p1;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+

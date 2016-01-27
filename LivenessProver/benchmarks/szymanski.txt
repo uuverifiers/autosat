@@ -1,0 +1,422 @@
+// szymanski.txt
+// The protocol as described by Abdulla's Regular Model Checking without
+// Transducers (same as Nilsson's thesis)
+//
+// Q1--Q7 denotes the local states (Q7 is the critical section)
+// S0,S1  denotes the value of s
+// W0,W1  denotes the value of w
+
+// At least two processes
+I0 {
+    init: s0;
+
+    s0 -> s1 Q1;
+    s1 -> s2 S0;
+    s2 -> p0 W0;
+
+    p0 -> p1 Q1;
+    p1 -> p2 S0;
+    p2 -> q0 W0;
+
+    q0 -> q1 Q1;
+    q1 -> q2 S0;
+    q2 -> q0 W0;
+
+    accepting: q0;
+}
+
+closedUnderTransitions;
+
+F {
+    init: s0;
+
+    s0 -> s1 Q1;
+    s0 -> s1 Q2;
+    s0 -> s1 Q3;
+    s0 -> s1 Q4;
+    s0 -> s1 Q5;
+    s0 -> s1 Q6;
+
+    s1 -> s2 S0;
+    s1 -> s2 S1;
+
+    s2 -> s0 W0;
+    s2 -> s0 W1;
+
+    s0 -> p1 Q7;
+    p1 -> p2 S0;
+    p1 -> p2 S1;
+
+    p2 -> p0 W0;
+    p2 -> p0 W1;
+
+    p0 -> p1 Q1;
+    p0 -> p1 Q2;
+    p0 -> p1 Q3;
+    p0 -> p1 Q4;
+    p0 -> p1 Q5;
+    p0 -> p1 Q6;
+    p0 -> p1 Q7;
+
+    accepting: p0; 
+}
+
+P1 {
+    init: s0;
+
+    // t1 - S value is 0 for neighbours
+    s0 -> t1;
+    t1 -> t10 Q1/Q1;
+    t1 -> t10 Q2/Q2;
+    t1 -> t10 Q3/Q3;
+    t1 -> t10 Q4/Q4;
+    t1 -> t10 Q5/Q5;
+    t1 -> t10 Q6/Q6;
+
+    t10 -> t11 S0/S0;
+    t11 -> t1 W0/W0;
+    t11 -> t1 W1/W1;
+    
+    t1 -> t12 Q1/Q2_;
+
+    t12 -> t13 S0/S0_;
+    t12 -> t13 S1/S1_;
+    t13 -> t14 W0/W0_;
+    t13 -> t14 W1/W1_;
+
+    t14 -> t15 Q1/Q1;
+    t14 -> t15 Q2/Q2;
+    t14 -> t15 Q3/Q3;
+    t14 -> t15 Q4/Q4;
+    t14 -> t15 Q5/Q5;
+    t14 -> t15 Q6/Q6;
+
+    t15 -> t16 S0/S0;
+    t16 -> t14 W0/W0;
+    t16 -> t14 W1/W1;
+
+    // t2
+    s0 -> t2;
+    t2 -> t20 Q1/Q1;
+    t2 -> t20 Q2/Q2;
+    t2 -> t20 Q3/Q3;
+    t2 -> t20 Q4/Q4;
+    t2 -> t20 Q5/Q5;
+    t2 -> t20 Q6/Q6;
+
+    t20 -> t21 S0/S0;
+    t20 -> t21 S1/S1;
+    t21 -> t2 W0/W0;
+    t21 -> t2 W1/W1;
+
+    t2 -> t22 Q2/Q3_;
+
+    t22 -> t23 S0/S1_;
+    t22 -> t23 S1/S1_;
+
+    t23 -> t24 W0/W1_;
+    t23 -> t24 W1/W1_;
+
+    t24 -> t25 Q1/Q1;
+    t24 -> t25 Q2/Q2;
+    t24 -> t25 Q3/Q3;
+    t24 -> t25 Q4/Q4;
+    t24 -> t25 Q5/Q5;
+    t24 -> t25 Q6/Q6;
+
+    t25 -> t26 S0/S0;
+    t25 -> t26 S1/S1;
+    t26 -> t24 W0/W0;
+    t26 -> t24 W1/W1;
+
+    // t3
+    // we use t3??, the last bit is used to remember whether Q1 is seen
+    s0 -> t3;
+    t3 -> t301 Q1/Q1;
+    t3 -> t300 Q2/Q2;
+    t3 -> t300 Q3/Q3;
+    t3 -> t300 Q4/Q4;
+    t3 -> t300 Q5/Q5;
+    t3 -> t300 Q6/Q6;
+
+    t300 -> t310 S0/S0;
+    t301 -> t311 S0/S0;
+    t300 -> t310 S1/S1;
+    t301 -> t311 S1/S1;
+
+    t311 -> t3 W1/W1;
+    t311 -> t3 W0/W0;
+    t310 -> t3 W1/W1;
+    t310 -> tl4 W0/W0;
+
+    t3 -> t32 Q3/Q5_;
+    t32 -> t33 S0/S0_;
+    t32 -> t33 S1/S1_;
+    t33 -> t34 W0/W0_;
+        // change W1 to W0
+    t33 -> t34 W1/W0_;
+
+    t34 -> t351 Q1/Q1;
+    t34 -> t350 Q2/Q2;
+    t34 -> t350 Q3/Q3;
+    t34 -> t350 Q4/Q4;
+    t34 -> t350 Q5/Q5;
+    t34 -> t350 Q6/Q6;
+
+    t350 -> t360 S0/S0;
+    t351 -> t361 S0/S0;
+    t350 -> t360 S1/S1;
+    t351 -> t361 S1/S1;
+    
+    t361 -> t34 W1/W1;
+    t361 -> t34 W0/W0;
+    t360 -> t34 W1/W1;
+
+    // tl4
+    tl4 -> tl40 Q1/Q1;
+    tl4 -> tl40 Q2/Q2;
+    tl4 -> tl40 Q3/Q3;
+    tl4 -> tl40 Q4/Q4;
+    tl4 -> tl40 Q5/Q5;
+    tl4 -> t20 Q6/Q6;
+
+    tl40 -> tl41 S0/S0;
+    tl40 -> tl41 S1/S1;
+    tl41 -> tl4 W0/W0;
+    tl41 -> tl4 W1/W1;
+
+    tl4 -> tl42 Q3/Q4_;
+    tl42 -> tl43 S0/S0_;
+    tl42 -> tl43 S1/S0_;
+    tl43 -> tl44 W0/W0_;
+    tl43 -> t24 W1/W1_;
+
+    // t4 - this is only to check for guard \exists_R
+    //      \exists_L is covered by tl4..
+    s0 -> t4;
+    t4 -> t40 Q1/Q1;
+    t4 -> t40 Q2/Q2;
+    t4 -> t40 Q3/Q3;
+    t4 -> t40 Q4/Q4;
+    t4 -> t40 Q5/Q5;
+    t4 -> t40 Q6/Q6;
+
+    t40 -> t41 S0/S0;
+    t40 -> t41 S1/S1;
+    t41 -> t4 W0/W0;
+    t41 -> t4 W1/W1;
+
+    t4 -> t42 Q3/Q4_;
+    t42 -> t43 S0/S0_;
+    t42 -> t43 S1/S0_;
+    t43 -> t44 W0/W0_;
+    t43 -> t44 W1/W1_;
+
+    t44 -> t451 Q1/Q1;
+    t44 -> t450 Q2/Q2;
+    t44 -> t450 Q3/Q3;
+    t44 -> t450 Q4/Q4;
+    t44 -> t450 Q5/Q5;
+    t44 -> t450 Q6/Q6;
+
+    t450 -> t460 S0/S0;
+    t450 -> t460 S1/S1;
+    t451 -> t461 S0/S0;
+    t451 -> t461 S1/S1;
+
+    t460 -> t24 W0/W0; 
+    t460 -> t44 W1/W1;
+    t461 -> t44 W0/W0;
+    t461 -> t44 W1/W1;
+
+    // tl5 - guard is changed to left
+    s0 -> tl5;
+    tl5 -> tl50 Q1/Q1;
+    tl5 -> tl50 Q2/Q2;
+    tl5 -> tl50 Q3/Q3;
+    tl5 -> tl50 Q4/Q4;
+    tl5 -> tl50 Q5/Q5;
+    tl5 -> tl50 Q6/Q6;
+
+    tl50 -> tl510 S0/S0; 
+    tl50 -> tl511 S1/S1; 
+
+    tl510 -> tl5 W0/W0;
+    tl510 -> tl5 W1/W1;
+    tl511 -> tl5 W1/W1;
+        // guard is satisfied
+    tl511 -> tl52 W0/W0;
+
+    tl52 -> tl53 Q1/Q1;
+    tl52 -> tl53 Q2/Q2;
+    tl52 -> tl53 Q3/Q3;
+    tl52 -> tl53 Q4/Q4;
+    tl52 -> tl53 Q5/Q5;
+    tl52 -> tl53 Q6/Q6;
+
+    tl53 -> tl54 S0/S0;
+    tl53 -> tl54 S1/S1;
+    tl54 -> tl52 W0/W0;
+    tl54 -> tl52 W1/W1;
+
+    tl52 -> tl56 Q4/Q5_;
+    tl56 -> tl57 S0/S1_;
+    tl56 -> tl57 S1/S1_;
+    tl57 -> t24 W0/W0_;
+    tl57 -> t24 W1/W0_;
+
+    // tr5 - guard is changed to right
+    s0 -> tr5;
+
+    tr5 -> tr50 Q1/Q1;
+    tr5 -> tr50 Q2/Q2;
+    tr5 -> tr50 Q3/Q3;
+    tr5 -> tr50 Q4/Q4;
+    tr5 -> tr50 Q5/Q5;
+    tr5 -> tr50 Q6/Q6;
+
+    tr50 -> tr51 S0/S0;
+    tr50 -> tr51 S1/S1;
+
+    tr51 -> tr5 W0/W0;
+    tr51 -> tr5 W1/W1;
+
+    tr5 -> tr52 Q4/Q5_;
+    tr52 -> tr53 S0/S1_;
+    tr52 -> tr53 S1/S1_;
+    tr53 -> tr54 W0/W0_;
+    tr53 -> tr54 W1/W0_;
+
+    tr54 -> tr55 Q1/Q1;
+    tr54 -> tr55 Q2/Q2;
+    tr54 -> tr55 Q3/Q3;
+    tr54 -> tr55 Q4/Q4;
+    tr54 -> tr55 Q5/Q5;
+    tr54 -> tr55 Q6/Q6;
+
+    tr55 -> tr560 S0/S0;
+    tr55 -> tr561 S1/S1;
+
+    tr560 -> tr54 W0/W0;
+    tr560 -> tr54 W1/W1;
+    tr561 -> t24 W0/W0;
+    tr561 -> tr54 W1/W1;
+
+    // t6
+    s0 -> t6;
+    t6 -> t60 Q1/Q1;
+    t6 -> t60 Q2/Q2;
+    t6 -> t60 Q3/Q3;
+    t6 -> t60 Q4/Q4;
+    t6 -> t60 Q5/Q5;
+    t6 -> t60 Q6/Q6;
+
+    t60 -> t61 S0/S0;
+    t60 -> t61 S1/S1;
+
+    t61 -> t6 W0/W0;
+
+    t6 -> t62 Q5/Q6_;
+    t62 -> t63 S0/S0_;
+    t62 -> t63 S1/S1_;
+    t63 -> t64 W0/W0_;
+    t63 -> t64 W1/W1_;
+
+    t64 -> t65 Q1/Q1;
+    t64 -> t65 Q2/Q2;
+    t64 -> t65 Q3/Q3;
+    t64 -> t65 Q4/Q4;
+    t64 -> t65 Q5/Q5;
+    t64 -> t65 Q6/Q6;
+
+    t65 -> t66 S0/S0;
+    t65 -> t66 S1/S1;
+
+    t66 -> t64 W0/W0;
+
+    // t7
+    s0 -> t7;
+
+    t7 -> t70 Q1/Q1;
+    t7 -> t70 Q2/Q2;
+    t7 -> t70 Q3/Q3;
+    t7 -> t70 Q4/Q4;
+    t7 -> t70 Q5/Q5;
+    t7 -> t70 Q6/Q6;
+
+    t70 -> t71 S0/S0;
+    t71 -> t7 W0/W0;
+    t71 -> t7 W1/W1;
+
+    t7 -> t72 Q6/Q7_;
+    t72 -> t73 S0/S0_;
+    t72 -> t73 S1/S1_;
+    t73 -> t74 W0/W0_;
+    t73 -> t74 W1/W1_;
+
+    t74 -> t75 Q1/Q1;
+    t74 -> t75 Q2/Q2;
+    t74 -> t75 Q3/Q3;
+    t74 -> t75 Q4/Q4;
+    t74 -> t75 Q5/Q5;
+    t74 -> t75 Q6/Q6;
+
+    t75 -> t76 S0/S0;
+    t75 -> t76 S1/S1;
+    t76 -> t74 W0/W0;
+    t76 -> t74 W1/W1;
+
+    accepting: t14, t24, t34, t64, t74;
+}
+
+P2 {
+    init: s0;
+
+    s0 -> s1 Q1/Q1;
+    s0 -> s1 Q2/Q2;
+    s0 -> s1 Q3/Q3;
+    s0 -> s1 Q4/Q4;
+    s0 -> s1 Q5/Q5;
+    s0 -> s1 Q6/Q6;
+    s0 -> s1 Q7/Q7;
+
+    s1 -> s2 S0/S0;
+    s1 -> s2 S1/S1;
+
+    s2 -> s0 W0/W0;
+    s2 -> s0 W1/W1;
+
+    s0 -> s3 Q1_/Q1;
+    s0 -> s3 Q2_/Q2;
+    s0 -> s3 Q3_/Q3;
+    s0 -> s3 Q4_/Q4;
+    s0 -> s3 Q5_/Q5;
+    s0 -> s3 Q6_/Q6;
+    s0 -> s3 Q7_/Q7;
+
+    s3 -> s4 S0_/S0;
+    s3 -> s4 S1_/S1;
+
+    s4 -> s5 W0_/W0;
+    s4 -> s5 W1_/W1;
+
+    s5 -> s6 Q1/Q1;
+    s5 -> s6 Q2/Q2;
+    s5 -> s6 Q3/Q3;
+    s5 -> s6 Q4/Q4;
+    s5 -> s6 Q5/Q5;
+    s5 -> s6 Q6/Q6;
+    s5 -> s6 Q7/Q7;
+
+    s6 -> s7 S0/S0;
+    s6 -> s7 S1/S1;
+
+    s7 -> s5 W0/W0;
+    s7 -> s5 W1/W1;
+    
+    accepting: s5;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+

@@ -1,0 +1,82 @@
+// herman-linear.txt
+// This an adaptation of Herman's protocol in a linear array. The last
+// (rightmost) process is never enabled, even with a token.
+//
+// Liveness holds under arbitrary schedulers here (unlike the ring case).
+//
+// N - no token
+// T - token
+
+// Configurations with at least one token
+I0 {
+    init: s0;
+
+    s0 -> s0 N;
+    s0 -> s0 T;
+
+    s0 -> s1 T;
+    
+    s1 -> s1 N;
+    s1 -> s1 T;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+F {
+    init: s0;
+
+    s0 -> s0 N;
+
+    s0 -> s1 T;
+
+    s1 -> s1 N;
+
+    accepting: s1;
+}
+
+P1 {
+    init: s0;
+
+    s0 -> s0 N/N;
+    s0 -> s0 T/T;
+
+    s0 -> s1 T/T_;
+
+    // To make sure the chosen process is not last
+    s1 -> s2 T/T;
+    s1 -> s2 N/N;
+
+    s2 -> s2 N/N;
+    s2 -> s2 T/T;
+
+    accepting: s2;
+}
+
+P2 {
+    init: s0;
+
+    s0 -> s0 N/N;
+    s0 -> s0 T/T;
+
+    // keep
+    s0 -> s1 T_/T;
+    // pass to right
+    s0 -> s2 T_/N;
+    
+    // Merge tokens
+    s2 -> s1 T/T;
+    // Pass token to right from s2
+    s2 -> s1 N/T;
+
+    s1 -> s1 N/N;
+    s1 -> s1 T/T;
+
+    accepting: s1;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+

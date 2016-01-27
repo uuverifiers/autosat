@@ -1,0 +1,98 @@
+I0 {
+
+  init : s0;
+
+  s0 -> s0 bot;
+  s0 -> s0 top;
+
+  s0 -> s1 top;
+
+  s1 -> s1 bot;
+  s1 -> s1 top;
+
+  s1 -> s2 top;
+
+  s2 -> s2 bot;
+  s2 -> s2 top;
+
+  accepting: s2;
+
+}
+
+closedUnderTransitions;
+
+F {
+
+  init : s0;
+
+  s0 -> s0 bot;
+  s0 -> s1 top;
+  s1 -> s1 bot;
+
+  accepting: s1;
+
+}
+
+P1 {
+
+  init : s0;
+
+  s0 -> s0 bot/bot;
+  s0 -> s0 top/top;
+  s0 -> s1 top/toph;
+  s1 -> s1 bot/bot;
+  s1 -> s1 top/top;
+
+  accepting: s1;
+
+}
+
+P2 {
+
+  init : s0;
+
+  s0 -> s1;
+  s0 -> s4;
+  s0 -> s7;
+  s0 -> s10;
+
+  s1 -> s1 bot/bot;
+  s1 -> s1 top/top;
+  s1 -> s2 toph/bot;
+  s2 -> s3 bot/top;
+  s2 -> s3 top/top;
+  s3 -> s3 bot/bot;
+  s3 -> s3 top/top;
+
+  s4 -> s4 bot/bot;
+  s4 -> s4 top/top;
+  s4 -> s5 bot/top;
+  s4 -> s5 top/top;
+  s5 -> s6 toph/bot;
+  s6 -> s6 bot/bot;
+  s6 -> s6 top/top;
+
+  s7 -> s8 bot/top;
+  s7 -> s8 top/top;
+  s8 -> s8 bot/bot;
+  s8 -> s8 top/top;
+  s8 -> s9 toph/bot;
+  
+  s10 -> s11 toph/bot;
+  s11 -> s11 bot/bot;
+  s11 -> s11 top/top;
+  s11 -> s12 bot/top;
+  s11 -> s12 top/top;
+
+  accepting: s3, s6, s9, s12;
+
+}
+
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 1 .. 4;
+
+symmetries: rotation;
+// useRankingFunctions;       // not used for benchmarking
+
+noPrecomputedInvariant;
+monolithicWitness;

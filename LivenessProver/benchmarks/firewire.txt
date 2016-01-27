@@ -1,0 +1,67 @@
+// firewire.txt
+// An abstraction of root-contention stage of firewire protocol as described
+// in "Proving termination in B" by McIver et al. 2003 and also in 
+// Esparza et al. 2012.
+//
+// -1: k = 0
+//  0: while (k < 100) {
+//  1:   old_x = x;
+//  2:   x = coin(p);
+//  3:   if (x != old_x) k++
+//  4: }
+//  5:
+// Here, we give a transducer representation of this as an example of a token
+// passing in a linear array with one token, where the token can
+// probabilistically stay or move to the right. 
+// 
+// top - token
+// bot - no token
+
+I0 {
+    init: s0;    
+
+    s0 -> s1 top;
+    s1 -> s1 bot;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+F {
+    init: s0;
+    
+    s0 -> s0 bot;
+    s0 -> s1 top;
+
+    accepting: s1;
+}
+
+P1 {
+    init: s0;
+
+    s0 -> s0 bot/bot;
+    s0 -> s1 top/top_;
+
+    s1 -> s1 bot/bot;
+    
+    accepting: s1;
+}
+
+P2 {
+    init: s0;
+
+    s0 -> s0 bot/bot;
+
+    s0 -> s1 top_/bot;
+    s1 -> s2 bot/top;
+    s2 -> s2 bot/bot;
+
+    s0 -> p1 top_/top;
+
+    accepting: s2, p1;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+

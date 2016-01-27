@@ -1,0 +1,140 @@
+// rap.txt
+// Resource-allocator protocol (Example 1 of vmcai'16 paper)
+
+// Any positive number of client processes (client processes have id 2, ...)
+I0 {
+    init: s0;
+
+    s0 -> s1 i;
+    s1 -> s2 i;
+    s2 -> s2 i;
+
+    accepting: s2;
+}
+
+closedUnderTransitions;
+
+F {
+    init: s0;
+
+    s0 -> s1 i;
+    s0 -> s1 c;
+
+    // any i/r
+    s1 -> s1 i;
+    s1 -> s1 r;
+
+    // one process in critical section
+    s1 -> s2 c;
+
+    // followed by any i/r/c
+    s2 -> s2 i;
+    s2 -> s2 r;
+    s2 -> s2 c;
+
+    accepting: s2;
+}
+
+P1 {
+    init: s0;
+
+    // choose a client in an idle state
+    s0 -> r0;
+
+    r0 -> r1 i/i;
+    r0 -> r1 c/c;
+
+    r1 -> r1 i/i;
+    r1 -> r1 r/r;
+    r1 -> r1 c/c;
+
+    r1 -> r2 i/i_;
+
+    r2 -> r2 i/i;
+    r2 -> r2 r/r;
+    r2 -> r2 c/c;
+
+    // allocator: i -> c
+    s0 -> p0;
+
+    p0 -> p1 i/i_;
+
+    p1 -> p1 i/i;
+    p1 -> p1 r/r;
+    p1 -> p1 c/c;
+
+    p1 -> p2 r/r_;
+
+    p2 -> p2 i/i;
+    p2 -> p2 r/r;
+    p2 -> p2 c/c;
+    
+    // allocator: c -> i
+    s0 -> q0;
+
+    q0 -> q1 c/c_;
+
+    q1 -> q1 i/i;
+    q1 -> q1 r/r;
+    q1 -> q1 c/c;
+
+    q1 -> q2 c/c_;
+
+    q2 -> q2 i/i;
+    q2 -> q2 r/r;
+    q2 -> q2 c/c;
+    
+
+    accepting: r2, p2, q2;
+}
+
+P2 {
+    init: s0;
+
+    // a client in an idle state move to request
+    s0 -> r1 i/i;     
+    s0 -> r1 r/r;     
+    s0 -> r1 r/r;     
+
+    r1 -> r1 i/i;
+    r1 -> r1 r/r;
+    r1 -> r1 c/c;
+    
+    r1 -> r2 i_/r;
+
+    r2 -> r2 i/i;
+    r2 -> r2 r/r;
+    r2 -> r2 c/c;
+
+    // allocator: i -> c and a client r/c
+    s0 -> p1 i_/c;
+
+    p1 -> p1 i/i;
+    p1 -> p1 r/r;
+    p1 -> p1 c/c;
+
+    p1 -> p2 r_/c;
+
+    p2 -> p2 i/i;
+    p2 -> p2 r/r;
+    p2 -> p2 c/c;
+
+    // allocator: c -> i and a client c/i
+    s0 -> q1 c_/i;
+
+    q1 -> q1 i/i;
+    q1 -> q1 r/r;
+    q1 -> q1 c/c;
+
+    q1 -> q2 c_/i;
+
+    q2 -> q2 i/i;
+    q2 -> q2 r/r;
+    q2 -> q2 c/c;
+
+    accepting: r2, p2, q2;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
