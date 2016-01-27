@@ -1,0 +1,8 @@
+#!/bin/bash
+# Build BNFC
+
+
+export CLASSPATH=.:/usr/local/java/Cup:/usr/local/java
+bnfc -m -java1.5 grammar.cf
+make
+cat "modelinputsample.txt" | java grammar/Test

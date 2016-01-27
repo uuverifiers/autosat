@@ -1,0 +1,328 @@
+// Letters:
+// T, H, Wl, Wr, Sl, Sr, Dl, Dr, E
+// T_, H_, Wl_, Wr_, Sl_, Sr_, Dl_, Dr_, E_
+
+I0 {
+/*  init: s0;
+  s0 -> s1 T;
+  s1 -> s2 T;
+  s2 -> s3 T;
+  s3 -> s3 T;
+  accepting: s3; */
+
+  init: s0;
+
+  s0 -> hh0;
+  s0 -> dd0;
+
+  hh0 -> hd1 T;
+  hh0 -> hd1 H;
+  hh0 -> hd1 Wl;
+  hh0 -> hd1 Wr;
+  hh0 -> hh1 Sr;
+  hh0 -> hh1 Dr;
+  
+  dh0 -> dd1 T;
+  dh0 -> dd1 H;
+  dh0 -> dd1 Wl;
+  dh0 -> dd1 Wr;
+  dh0 -> dh1 Sr;
+  dh0 -> dh1 Dr;
+  
+  hd0 -> hd1 T;
+  hd0 -> hd1 H;
+  hd0 -> hd1 Wl;
+  hd0 -> hd1 Wr;
+  hd0 -> hd1 Sl;
+  hd0 -> hh1 Sr;
+  hd0 -> hd1 Dl;
+  hd0 -> hh1 Dr;
+  
+  dd0 -> dd1 T;
+  dd0 -> dd1 H;
+  dd0 -> dd1 Wl;
+  dd0 -> dd1 Wr;
+  dd0 -> dd1 Sl;
+  dd0 -> dh1 Sr;
+  dd0 -> dd1 Dl;
+  dd0 -> dh1 Dr;
+  
+
+
+  hh1 -> hd2 T;
+  hh1 -> hd2 H;
+  hh1 -> hd2 Wl;
+  hh1 -> hd2 Wr;
+  hh1 -> hh2 Sr;
+  hh1 -> hh2 Dr;
+  
+  dh1 -> dd2 T;
+  dh1 -> dd2 H;
+  dh1 -> dd2 Wl;
+  dh1 -> dd2 Wr;
+  dh1 -> dh2 Sr;
+  dh1 -> dh2 Dr;
+  
+  hd1 -> hd2 T;
+  hd1 -> hd2 H;
+  hd1 -> hd2 Wl;
+  hd1 -> hd2 Wr;
+  hd1 -> hd2 Sl;
+  hd1 -> hh2 Sr;
+  hd1 -> hd2 Dl;
+  hd1 -> hh2 Dr;
+  
+  dd1 -> dd2 T;
+  dd1 -> dd2 H;
+  dd1 -> dd2 Wl;
+  dd1 -> dd2 Wr;
+  dd1 -> dd2 Sl;
+  dd1 -> dh2 Sr;
+  dd1 -> dd2 Dl;
+  dd1 -> dh2 Dr;
+  
+
+  hh2 -> hd3 T;
+  hh2 -> hd3 H;
+  hh2 -> hd3 Wl;
+  hh2 -> hd3 Wr;
+  hh2 -> hh3 Sr;
+  hh2 -> hh3 Dr;
+  
+  dh2 -> dd3 T;
+  dh2 -> dd3 H;
+  dh2 -> dd3 Wl;
+  dh2 -> dd3 Wr;
+  dh2 -> dh3 Sr;
+  dh2 -> dh3 Dr;
+  
+  hd2 -> hd3 T;
+  hd2 -> hd3 H;
+  hd2 -> hd3 Wl;
+  hd2 -> hd3 Wr;
+  hd2 -> hd3 Sl;
+  hd2 -> hh3 Sr;
+  hd2 -> hd3 Dl;
+  hd2 -> hh3 Dr;
+  
+  dd2 -> dd3 T;
+  dd2 -> dd3 H;
+  dd2 -> dd3 Wl;
+  dd2 -> dd3 Wr;
+  dd2 -> dd3 Sl;
+  dd2 -> dh3 Sr;
+  dd2 -> dd3 Dl;
+  dd2 -> dh3 Dr;
+  
+
+  hh3 -> hd3 T;
+  hh3 -> hd3 H;
+  hh3 -> hd3 Wl;
+  hh3 -> hd3 Wr;
+  hh3 -> hh3 Sr;
+  hh3 -> hh3 Dr;
+  
+  dh3 -> dd3 T;
+  dh3 -> dd3 H;
+  dh3 -> dd3 Wl;
+  dh3 -> dd3 Wr;
+  dh3 -> dh3 Sr;
+  dh3 -> dh3 Dr;
+  
+  hd3 -> hd3 T;
+  hd3 -> hd3 H;
+  hd3 -> hd3 Wl;
+  hd3 -> hd3 Wr;
+  hd3 -> hd3 Sl;
+  hd3 -> hh3 Sr;
+  hd3 -> hd3 Dl;
+  hd3 -> hh3 Dr;
+  
+  dd3 -> dd3 T;
+  dd3 -> dd3 H;
+  dd3 -> dd3 Wl;
+  dd3 -> dd3 Wr;
+  dd3 -> dd3 Sl;
+  dd3 -> dh3 Sr;
+  dd3 -> dd3 Dl;
+  dd3 -> dh3 Dr;
+  
+
+  accepting: dd3, hh3;
+}
+
+F {
+  init: s0;
+  s0 -> s0 T;
+  s0 -> s0 H;
+  s0 -> s0 Wl;
+  s0 -> s0 Wr;
+  s0 -> s0 Sl;
+  s0 -> s0 Sr;
+  s0 -> s0 Dl;
+  s0 -> s0 Dr;
+  s0 -> s0 E;
+  s0 -> s1 E;
+  s1 -> s1 T;
+  s1 -> s1 H;
+  s1 -> s1 Wl;
+  s1 -> s1 Wr;
+  s1 -> s1 Sl;
+  s1 -> s1 Sr;
+  s1 -> s1 Dl;
+  s1 -> s1 Dr;
+  s1 -> s1 E;
+  accepting: s1;
+}
+
+P1 {
+  init: si;
+
+  si -> s0;
+
+  s0 -> s0 T/T;
+  s0 -> s0 H/H;
+  s0 -> s0 Wl/Wl;
+  s0 -> s0 Wr/Wr;
+  s0 -> s0 Sl/Sl;
+  s0 -> s0 Sr/Sr;
+  s0 -> s0 Dl/Dl;
+  s0 -> s0 Dr/Dr;
+  s0 -> s0 E/E;
+
+  // case 1
+  s0 -> sf T/T_;
+  // case 2
+  s0 -> sf H/H_;
+  // case 9
+  s0 -> sf Dl/Dl_;
+  s0 -> sf Dr/Dr_;
+
+  s0 -> s1 T/T;
+  s0 -> s1 H/H;
+  s0 -> s1 Wl/Wl;
+  s0 -> s1 Wr/Wr;
+  s0 -> s1 Sl/Sl;
+  s0 -> s1 Dl/Dl;
+
+  // case 3
+  s1 -> sf Wl/Wl_;
+  // case 7
+  s1 -> sf Sr/Sr_;
+
+  // case 4
+  s0 -> s2 Wr/Wr_;
+  // case 5
+  s0 -> s2 Sl/Sl_;
+
+  s2 -> sf T/T;
+  s2 -> sf H/H;
+  s2 -> sf Wl/Wl;
+  s2 -> sf Wr/Wr;
+  s2 -> sf Sr/Sr;
+  s2 -> sf Dr/Dr;
+
+  // case 6
+  s0 -> s3 Sl/Sl_;
+
+  s3 -> sf Sl/Sl;
+  s3 -> sf Dl/Dl;
+  s3 -> sf E/E;
+
+  s0 -> s4 Sr/Sr;
+  s0 -> s4 Dr/Dr;
+  s0 -> s4 E/E;
+
+  // case 8
+  s4 -> sf Sr/Sr_;
+
+  sf -> sf T/T;
+  sf -> sf H/H;
+  sf -> sf Wl/Wl;
+  sf -> sf Wr/Wr;
+  sf -> sf Sl/Sl;
+  sf -> sf Sr/Sr;
+  sf -> sf Dl/Dl;
+  sf -> sf Dr/Dr;
+  sf -> sf E/E;
+  
+  accepting: sf;
+}
+
+P2 {
+  init: s0;
+
+  si -> s0;
+
+  s0 -> s0 T/T;
+  s0 -> s0 H/H;
+  s0 -> s0 Wl/Wl;
+  s0 -> s0 Wr/Wr;
+  s0 -> s0 Sl/Sl;
+  s0 -> s0 Sr/Sr;
+  s0 -> s0 Dl/Dl;
+  s0 -> s0 Dr/Dr;
+  s0 -> s0 E/E;
+
+  // case 1
+  s0 -> sf T_/H;
+  // case 2
+  s0 -> sf H_/Wl;
+  s0 -> sf H_/Wr;
+  // case 9
+  s0 -> sf Dl_/H;
+  s0 -> sf Dr_/H;
+
+  s0 -> s1 T/T;
+  s0 -> s1 H/H;
+  s0 -> s1 Wl/Wl;
+  s0 -> s1 Wr/Wr;
+  s0 -> s1 Sl/Sl;
+  s0 -> s1 Dl/Dl;
+
+  // case 3
+  s1 -> sf Wl_/Sl;
+  // case 7
+  s1 -> sf Sr_/E;
+
+  // case 4
+  s0 -> s2 Wr_/Sr;
+  // case 5
+  s0 -> s2 Sl_/E;
+
+  s2 -> sf T/T;
+  s2 -> sf H/H;
+  s2 -> sf Wl/Wl;
+  s2 -> sf Wr/Wr;
+  s2 -> sf Sr/Sr;
+  s2 -> sf Dr/Dr;
+
+  // case 6
+  s0 -> s3 Sl_/Dl;
+
+  s3 -> sf Sl/Sl;
+  s3 -> sf Dl/Dl;
+  s3 -> sf E/E;
+
+  s0 -> s4 Sr/Sr;
+  s0 -> s4 Dr/Dr;
+  s0 -> s4 E/E;
+
+  // case 8
+  s4 -> sf Sr_/Dr;
+
+  sf -> sf T/T;
+  sf -> sf H/H;
+  sf -> sf Wl/Wl;
+  sf -> sf Wr/Wr;
+  sf -> sf Sl/Sl;
+  sf -> sf Sr/Sr;
+  sf -> sf Dl/Dl;
+  sf -> sf Dr/Dr;
+  sf -> sf E/E;
+  
+  accepting: sf;
+}
+
+transducerStateGuessing: 2 .. 5;
+automatonStateGuessing: 1 .. 1;

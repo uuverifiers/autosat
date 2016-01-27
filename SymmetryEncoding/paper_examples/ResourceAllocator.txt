@@ -1,0 +1,66 @@
+model
+{
+
+systemTransitions{
+init: s0;
+
+s0 -> s1;
+
+s1 -> s2 i/i;
+s1 -> s2 r/r;
+s1 -> s2 c/c;
+
+s2 -> s2 i/i;
+s2 -> s2 r/r;
+s2 -> s2 c/c;
+
+s2 -> s3 i/r;
+
+s3 -> s3 i/i;
+s3 -> s3 r/r;
+s3 -> s3 c/c;
+
+s0 -> s4;
+
+s4 -> s5 i/c;
+
+s5 -> s5 i/i;
+s5 -> s5 r/r;
+s5 -> s5 c/c;
+
+s5 -> s6 r/c;
+
+s6 -> s6 i/i;
+s6 -> s6 r/r;
+s6 -> s6 c/c;
+
+s0 -> s7;
+
+s7 -> s8 c/i;
+
+s8 -> s8 i/i;
+s8 -> s8 r/r;
+s8 -> s8 c/c;
+
+s8 -> s6 c/i;
+
+accepting: s3, s6;
+}
+
+statesGuessing : 1..12;
+
+validConfigurations{ //valid configuration is represented as automata
+	init: 0;
+	0 -> 1 i;
+	0 -> 1 c;
+        1 -> 1 i;
+        1 -> 1 r;
+        1 -> 1 c;
+	accepting: 1;
+}
+
+forcedSymmetryGenerators:
+		(4, (1 2 3));
+
+}
+

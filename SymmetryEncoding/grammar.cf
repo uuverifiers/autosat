@@ -1,0 +1,74 @@
+Model. ModelRule ::= "model" "{" TransducerRule [Statement] "}" ;
+
+--transducer
+Transducer. TransducerRule ::= "systemTransitions" "{"  InitRule [TransitionRule] AcceptingRule "}";
+TransducerInitialState. InitRule ::= "init" ":" Name ";";
+FulTransition. TransitionRule ::=  Name "->" Name Name "/" Name;
+EmptyTransition. TransitionRule ::= Name "->" Name;
+LoopingTransition. TransitionRule ::= "loop" ":" [Name];
+TransducerAccepting. AcceptingRule ::= "accepting" ":" [Name] ";";
+
+--number of states to guess
+NumberOfStatesGuess. Statement ::= "statesGuessing" ":" Integer ".." Integer ";" ;
+
+--symmetry pairs
+SymmetryPairs. Statement ::= "forcedSymmetryInstances" ":" [SymmetryPairRule] ";" ;
+SymmetryPair. SymmetryPairRule ::= "(" NameSequenceRule "," NameSequenceRule ")";
+
+--symmetry instances based on generators
+SymmetryInstances. Statement ::= "forcedSymmetryGenerators" ":" [SymInstance] ";" ;
+SymmetryInstance. SymInstance ::= "(" Integer "," [GeneratorRule] ")";
+Generator. GeneratorRule ::= "(" IndexSequenceRule ")";
+
+--finite output
+FiniteOutput. Statement ::= "outputBoundedLetters" ":" [Name] ";" ;
+
+-- impossible pairs of input/output
+ImpossiblePairs. Statement ::= "impossible" "pairs" ":" [ImpossiblePairRule] ";" ;
+ImpossiblePair. ImpossiblePairRule ::= "(" Name "," Name ")";
+
+--valid configuration
+ValidConfiguration. Statement ::= "validConfigurations" "{" AutomataInitRule [AutomataTransitionRule] AutomataAcceptingsRule "}" ;
+
+--Automata
+AutomataInitialState. AutomataInitRule ::= "init" ":" Name ";";
+AutomataTransition. AutomataTransitionRule ::= Name "->" Name Name;
+AutomataEmptyTransition. AutomataTransitionRule ::= Name "->" Name;
+AutomataAcceptings. AutomataAcceptingsRule ::= "accepting" ":" [Name] ";";
+
+--turn off checking
+TurnOffConditions. Statement ::= "off" ":" [CheckingConditionRule] ";";
+ParikhCondition. CheckingConditionRule ::= "parikh";
+AutomorphismCondition. CheckingConditionRule ::= "automorphism";
+PermutativeCondition. CheckingConditionRule ::= "permutative";
+InjectiveOutputCondition. CheckingConditionRule ::= "injectiveoutput";
+InjectiveInputCondition. CheckingConditionRule ::= "injectiveinput";
+CopycatCondition. CheckingConditionRule ::= "copycat";
+OutputUniversalCondition. CheckingConditionRule ::= "outputUniversal";
+InputUniversalCondition. CheckingConditionRule ::= "inputUniversal";
+
+-- sequence numbers, separated by white space
+IndexSequence. IndexSequenceRule ::= [NumberSpaceRule];
+NumberSpace. NumberSpaceRule ::= Integer;
+
+NameSequence. NameSequenceRule ::= [NameSpaceRule];
+NameSpace. NameSpaceRule ::= Name;
+
+NumberName. Name ::= Integer;
+LiteralName. Name ::= Ident;
+
+comment "/**" "**/" ;
+comment "/*" "*/" ;
+comment "//";
+
+separator 	Statement "";
+separator 	SymmetryPairRule ",";
+separator 	TransitionRule ";";
+separator 	SymInstance ",";
+separator 	GeneratorRule "";
+separator 	ImpossiblePairRule ",";
+separator 	AutomataTransitionRule ";";
+separator 	CheckingConditionRule ",";
+separator 	NumberSpaceRule "";
+separator 	Name ",";
+separator 	NameSpaceRule "";

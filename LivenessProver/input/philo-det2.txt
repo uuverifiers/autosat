@@ -1,0 +1,127 @@
+I0 {
+  init: s0;
+  s0 -> s1 bb;
+  s1 -> s2 bb;
+  s2 -> s2 bb;
+  accepting: s2;
+}
+
+closedUnderTransitions;
+
+F {
+  init: s0;
+  s0 -> s0 bb;
+  s0 -> s0 tb;
+  s0 -> s0 bt;
+  s0 -> s1 tt;
+  s1 -> s1 bb;
+  s1 -> s1 tb;
+  s1 -> s1 bt;
+  s1 -> s1 tt;
+  accepting: s1;
+}
+
+P1 {
+  init: s0;
+  s0 -> s1;
+  s0 -> s4;
+  s0 -> s8;
+  s0 -> s13;
+
+  // case 1
+  s1 -> s2 bb/bb;
+  s1 -> s2 tb/tb;
+  s1 -> s2 bt/bt;
+  s1 -> s2 tt/tt;
+  s2 -> s2 bb/bb;
+  s2 -> s2 tb/tb;
+  s2 -> s2 bt/bt;
+  s2 -> s2 tt/tt;
+
+  s2 -> s3 bb/bbh;
+  s3 -> sf bb/bb;
+  s3 -> sf bt/bt;
+
+  s4 -> s4 bb/bb;
+  s4 -> s4 tb/tb;
+  s4 -> s4 bt/bt;
+  s4 -> s4 tt/tt;
+
+  s4 -> s5;
+  s4 -> s7;
+
+  // case 2
+  s13 -> s14 bb/bb;
+  s13 -> s14 bt/bt;
+  s14 -> s14 bb/bb;
+  s14 -> s14 tb/tb;
+  s14 -> s14 bt/bt;
+  s14 -> s14 tt/tt;
+  s14 -> s15 bb/bbh;
+
+  // case 3
+  s5 -> s6 bb/bb;
+  s5 -> s6 tb/tb;
+  s6 -> sf bt/bth;
+  
+  // case 6
+  s7 -> sf tt/tth;
+
+  // case 4
+  s8 -> s9 bb/bbh;
+  s9 -> s9 bb/bb;
+  s9 -> s9 tb/tb;
+  s9 -> s9 bt/bt;
+  s9 -> s9 tt/tt;
+  s9 -> s10 bb/bb;
+  s9 -> s10 tb/tb;
+
+  // case 5
+  s11 -> s12 tb/tbh;
+  s12 -> sf bb/bb;
+  s12 -> sf bt/bt;
+
+  sf -> sf bb/bb;
+  sf -> sf tb/tb;
+  sf -> sf bt/bt;
+  sf -> sf tt/tt;
+
+  accepting: sf, s10, s15;
+}
+
+P2 {
+  init: s0;
+
+  s0 -> s3;
+  s0 -> s1;
+
+  // first process
+  s3 -> sf bbh/tb;
+  s3 -> sf tbh/tt;
+  s3 -> sf tth/bb;
+
+  s1 -> s2 bb/bb;
+  s1 -> s2 tb/tb;
+  s1 -> s2 bt/bt;
+  s1 -> s2 tt/tt;
+  s2 -> s2 bb/bb;
+  s2 -> s2 tb/tb;
+  s2 -> s2 bt/bt;
+  s2 -> s2 tt/tt;
+
+  // all other processes
+  s2 -> sf bbh/bt;
+  s2 -> sf bth/tt;
+  s2 -> sf tth/bb;
+
+  sf -> sf bb/bb;
+  sf -> sf tb/tb;
+  sf -> sf bt/bt;
+  sf -> sf tt/tt;
+
+  accepting: sf;
+}
+
+transducerStateGuessing: 2 .. 5;
+automatonStateGuessing: 1 .. 2;
+initAutomatonStateGuessing: 1 .. 2;

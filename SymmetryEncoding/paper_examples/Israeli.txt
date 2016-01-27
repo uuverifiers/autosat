@@ -1,0 +1,43 @@
+model
+{
+systemTransitions{
+init: 0;
+
+0 -> 4;
+
+4 -> 4 bot/bot;
+4 -> 4 top/top;
+
+4 -> 5 bot/top;
+4 -> 5 top/top;
+
+5 -> 7 top/bot;
+
+4 -> 6 top/bot;
+6 -> 7 bot/top;
+
+7 -> 7 bot/bot;
+7 -> 7 top/top;
+
+0 -> 1 bot/top;
+
+1 -> 1 bot/bot;
+1 -> 1 top/top;
+
+1 -> 2 top/bot;
+
+0 -> 3 top/bot;
+
+3 -> 3 bot/bot;
+3 -> 3 top/top;
+
+3 -> 2 top/top;
+3 -> 2 bot/top;
+
+accepting: 2, 7;
+}
+
+statesGuessing : 5..5;
+
+}
+

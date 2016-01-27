@@ -1,0 +1,46 @@
+03:18:35.256 [main] INFO  symmetryencoding.parasym.ParaSymChecking - 413: Found a model (924724 clauses), analysing ...
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 2/2 1
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 0/1 2
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 3/3 2
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 0/0 4
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 1/0 4
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 3/2 4
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 1 1/1 8
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 2 0/1 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 2 1/1 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 2 3/3 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 2 2/2 8
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 3 0/0 3
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 3 3/2 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 4 0/0 4
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 4 1/0 4
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 4 3/3 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 4 2/3 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 5 0/0 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 5 1/0 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 5 2/2 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 5 3/2 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 6 3/2 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 6 0/0 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 6 1/0 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 6 2/2 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 7 1/1 3
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 7 0/0 7
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 7 1/0 7
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 7 2/2 8
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 8 0/1 3
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 8 1/1 5
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 8 3/3 6
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 8 0/0 7
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - 8 2/2 8
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - Accepting States:
+03:18:35.257 [main] DEBUG symmetryencoding.Ultility - [1, 2, 5, 7, 8]
+03:18:35.634 [main] DEBUG symmetryencoding.parasym.condition.Automorphism - Automorphism
+03:18:35.634 [main] DEBUG symmetryencoding.parasym.condition.Automorphism - null
+03:18:35.635 [main] DEBUG symmetryencoding.parasym.condition.InjectiveInput - Injective 1
+03:18:35.635 [main] DEBUG symmetryencoding.parasym.condition.InjectiveInput - null
+03:18:35.635 [main] DEBUG symmetryencoding.parasym.condition.InputUniversal - Must Accept Input
+03:18:35.635 [main] DEBUG symmetryencoding.parasym.condition.InputUniversal - null
+03:18:35.635 [main] INFO  symmetryencoding.parasym.ParaSymChecking - All conditions are satisfied
+A transducer with 8 states is found!
+Running Time 37015893

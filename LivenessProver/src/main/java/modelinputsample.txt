@@ -1,0 +1,51 @@
+
+I0{
+	init: 1;
+	
+	1 -> 1 false;
+	1 -> 1 true;
+	1 -> 2 true;
+	2 -> 2 false;
+	2 -> 2 true;
+	accepting: 2;
+}
+
+F{ 
+	init: 1;
+	
+	1 -> 1 false;
+	1 -> 2 true;
+	2 -> 2 false;
+	accepting: 2;
+}
+
+P1{
+	init: 1;
+	loop: 1, 2;
+	
+	1 -> 2 true/truecap;
+	accepting: 2;
+}
+
+P2{
+	init: 1;
+	loop: 2, 4, 6, 8;
+	
+	1 -> 2;
+	2 -> 3 truecap/false;
+	3 -> 4 false/true;
+	3 -> 4 true/true;
+	2 -> 5 false/true;
+	2 -> 5 true/true;
+	5 -> 4 truecap/false;
+	1 -> 6 false/true;
+	1 -> 6 true/true;
+	6 -> 7 truecap/false;
+	1 -> 8 truecap/false;
+	8 -> 7 false/true;
+	8 -> 7 true/true;
+	accepting: 4, 7;
+}
+
+transducerStateGuessing: 2..3;
+automatonStateGuessing: 4..5;

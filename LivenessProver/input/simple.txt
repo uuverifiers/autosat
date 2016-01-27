@@ -1,0 +1,63 @@
+I0 {
+
+  init : s0;
+
+  s0 -> s0 bot;
+  s0 -> s0 top;
+
+  s0 -> s1 top;
+
+  s1 -> s1 bot;
+  s1 -> s1 top;
+
+  s1 -> s2 top;
+
+  s2 -> s2 bot;
+  s2 -> s2 top;
+
+  accepting: s2;
+
+}
+
+F {
+
+  init : s0;
+
+  s0 -> s0 bot;
+  s0 -> s1 top;
+  s1 -> s1 bot;
+
+  accepting: s1;
+
+}
+
+P1 {
+
+  init : s0;
+
+  s0 -> s0 bot/bot;
+  s0 -> s0 top/top;
+  s0 -> s1 top/toph;
+  s1 -> s1 bot/bot;
+  s1 -> s1 top/top;
+
+  accepting: s1;
+
+}
+
+P2 {
+
+  init : s0;
+
+  s0 -> s0 bot/bot;
+  s0 -> s0 top/top;
+  s0 -> s1 toph/bot;
+  s1 -> s1 bot/bot;
+  s1 -> s1 top/top;
+
+  accepting: s1;
+
+}
+
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 1 .. 4;

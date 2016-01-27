@@ -1,0 +1,28 @@
+model
+{
+
+systemTransitions{
+init: s0;
+s0 -> s1 e1/e0;
+s0 -> s3;
+s1 -> s2 e0/e1;
+s1 -> s2 e1/e1;
+s1 -> s1 e0/e0;
+s1 -> s1 e1/e1;
+s3 -> s4 e0/e1;
+s3 -> s4 e1/e1;
+s3 -> s3 e0/e0;
+s3 -> s3 e1/e1;
+s4 -> s5 e1/e0;
+s5 -> s5 e0/e0;
+s5 -> s5 e1/e1;
+accepting: 2, 5;
+}
+
+statesGuessing : 5..5;
+
+forcedSymmetryGenerators:
+		(3, (0 1 2));
+
+}
+

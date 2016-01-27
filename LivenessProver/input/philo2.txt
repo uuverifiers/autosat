@@ -1,0 +1,154 @@
+I0 {
+  init: s0;
+  s0 -> s1 bb;
+  s1 -> s2 bb;
+  s2 -> s2 bb;
+  accepting: s2;
+}
+
+closedUnderTransitions;
+
+F {
+  init: s0;
+  s0 -> s0 bb;
+  s0 -> s0 tb;
+  s0 -> s0 bt;
+  s0 -> s1 tt;
+  s1 -> s1 bb;
+  s1 -> s1 tb;
+  s1 -> s1 bt;
+  s1 -> s1 tt;
+  accepting: s1;
+}
+
+P1 {
+  init: si;
+
+  si -> s0;
+  si -> s3;
+  si -> s6;
+
+  s0 -> s0 bb/bb;
+  s0 -> s0 tb/tb;
+  s0 -> s0 bt/bt;
+  s0 -> s0 tt/tt;
+
+  s0 -> s1 bb/bbh;
+  s0 -> s1 tb/tbh;
+  s1 -> sf bb/bb;
+  s1 -> sf bt/bt;
+
+  s0 -> s2 bb/bb;
+  s0 -> s2 tb/tb;
+  s2 -> sf bb/bbh;
+  s2 -> sf bt/bth;
+
+  s0 -> sf tt/tth;
+
+  sf -> sf bb/bb;
+  sf -> sf tb/tb;
+  sf -> sf bt/bt;
+  sf -> sf tt/tt;
+
+  s3 -> s4 bb/bb;
+  s3 -> s4 bt/bt;
+  s4 -> s4 bb/bb;
+  s4 -> s4 tb/tb;
+  s4 -> s4 bt/bt;
+  s4 -> s4 tt/tt;
+  s4 -> s5 bb/bbh;
+  s4 -> s5 tb/tbh;
+
+  s6 -> s7 bb/bbh;
+  s6 -> s7 bt/bth;
+  s7 -> s7 bb/bb;
+  s7 -> s7 tb/tb;
+  s7 -> s7 bt/bt;
+  s7 -> s7 tt/tt;
+  s7 -> s8 bb/bb;
+  s7 -> s8 tb/tb;
+
+  accepting: sf, s5, s8;
+}
+
+P2 {
+  init: s0;
+  s0 -> s1;
+  s0 -> s10;
+  s0 -> s13;
+  s0 -> s16;
+  s0 -> s19;
+
+  s1 -> s1 bb/bb;
+  s1 -> s1 tb/tb;
+  s1 -> s1 bt/bt;
+  s1 -> s1 tt/tt;
+
+  s1 -> s2;
+  s1 -> s4;
+  s1 -> s6;
+  s1 -> s8;
+
+  s2 -> s3 bbh/bt;
+  s2 -> s3 tbh/tt;
+  s3 -> sf bb/bb;
+  s3 -> sf bt/bt;
+
+  s4 -> s5 tbh/bb;
+  s5 -> sf tb/tb;
+  s5 -> sf tt/tt;
+
+  s6 -> s7 bb/bb;
+  s6 -> s7 tb/tb;
+  s7 -> sf bbh/tb;
+  s7 -> sf bth/tt;
+
+  s8 -> s9 bt/bt;
+  s8 -> s9 tt/tt;
+  s9 -> sf bth/bb;
+
+  sf -> sf bb/bb;
+  sf -> sf tb/tb;
+  sf -> sf bt/bt;
+  sf -> sf tt/tt;
+
+  s10 -> s11 bbh/tb;
+  s10 -> s11 bth/tt;
+  s11 -> s11 bb/bb;
+  s11 -> s11 tb/tb;
+  s11 -> s11 bt/bt;
+  s11 -> s11 tt/tt;
+  s11 -> s12 bb/bb;
+  s11 -> s12 tb/tb;
+
+  s13 -> s14 bth/bb;
+  s14 -> s14 bb/bb;
+  s14 -> s14 tb/tb;
+  s14 -> s14 bt/bt;
+  s14 -> s14 tt/tt;
+  s14 -> s15 bt/bt;
+  s14 -> s15 tt/tt;
+
+  s16 -> s17 bb/bb;
+  s16 -> s17 bt/bt;
+  s17 -> s17 bb/bb;
+  s17 -> s17 tb/tb;
+  s17 -> s17 bt/bt;
+  s17 -> s17 tt/tt;
+  s17 -> s18 bbh/bt;
+  s17 -> s18 tbh/tt;
+
+  s19 -> s20 tb/tb;
+  s19 -> s20 tt/tt;
+  s21 -> s21 bb/bb;
+  s21 -> s21 tb/tb;
+  s21 -> s21 bt/bt;
+  s21 -> s21 tt/tt;
+  s21 -> s22 tbh/bb;
+
+  accepting: sf, s12, s15, s18, s22;
+}
+
+transducerStateGuessing: 2 .. 5;
+automatonStateGuessing: 1 .. 2;
+initAutomatonStateGuessing: 1 .. 2;

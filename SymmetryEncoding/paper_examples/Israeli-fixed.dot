@@ -1,0 +1,18 @@
+digraph finite_state_machine {
+rankdir=LR;
+size="8,5"
+node [shape = doublecircle]; 1 3 4 ;
+node [shape = circle];
+1 -> 2 [ label = "&perp;/&#x22A4;" ];
+1 -> 3 [ label = "&#x22A4;/&#x22A4;" ];
+1 -> 4 [ label = "&perp;/&perp;" ];
+1 -> 5 [ label = "&#x22A4;/&perp;" ];
+2 -> 2 [ label = "&perp;/&perp;" ];
+2 -> 3 [ label = "&#x22A4;/&perp;" ];
+3 -> 2 [ label = "&perp;/&#x22A4;" ];
+3 -> 3 [ label = "&#x22A4;/&#x22A4;" ];
+4 -> 4 [ label = "&perp;/&perp;" ];
+4 -> 5 [ label = "&#x22A4;/&perp;" ];
+5 -> 4 [ label = "&perp;/&#x22A4;" ];
+5 -> 5 [ label = "&#x22A4;/&#x22A4;" ];
+}
