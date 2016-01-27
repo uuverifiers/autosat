@@ -40,12 +40,12 @@ public class IncrementalVerifier {
     // accepting states) as possible
     private static final boolean maximiseTransducer = false;
     private static final boolean eliminateMultipleConfigurations = true;
-    private static final boolean preComputeReachable = true;
     private static final int     maxStoredRelationNum = 5;
     private static final int     finiteVerificationBound = 6;
 
     private final boolean verifySolutions;
     private final boolean closeUnderRotation;
+    private final boolean preComputeReachable;
 
     private final SymmetryProb problem;
 
@@ -78,10 +78,12 @@ public class IncrementalVerifier {
     public IncrementalVerifier(SymmetryProb problem,
 			       ISatSolverFactory SOLVER_FACTORY,
 			       boolean useRankingFunctions,
+                               boolean preComputeReachable,
 			       boolean verifySolutions) {
 	this.problem = problem;
 	this.SOLVER_FACTORY = SOLVER_FACTORY;
 	this.useRankingFunctions = useRankingFunctions;
+        this.preComputeReachable = preComputeReachable;
         this.closeUnderRotation = problem.getSymmetries().contains("rotation");
 	this.verifySolutions = verifySolutions;
     }

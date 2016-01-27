@@ -9,6 +9,8 @@ public abstract class VerifierOption implements java.io.Serializable {
     public R visit(grammar.Absyn.SymmetryOptions p, A arg);
     public R visit(grammar.Absyn.ExplicitChecks p, A arg);
     public R visit(grammar.Absyn.UseRankingFunctions p, A arg);
+    public R visit(grammar.Absyn.MonolithicWitness p, A arg);
+    public R visit(grammar.Absyn.NoPrecomputedInv p, A arg);
 
   }
 

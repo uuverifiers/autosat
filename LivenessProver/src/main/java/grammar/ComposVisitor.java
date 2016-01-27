@@ -184,6 +184,16 @@ public class ComposVisitor<A> implements
 
       return new grammar.Absyn.UseRankingFunctions();
     }
+    public VerifierOption visit(grammar.Absyn.MonolithicWitness p, A arg)
+    {
+
+      return new grammar.Absyn.MonolithicWitness();
+    }
+    public VerifierOption visit(grammar.Absyn.NoPrecomputedInv p, A arg)
+    {
+
+      return new grammar.Absyn.NoPrecomputedInv();
+    }
 
 /* SymmetryOption */
     public SymmetryOption visit(grammar.Absyn.RotationSymmetry p, A arg)

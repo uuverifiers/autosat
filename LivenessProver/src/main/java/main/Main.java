@@ -45,10 +45,11 @@ public class Main {
 
 	verifyFiniteInstances(problem, problem.getExplicitChecksUntilLength());
 
-	if (problem.getCloseInitStates()) {
+	if (problem.getCloseInitStates() && !problem.getAlwaysMonolithic()) {
 	    IncrementalVerifier verifier =
 		new IncrementalVerifier(problem, SOLVER_FACTORY,
 					problem.getUseRankingFunctions(),
+                                        problem.getPrecomputedInv(),
 					verifySolutions);
             verifier.setup();
 	    verifier.verify();

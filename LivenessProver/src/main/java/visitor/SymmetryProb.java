@@ -28,6 +28,8 @@ public class SymmetryProb {
 
     private boolean closeInitStates = false;	
     private boolean useRankingFunctions = false;	
+    private boolean alwaysMonolithic = false;	
+    private boolean precomputedInv = true;	
 
     private List<String> symmetries = new ArrayList<String> ();
 
@@ -134,5 +136,19 @@ public class SymmetryProb {
     }
     public void setUseRankingFunctions(boolean t) {
         useRankingFunctions = t;
+    }
+
+    public boolean getAlwaysMonolithic() {
+        return alwaysMonolithic;
+    }
+    public void setAlwaysMonolithic(boolean t) {
+        alwaysMonolithic = t;
+    }
+
+    public boolean getPrecomputedInv() {
+        return precomputedInv;
+    }
+    public void setPrecomputedInv(boolean t) {
+        precomputedInv = t;
     }
 }

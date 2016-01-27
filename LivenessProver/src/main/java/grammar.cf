@@ -32,6 +32,8 @@ NumOfInitStatesAutomatonGuess. VerifierOption ::= "initAutomatonStateGuessing" "
 SymmetryOptions.               VerifierOption ::= "symmetries" ":" [SymmetryOption];
 ExplicitChecks.                VerifierOption ::= "explicitChecksUntilLength" ":" Integer;
 UseRankingFunctions.           VerifierOption ::= "useRankingFunctions";
+MonolithicWitness.             VerifierOption ::= "monolithicWitness";
+NoPrecomputedInv.              VerifierOption ::= "noPrecomputedInvariant";
 
 terminator VerifierOption ";";
 

@@ -57,6 +57,8 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(grammar.Absyn.SymmetryOptions p, A arg) { return visitDefault(p, arg); }
     public R visit(grammar.Absyn.ExplicitChecks p, A arg) { return visitDefault(p, arg); }
     public R visit(grammar.Absyn.UseRankingFunctions p, A arg) { return visitDefault(p, arg); }
+    public R visit(grammar.Absyn.MonolithicWitness p, A arg) { return visitDefault(p, arg); }
+    public R visit(grammar.Absyn.NoPrecomputedInv p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(grammar.Absyn.VerifierOption p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }

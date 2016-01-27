@@ -555,6 +555,20 @@ public class PrettyPrinter
        render("useRankingFunctions");
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof grammar.Absyn.MonolithicWitness)
+    {
+       grammar.Absyn.MonolithicWitness _monolithicwitness = (grammar.Absyn.MonolithicWitness) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("monolithicWitness");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof grammar.Absyn.NoPrecomputedInv)
+    {
+       grammar.Absyn.NoPrecomputedInv _noprecomputedinv = (grammar.Absyn.NoPrecomputedInv) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("noPrecomputedInvariant");
+       if (_i_ > 0) render(_R_PAREN);
+    }
   }
 
   private static void pp(grammar.Absyn.ListVerifierOption foo, int _i_)
@@ -881,6 +895,16 @@ public class PrettyPrinter
     {
        grammar.Absyn.UseRankingFunctions _userankingfunctions = (grammar.Absyn.UseRankingFunctions) foo;
        render("UseRankingFunctions");
+    }
+    if (foo instanceof grammar.Absyn.MonolithicWitness)
+    {
+       grammar.Absyn.MonolithicWitness _monolithicwitness = (grammar.Absyn.MonolithicWitness) foo;
+       render("MonolithicWitness");
+    }
+    if (foo instanceof grammar.Absyn.NoPrecomputedInv)
+    {
+       grammar.Absyn.NoPrecomputedInv _noprecomputedinv = (grammar.Absyn.NoPrecomputedInv) foo;
+       render("NoPrecomputedInv");
     }
   }
 

@@ -144,6 +144,14 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
+    public R visit(grammar.Absyn.MonolithicWitness p, A arg) {
+      R r = leaf(arg);
+      return r;
+    }
+    public R visit(grammar.Absyn.NoPrecomputedInv p, A arg) {
+      R r = leaf(arg);
+      return r;
+    }
 
 /* SymmetryOption */
     public R visit(grammar.Absyn.RotationSymmetry p, A arg) {

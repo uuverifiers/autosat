@@ -216,6 +216,20 @@ public class VisitSkel
 
       return null;
     }
+    public R visit(grammar.Absyn.MonolithicWitness p, A arg)
+    {
+      /* Code For MonolithicWitness Goes Here */
+
+
+      return null;
+    }
+    public R visit(grammar.Absyn.NoPrecomputedInv p, A arg)
+    {
+      /* Code For NoPrecomputedInv Goes Here */
+
+
+      return null;
+    }
 
   }
   public class SymmetryOptionVisitor<R,A> implements SymmetryOption.Visitor<R,A>

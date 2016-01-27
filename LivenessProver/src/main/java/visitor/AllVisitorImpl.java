@@ -339,4 +339,14 @@ public class AllVisitorImpl implements AllVisitor<Object, SymmetryProb>{
         return null;
     }
 
+    public Object visit(grammar.Absyn.MonolithicWitness p, SymmetryProb arg) {
+        arg.setAlwaysMonolithic(true);
+        return null;
+    }
+
+    public Object visit(grammar.Absyn.NoPrecomputedInv p, SymmetryProb arg) {
+        arg.setPrecomputedInv(false);
+        return null;
+    }
+
 }
