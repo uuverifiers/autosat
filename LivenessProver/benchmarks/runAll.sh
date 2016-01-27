@@ -5,14 +5,15 @@ RUN=../run
 ulimit -t 1800
 
 for name in Israeli-Jalfon.txt \
+            Lehmann-Rabin.txt \
+            herman-linear.txt \
             bakery.txt \
             firewire.txt \
-            herman-linear.txt \
-            Lehmann-Rabin.txt \
+            szymanski.txt \
             LR-philo.txt \
+            take-away.txt \
             nim.txt \
-            rap.txt \
-            szymanski.txt; do
+            rap.txt; do
 
     echo Benchmark: $name
     
