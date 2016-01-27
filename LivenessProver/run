@@ -1,3 +1,5 @@
 #!/bin/sh
 
-exec java -Xss20000k -Xmx6000m -ea -cp dist/livenessprover.jar:../Common/lib/commons-io-2.4.jar:../Common/lib/commons-cli-1.2.jar:../Common/lib/org.sat4j.core.jar:../Common/lib/log4j-core-2.1.jar:../Common/lib/log4j-api-2.1.jar:../Common/lib/java-cup-11a.jar main.Main "$@"
+BASEDIR=`dirname $(readlink -e $0)`
+
+exec java -Xss20000k -Xmx2000m -ea -cp $BASEDIR/dist/livenessprover.jar:$BASEDIR/../Common/lib/commons-io-2.4.jar:$BASEDIR/../Common/lib/commons-cli-1.2.jar:$BASEDIR/../Common/lib/org.sat4j.core.jar:$BASEDIR/../Common/lib/log4j-core-2.1.jar:$BASEDIR/../Common/lib/log4j-api-2.1.jar:$BASEDIR/../Common/lib/java-cup-11a.jar main.Main "$@"
