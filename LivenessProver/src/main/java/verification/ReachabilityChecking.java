@@ -336,7 +336,7 @@ public class ReachabilityChecking {
                         System.out.println(labelToIndex);
                         
                         //write to dot
-                        writeToDot(automatonB, transducer);
+                        //writeToDot(automatonB, transducer);
 			}
 
 			break;
