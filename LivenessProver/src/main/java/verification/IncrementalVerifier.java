@@ -28,7 +28,7 @@ import common.finiteautomata.AutomataConverter;
 
 public class IncrementalVerifier {
     private static final Logger LOGGER = LogManager.getLogger();
-	
+
     private final ISatSolverFactory SOLVER_FACTORY;
     private final boolean useRankingFunctions;
 
@@ -59,7 +59,7 @@ public class IncrementalVerifier {
     private List<Automata> chosenBs;
     private List<EdgeWeightedDigraph> chosenTs;
     private List<EdgeWeightedDigraph> distinctRelations;
-    
+
     private static class Configuration implements Comparable<Configuration> {
 	public final List<Integer> word;
 	public final int rank;
@@ -167,7 +167,7 @@ public class IncrementalVerifier {
 	}
 
 	Collections.sort(configurationSample);
-	
+
 	//	System.out.println(configurationSample);
 
 	for (int configNum = 0; configNum < configurationSample.size();) {
@@ -189,7 +189,7 @@ public class IncrementalVerifier {
 		final List<List<Integer>> elimWords =
 		    new ArrayList<List<Integer>>();
 		elimWords.add(config.word);
-		
+
 		if (eliminateMultipleConfigurations) {
 		    for (int i = configNum + 1;
 			 i < configurationSample.size() &&
@@ -197,7 +197,7 @@ public class IncrementalVerifier {
 			 ++i)
 			if (!winningStates.accepts(configurationSample.get(i).word))
 			    elimWords.add(configurationSample.get(i).word);
-			
+
 		    LOGGER.info("trying to eliminate one of " + elimWords);
 		}
 
@@ -210,14 +210,14 @@ public class IncrementalVerifier {
 			for(int numStateAutomata = problem.getMinNumOfStatesAutomaton();
 			    numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
 			    numStateAutomata++){
-			    
+
 			    final int sos =
 				numStateTransducer * numStateTransducer +
 				numStateAutomata * numStateAutomata;
 
 			    if (sos != fixedSOS)
 				continue;
-			    
+
 			    ReachabilityChecking checking =
                                 createReachabilityChecking(useRankingFunctions,
                                                            numStateAutomata,
@@ -270,7 +270,7 @@ public class IncrementalVerifier {
 				    if (maximiseProgressRelations) {
 					while (++configNum < configurationSample.size()) {
 					    List<Integer> w = configurationSample.get(configNum).word;
-					    
+
 					    if (winningStates.accepts(w)) {
 						LOGGER.info("already covered: " + w);
 					    } else {
@@ -323,7 +323,7 @@ public class IncrementalVerifier {
         if (checkConvergence())
             break mainLoop;
 	} // mainLoop
-	
+
         printResult();
 
 	return true;
@@ -361,7 +361,7 @@ public class IncrementalVerifier {
             if (!extraWords.isEmpty()) {
                 // try to find a new set of states that can be
                 // ranked using this progress relation
-                
+
                 LOGGER.info("covers: " + extraWords);
 
 		OldCounterExamples oldCEs = new OldCounterExamples();
@@ -374,7 +374,7 @@ public class IncrementalVerifier {
                     ReachabilityChecking checking =
                         createReachabilityChecking(false, numStateAutomata,
                                                    relation.V(), oldCEs);
-                    
+
                     checking.setup();
                     checking.addDisjBMembershipConstraint(extraWords);
                     checking.fixTransducer(relation);
@@ -393,7 +393,7 @@ public class IncrementalVerifier {
                                 checking.addBNonMembershipConstraint(w);
                             }
                     }
-                    
+
                     if (checking.findNextSolution(false)) {
                         LOGGER.info("could reuse progress relation!");
                         augmentWinningStates(checking,
@@ -435,7 +435,7 @@ public class IncrementalVerifier {
         checking.setFiniteStateSets(finiteStates);
         checking.setSystemInvariant(systemInvariant);
         checking.setTransducerNumStates(numStateTransducer);
-        
+
         return checking;
     }
 
@@ -497,7 +497,7 @@ public class IncrementalVerifier {
 						   cex, oldCEs, num);
 		    newInv = invSynth.infer();
 		}
-	
+
 		systemInvariant =
 		    VerificationUltility.getIntersection(systemInvariant, newInv);
 
@@ -538,7 +538,7 @@ public class IncrementalVerifier {
 	    boolean changed = true;
 	    while (changed) {
 		changed = false;
-		
+
 		addLoop: for (List<Integer> w :
 				  AutomataConverter.getWords(B, len))
 		    if (!p2winning.contains(w)) {
@@ -553,7 +553,7 @@ public class IncrementalVerifier {
 
 			for (List<Integer> v : wImage) {
 			    boolean isRankable = false;
-			    for (List<Integer> u : 
+			    for (List<Integer> u :
 				     AutomataConverter.getWords
 				     (AutomataConverter.getImage
 				      (v, player2, numLetters),
@@ -569,7 +569,7 @@ public class IncrementalVerifier {
 			    if (!isRankable)
 				continue addLoop;
 			}
-			
+
 			p2winning.add(w);
 			if (closeUnderRotation) {
 			    // also add rotated versions

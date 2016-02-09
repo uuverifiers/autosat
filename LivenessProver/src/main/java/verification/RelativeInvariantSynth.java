@@ -32,15 +32,15 @@ public class RelativeInvariantSynth {
 
     private int automataNumStates;
     private int numLetters;
-    
+
     private ISatSolver solver;
-	
+
     private Automata I0;
     private Automata relevantStates;
     private List<Integer> excludedWord;
     private EdgeWeightedDigraph player1;
     private EdgeWeightedDigraph player2;
-    
+
     private OldCounterExamples oldCounterExamples;
 
     public RelativeInvariantSynth(ISatSolverFactory solverFactory,
@@ -62,7 +62,7 @@ public class RelativeInvariantSynth {
 	this.numLetters = numLetters;
 	this.automataNumStates = automataNumStates;
     }
-    
+
     public Automata infer() {
 	AutomataEncoding automataEncoding =
 	    new AutomataEncoding(solver,
@@ -145,7 +145,7 @@ public class RelativeInvariantSynth {
 		LOGGER.debug("FOUND SOLUTION!");
 		return automaton;
 	    }
-	
+
 	    LOGGER.debug("no more models");
 	    return null;
 	} catch (ContradictionException e) {
@@ -160,16 +160,18 @@ public class RelativeInvariantSynth {
     private void updateWithOldCE(AutomataEncoding automataEncoding,
 				 CEElimination ceElimination)
 	throws ContradictionException {
-	
+
 	LOGGER.debug("Updating encoding with old counter examples...");
-		
+
 	for(List<Integer> ce: oldCounterExamples.getL0B()){
 	    ceElimination.ce0Elimination(automataEncoding, ce);
 	}
-		
+
 	for(List<List<Integer>> ce: oldCounterExamples.getL1()){
 	    ceElimination.ce1Elimination(automataEncoding, ce);
 	}
     }
 
 }
+
+// vim: tabstop=4

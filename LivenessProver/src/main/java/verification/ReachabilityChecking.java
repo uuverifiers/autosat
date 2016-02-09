@@ -32,9 +32,9 @@ import elimination.TransitivityPairSet;
 
 public class ReachabilityChecking {
     private static final Logger LOGGER = LogManager.getLogger();
-	
+
     private Map<String, Integer> labelToIndex = new HashMap<String, Integer>();
-	
+
     private final boolean closeUnderTransitions;
     private final boolean checkI0Subset;
     private final boolean lexicographicOrder;
@@ -42,17 +42,17 @@ public class ReachabilityChecking {
     private int transducerNumStates;
     private int automataNumStates;
     private int numLetters;
-	
+
     private ISatSolver solver;
     private ISatSolverFactory solverFactory;
-	
+
     private Automata I0;
     private Automata F;
     private Automata winningStates;
     private Automata systemInvariant;
     private EdgeWeightedDigraph player1;
     private EdgeWeightedDigraph player2;
-	
+
     private OldCounterExamples oldCounterExamples;
     private FiniteStateSets finiteStates;
 
@@ -60,7 +60,7 @@ public class ReachabilityChecking {
     private TransducerEncoding transducerEncoding = null;
     private RankingFunction rankingFunctionEncoding = null;
     private TransitivityPairSet transitivitySet = null;
-	
+
     private final CEElimination ceElimination;
 
     private int round = 0;
@@ -137,7 +137,7 @@ public class ReachabilityChecking {
 			assert(automatonB.isDFA());
 			LOGGER.debug("Find Automaton B ");
 			LOGGER.debug(automatonB);
-			
+
 			EdgeWeightedDigraph rankingFunction = null;
 
 			if (!lexicographicOrder) {
@@ -164,7 +164,7 @@ public class ReachabilityChecking {
 			    if (!l3LocalCexes.isEmpty()) {
 				LOGGER.debug("L3-local failed!");
 				LOGGER.debug(l3LocalCexes);
-			    
+
 				for (List<List<Integer>> cex : l3LocalCexes) {
 				    ceElimination.ce3Elimination(transducerEncoding,
 								 transitivitySet,
@@ -190,7 +190,7 @@ public class ReachabilityChecking {
 
 				ceElimination.ce5Elimination(rankingFunctionEncoding,
 							     counterExample);
-				
+
 				continue;
 			    }
 
@@ -199,10 +199,10 @@ public class ReachabilityChecking {
 //			    LOGGER.debug("Find lexicographic transducer ");
 //			    LOGGER.debug(transducer);
 			}
-			
+
 			////////////////////////////////////////////////////////
 			// L4
-			
+
 			boolean contL4 = true;
 			while (contL4) {
 			    contL4 = false;
@@ -257,7 +257,7 @@ public class ReachabilityChecking {
 
 			////////////////////////////////////////////////////////
 			// L3
-			
+
 			if (!lexicographicOrder) {
 			    TransitivitiyChecking l3 =
 				new TransitivitiyChecking(transducer, numLetters);
@@ -268,7 +268,7 @@ public class ReachabilityChecking {
 				ceElimination.ce3Elimination(transducerEncoding,
 							     transitivitySet,
 							     counterExamples);
-				
+
 				oldCounterExamples.addTransitivityCE(counterExamples);
 				continue;
 			    }
@@ -276,7 +276,7 @@ public class ReachabilityChecking {
 
 			////////////////////////////////////////////////////////
 			// L1
-			
+
 			if (closeUnderTransitions) {
 			    Automata aut;
 			    Automata complementF = AutomataConverter.getComplement(F);
@@ -334,7 +334,7 @@ public class ReachabilityChecking {
 			System.out.println();
                         System.out.println("Character mapping:");
                         System.out.println(labelToIndex);
-                        
+
                         //write to dot
                         //writeToDot(automatonB, transducer);
 			}
@@ -377,7 +377,7 @@ public class ReachabilityChecking {
 					   x, oldCEs, num);
 	    newInv = invSynth.infer();
 	}
-	
+
 	systemInvariant =
 	    VerificationUltility.getIntersection(systemInvariant, newInv);
 
@@ -423,7 +423,7 @@ public class ReachabilityChecking {
 	    }
 
 	    solver.addClause(clause);
-	    
+
 	} catch (ContradictionException e) {
 	    // nothing
 	}
@@ -455,7 +455,7 @@ public class ReachabilityChecking {
                                                          transducerEncoding.getTransBoolVar
                                                          (s1, l1, l2, s2) });
                         }
-        
+
             final Set<Integer> accepting = relation.getAcceptingStates();
             for (int s = 1; s <= transducerNumStates; ++s) {
                 boolean a = accepting.contains(s - 1);
@@ -499,7 +499,7 @@ public class ReachabilityChecking {
 			    else
 				unsetVariables.add(var);
                         }
-        
+
             final Set<Integer> accepting = relation.getAcceptingStates();
             for (int s = 1; s <= transducerNumStates; ++s) {
                 boolean a = accepting.contains(s - 1);
@@ -524,22 +524,22 @@ public class ReachabilityChecking {
 	private void updateWithOldCE()
 			throws ContradictionException {
 		//update old counter example
-		
+
 		LOGGER.debug("Updating encoding with old counter examples...");
 		for(List<List<Integer>> ce: oldCounterExamples.getProgressCEs()){
 			ceElimination.ce4Elimination(automataBEncoding, transducerEncoding,
 						     transitivitySet, rankingFunctionEncoding,
 						     ce, winningStates, player2);
 		}
-		
+
 		for(List<List<Integer>> ce: oldCounterExamples.getTransitivityCEs()){
 		    ceElimination.ce3Elimination(transducerEncoding, transitivitySet, ce);
 		}
-		
+
 		for(List<Integer> ce: oldCounterExamples.getL0B()){
 			ceElimination.ce0Elimination(automataBEncoding, ce);
 		}
-		
+
 		for(List<List<Integer>> ce: oldCounterExamples.getL1()){
 			ceElimination.ce1Elimination(automataBEncoding, ce);
 		}
@@ -549,14 +549,14 @@ public class ReachabilityChecking {
 			EdgeWeightedDigraph transducer) {
 		try {
 			Ultility.writeOut(Ultility.toDot(automatonB, labelToIndex), "input/automataB.dot");
-			
+
 			Ultility.writeOut(Ultility.toDot(transducer, labelToIndex), "input/transducer.dot");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int getTransducerNumStates() {
 		return transducerNumStates;
 	}
@@ -628,11 +628,11 @@ public class ReachabilityChecking {
 	public void setOldCounterExamples(OldCounterExamples oldCounterExamples) {
 		this.oldCounterExamples = oldCounterExamples;
 	}
-	
+
     public void setFiniteStateSets(FiniteStateSets finiteStates) {
 	this.finiteStates = finiteStates;
     }
-	
+
     public Automata getSystemInvariant() {
 	return systemInvariant;
     }
@@ -640,5 +640,7 @@ public class ReachabilityChecking {
     public void setSystemInvariant(Automata inv) {
 	systemInvariant = inv;
     }
-	
+
 }
+
+// vim: tabstop=4

@@ -1,4 +1,3 @@
-
 package verification;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +16,7 @@ import common.finiteautomata.AutomataConverter;
 
 public class MonolithicVerifier {
     private static final Logger LOGGER = LogManager.getLogger();
-	
+
     private final ISatSolverFactory SOLVER_FACTORY;
     private final boolean useRankingFunctions;
 
@@ -37,7 +36,7 @@ public class MonolithicVerifier {
 	int bound =
 	    problem.getMaxNumOfStatesTransducer() * problem.getMaxNumOfStatesTransducer() +
 	    problem.getMaxNumOfStatesAutomaton() * problem.getMaxNumOfStatesAutomaton();
-		
+
 	if (problem.getCloseInitStates())
 	    bound +=
 		problem.getMaxNumOfInitStatesAutomaton() *
@@ -50,7 +49,7 @@ public class MonolithicVerifier {
 				problem.getPlayer1(),
 				problem.getPlayer2(),
 				problem.getLabelToIndex());
-		
+
 	Automata systemInvariant = null;
 	if (useGlobalSystemInvariant)
 	    systemInvariant =
@@ -112,3 +111,5 @@ public class MonolithicVerifier {
 	return false;
     }
 }
+
+// vim: tabstop=4

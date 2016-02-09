@@ -13,23 +13,23 @@ public class SymmetryProb {
 	private Automata F;
 	private EdgeWeightedDigraph player1;
 	private EdgeWeightedDigraph player2;
-	
+
 	private Map<String, Integer> labelToIndex = new HashMap<String, Integer>();
 	private int numberOfLetters;
 
 	private int minNumOfStatesTransducer = 0;
 	private int maxNumOfStatesTransducer = 0;
-	
+
 	private int minNumOfStatesAutomaton = 0;
 	private int maxNumOfStatesAutomaton = 0;
-	
+
 	private int minNumOfInitStatesAutomaton = 0;
 	private int maxNumOfInitStatesAutomaton = 0;
 
-    private boolean closeInitStates = false;	
-    private boolean useRankingFunctions = false;	
-    private boolean alwaysMonolithic = false;	
-    private boolean precomputedInv = true;	
+    private boolean closeInitStates = false;
+    private boolean useRankingFunctions = false;
+    private boolean alwaysMonolithic = false;
+    private boolean precomputedInv = true;
 
     private List<String> symmetries = new ArrayList<String> ();
 
@@ -59,7 +59,7 @@ public class SymmetryProb {
 	public void setPlayer2(EdgeWeightedDigraph player2) {
 		this.player2 = player2;
 	}
-	
+
 	public Map<String, Integer> getLabelToIndex() {
 		return labelToIndex;
 	}
@@ -152,3 +152,5 @@ public class SymmetryProb {
         precomputedInv = t;
     }
 }
+
+// vim: tabstop=4

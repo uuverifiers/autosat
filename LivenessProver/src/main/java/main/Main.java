@@ -36,6 +36,7 @@ public class Main {
 
     public static void main(String[] args) {
 	if(args.length < 1){
+	    System.out.println("No input, doing nothing");
 	    return;
 	}
 
@@ -60,7 +61,7 @@ public class Main {
 	    verifier.verify();
 	}
     }
-	
+
 	public static SymmetryProb parse(String fileName) {
 		SymmetryProb problem = null;
 		try {
@@ -75,48 +76,53 @@ public class Main {
 		parser p;
 		Yylex l = new Yylex(reader);
 		p = new parser(l);
-		
+
 		try {
 			grammar.Absyn.ModelRule parse_tree = p.pModelRule();
 
 			SymmetryProb problem = new SymmetryProb();
 			parse_tree.accept(new AllVisitorImpl(), problem);
-			
+
 			LOGGER.info("Parse Succesful!");
 			return problem;
 		} catch (Throwable e) {
-			
+
 			String error = ("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :\n") +
 							("     " + e.getMessage());
 			throw new RuntimeException(error);
 		}
 	}
-	
+
+	/**
+	 * Determinizes all components of a problem
+	 *
+	 * @param[in,out]  problem  The problem to determinize
+	 */
 	private static void determize(SymmetryProb problem){
 		EdgeWeightedDigraph player1  = problem.getPlayer1();
 		if (!VerificationUltility.isDFA(player1, problem.getNumberOfLetters())) {
 			player1 = VerificationUltility.toDFA(problem.getPlayer1(), problem.getNumberOfLetters());
 			problem.setPlayer1(player1);
 		}
-		
+
 		EdgeWeightedDigraph player2 = problem.getPlayer2();
 		if(!VerificationUltility.isDFA(player2, problem.getNumberOfLetters())){
 			player2 = VerificationUltility.toDFA(problem.getPlayer2(),  problem.getNumberOfLetters());
 			problem.setPlayer2(player2);
 		}
-		
+
 		Automata I0 = problem.getI0();
 		if(!I0.isDFA()){
 			I0 = AutomataConverter.toDFA(I0);
 			problem.setI0(I0);
 		}
-		
+
 		Automata F = problem.getF();
 		if(!F.isDFA()){
 			F = AutomataConverter.toDFA(F);
 			problem.setF(F);
 		}
-		
+
 	}
 
     public static void verifyFiniteInstances(SymmetryProb problem,
@@ -133,3 +139,5 @@ public class Main {
 	}
     }
 }
+
+// vim: tabstop=4
