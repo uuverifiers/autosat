@@ -311,32 +311,35 @@ public class ReachabilityChecking {
 
 			////////////////////////////////////////////////////////
 
-                        // otherwise we are finished!
-                        success = true;
+			// otherwise we are finished!
+			success = true;
 
 			if (printResult) {
-                        System.out.println("FOUND SOLUTION!");
-                        System.out.println("A:");
-                        System.out.println(automatonB);
-			if (rankingFunction != null) {
-			    System.out.println("Ranking function:");
-			    System.out.println(rankingFunction);
-			    System.out.println();
-			}
-			if (systemInvariant != null) {
-			    System.out.println("System invariant:");
-			    System.out.println(systemInvariant);
-			    System.out.println();
-			}
-                        System.out.println("Well-founded order:");
-                        System.out.println(transducer);
+				System.out.println("FOUND SOLUTION!");
+				System.out.println("A:");
+				System.out.println(automatonB);
 
-			System.out.println();
-                        System.out.println("Character mapping:");
-                        System.out.println(labelToIndex);
+				if (rankingFunction != null) {
+					System.out.println("Ranking function:");
+					System.out.println(rankingFunction);
+					System.out.println();
+				}
 
-                        //write to dot
-                        //writeToDot(automatonB, transducer);
+				if (systemInvariant != null) {
+					System.out.println("System invariant:");
+					System.out.println(systemInvariant);
+					System.out.println();
+				}
+
+				System.out.println("Well-founded order:");
+				System.out.println(transducer);
+
+				System.out.println();
+				System.out.println("Character mapping:");
+				System.out.println(labelToIndex);
+
+				//write to dot
+				//writeToDot(automatonB, transducer);
 			}
 
 			break;
