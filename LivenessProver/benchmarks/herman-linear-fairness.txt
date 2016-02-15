@@ -1,0 +1,187 @@
+// herman-linear-fairness.txt
+// This an adaptation of Herman's protocol in a linear array. The last
+// (rightmost) process is never enabled, even with a token.
+//
+// Liveness holds under arbitrary schedulers here (unlike the ring case).
+//
+// N - no token
+// T - token
+
+// OL: modified from 'herman-linear.txt' to incorporate fairness:
+//   The encoding is changed in the following way: now, a process state is
+// represented not by a symbol 'a', but by a sub-word of the form "axxx...x"
+// where 'a' is a symbol from the process state alphabet (as previously) and
+// "xxx...x" is a sub-word over 1*0* representing the ``clock'' of the process,
+// where the number of '1's represents the value of the clock
+//   Added states are denoted as 't'.
+
+// Configurations with at least one token
+// OL: now also initializes the clock sub-word
+I0 {
+    init: s0;
+
+    // arbitrary process state
+    s0 -> t1 N;
+    s0 -> t1 T;
+
+    // initialize clock
+    t1 -> t1 1;
+    t1 -> t2 1;
+    t2 -> t2 0;
+    t2 -> s0 0;
+
+    // at least one token
+    s0 -> t3 T;
+
+    // initialize clock
+    t3 -> t3 1;
+    t3 -> t4 1;
+    t4 -> t4 0;
+    t4 -> s1 0;
+
+    // arbitrary process state
+    s1 -> t3 N;
+    s1 -> t3 T;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+// OL: extended for clocks + now also detects if the value of some clock is 0
+// (to force fairness)
+F {
+    init: t0;
+
+    // new initial state with epsilon transitions
+    t0 -> s0;
+    t0 -> t1;
+
+    // non-token
+    s0 -> s0 N;
+    s0 -> s0 0;
+    s0 -> s0 1;
+
+    // exactly one token
+    s0 -> s1 T;
+
+    // non-token
+    s1 -> s1 N;
+    s1 -> s1 0;
+    s1 -> s1 1;
+
+    // the part enforcing fairness
+
+    // arbitrary values
+    t1 -> t1 N;
+    t1 -> t1 T;
+    t1 -> t1 0;
+    t1 -> t1 1;
+
+    // a process with clocks at zero
+    t1 -> t2 N;
+    t1 -> t2 T;
+    t2 -> t3 0;
+
+    // arbitrary value again
+    t3 -> t3 N;
+    t3 -> t3 T;
+    t3 -> t3 0;
+    t3 -> t3 1;
+
+    accepting: s1, t3;
+}
+
+// OL: the system; upon choosing a process, it also randomly sets its clock
+// value
+P1 {
+    init: s0;
+
+    s0 -> s0 N/N;
+    s0 -> s0 T/T;
+    s0 -> s0 0/0;
+    s0 -> s0 1/1;
+
+    s0 -> t1 T/T_;
+
+    // randomly set the clock value of the clock
+    t1 -> t1 0/1;
+    t1 -> t1 1/1;
+    t1 -> t2 0/1;
+    t1 -> t2 1/1;
+    t2 -> t2 0/0;
+    t2 -> t2 1/0;
+    t2 -> s1 0/0;
+    t2 -> s1 1/0;
+
+
+    // To make sure the chosen process is not last
+    s1 -> s2 T/T;
+    s1 -> s2 N/N;
+
+    s2 -> s2 N/N;
+    s2 -> s2 T/T;
+    s2 -> s2 0/0;
+    s2 -> s2 1/1;
+
+    accepting: s2;
+}
+
+// OL: the process; now also decrements the valuve of all clocks by one (if possible)
+P2 {
+    init: s0;
+
+    s0 -> t1 N/N;
+    s0 -> t1 T/T;
+
+    // decrement the clock
+    t1 -> t1 1/1;
+    t1 -> t2 1/0;
+    t2 -> t2 0/0;
+    t2 -> s0 0/0;
+
+    // keep
+    s0 -> t3 T_/T;
+    // pass to right
+    s0 -> t7 T_/N;
+
+    // decrement the clock
+    t3 -> t3 1/1;
+    t3 -> t4 1/0;
+    t4 -> t4 0/0;
+    t4 -> s1 0/0;
+
+    // decrement the clock
+    t7 -> t7 1/1;
+    t7 -> t8 1/0;
+    t8 -> t8 0/0;
+    t8 -> s2 0/0;
+
+    // Merge tokens
+    s2 -> t9 T/T;
+
+    // Pass token to right from s2
+    s2 -> t9 N/T;
+
+    // decrement the clock
+    t9 -> t9 1/1;
+    t9 -> t10 1/0;
+    t10 -> t10 0/0;
+    t10 -> s1 0/0;
+
+    s1 -> t5 N/N;
+    s1 -> t5 T/T;
+
+    // decrement the clock
+    t5 -> t5 1/1;
+    t5 -> t6 1/0;
+    t6 -> t6 0/0;
+    t6 -> s1 0/0;
+
+    accepting: s1;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
