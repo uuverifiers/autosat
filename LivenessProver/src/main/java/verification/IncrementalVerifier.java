@@ -25,6 +25,7 @@ import common.bellmanford.DirectedEdge;
 import common.bellmanford.DirectedEdgeWithInputOutput;
 import common.finiteautomata.Automata;
 import common.finiteautomata.AutomataConverter;
+import common.Ultility;
 
 public class IncrementalVerifier {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -646,4 +647,7 @@ public class IncrementalVerifier {
 		System.out.println("done");
 	    }
     }
+
 }
+
+// vim: tabstop=4

@@ -19,6 +19,7 @@ import verification.IncrementalVerifier;
 import verification.FiniteStateSets;
 import visitor.AllVisitorImpl;
 import visitor.SymmetryProb;
+import common.Ultility;
 import common.VerificationUltility;
 import common.bellmanford.EdgeWeightedDigraph;
 import common.finiteautomata.Automata;
@@ -42,7 +43,10 @@ public class Main {
 
 	String fileName = args[0];
 	SymmetryProb problem = parse(fileName);
+
 	determize(problem);
+
+	writeInputProblem(problem);
 
 	verifyFiniteInstances(problem, problem.getExplicitChecksUntilLength());
 
@@ -138,6 +142,18 @@ public class Main {
 	    finiteStates.verifyInstance(s, problem.getCloseInitStates());
 	}
     }
+	public static void writeInputProblem(SymmetryProb problem) {
+		try {
+			Ultility.writeOut(Ultility.toDot(problem.getI0(), problem.getLabelToIndex()), "automataI0.dot");
+
+			Ultility.writeOut(Ultility.toDot(problem.getF(), problem.getLabelToIndex()), "automatonF.dot");
+			Ultility.writeOut(Ultility.toDot(problem.getPlayer1(), problem.getLabelToIndex()), "transducerP1.dot");
+			Ultility.writeOut(Ultility.toDot(problem.getPlayer2(), problem.getLabelToIndex()), "transducerP2.dot");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 
 // vim: tabstop=4

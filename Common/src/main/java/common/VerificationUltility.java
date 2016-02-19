@@ -29,7 +29,7 @@ public class VerificationUltility {
 	boolean changed = true;
 	while (changed) {
 	    changed = false;
-	    
+
 	    for (int i = 0; i < V; ++i)
 		if (!reachingAccept[i])
 		    for (DirectedEdge edge : automata.adj(i))
@@ -59,7 +59,7 @@ public class VerificationUltility {
 		for(DirectedEdge edge: automata.adj(i))
 		    if (relevantStates.containsKey(edge.to())) {
 			final int newTo = relevantStates.get(edge.to());
-			
+
 			DirectedEdgeWithInputOutput ioEdge = (DirectedEdgeWithInputOutput)edge;
 			dfa.addEdge(new DirectedEdgeWithInputOutput(newFrom, newTo,
 								    edge.weight(),
@@ -74,26 +74,26 @@ public class VerificationUltility {
 	    if (relevantStates.containsKey(s))
 		acceptingDFA.add(relevantStates.get(s));
 	dfa.setAcceptingStates(acceptingDFA);
-		
+
 	return dfa;
     }
 
     public static EdgeWeightedDigraph toDFA2(EdgeWeightedDigraph automata, int numLabels) {
 	Set<Integer> allStatesDFA = new HashSet<Integer>();
 	Map<BitSet, Integer> mapStates = new HashMap<BitSet, Integer>();
-		
+
 	Stack<BitSet> workingStates = new Stack<BitSet>();
 	BitSet initSet = new BitSet();
 	initSet.set(automata.getInitState());
 	epsilonClosure(automata, initSet);
-		
+
 	workingStates.push(initSet);
-		
+
 	//state 0 will be the init state in new DFA
 	int initInDFA = 0;
 	mapStates.put(initSet, initInDFA);
 	allStatesDFA.add(initInDFA);
-		
+
 	List<DirectedEdgeWithInputOutput> edges = new ArrayList<DirectedEdgeWithInputOutput>();
 	BitSet[] targetStates = new BitSet [numLabels * numLabels];
 	for (int i = 0; i < targetStates.length; ++i)
@@ -122,12 +122,12 @@ public class VerificationUltility {
 			targetStates[index] = new BitSet();
 
 			Integer destInDFA = mapStates.get(destsInNFA);
-			
+
 			if(destInDFA == null){
 			    destInDFA = mapStates.size();
 			    mapStates.put(destsInNFA, destInDFA);
 			    allStatesDFA.add(destInDFA);
-							
+
 			    //new
 			    workingStates.push(destsInNFA);
 			}
@@ -140,7 +140,7 @@ public class VerificationUltility {
 
 	EdgeWeightedDigraph dfa = new EdgeWeightedDigraph(allStatesDFA.size());
 	dfa.setInitState(initInDFA);
-		
+
 	//compute accepting states
 	Set<Integer> acceptingDFA = new HashSet<Integer>();
 	for(BitSet statesNFA: mapStates.keySet()){
@@ -154,11 +154,11 @@ public class VerificationUltility {
 	    }
 	}
 	dfa.setAcceptingStates(acceptingDFA);
-		
+
 	for(DirectedEdgeWithInputOutput edge: edges){
 	    dfa.addEdge(edge);
 	}
-		
+
 	//
 	return dfa;
     }
@@ -166,40 +166,40 @@ public class VerificationUltility {
 	public static EdgeWeightedDigraph toDFA(EdgeWeightedDigraph automata, int numLabels){
 		Set<Integer> allStatesDFA = new HashSet<Integer>();
 		Map<Set<Integer>, Integer> mapStates = new HashMap<Set<Integer>, Integer>();
-		
+
 		Stack<Set<Integer>> workingStates = new Stack<Set<Integer>>();
 		Set<Integer> initSet = new HashSet<Integer>();
 		initSet.add(automata.getInitState());
 		initSet = getEpsilonClosure(automata, initSet);
-		
+
 		workingStates.push(initSet);
-		
+
 		//state 0 will be the init state in new DFA
 		int initInDFA = 0;
 		mapStates.put(initSet, initInDFA);
 		allStatesDFA.add(initInDFA);
-		
+
 		List<DirectedEdgeWithInputOutput> edges = new ArrayList<DirectedEdgeWithInputOutput>();
-		
+
 		while(!workingStates.isEmpty()){
 			Set<Integer> statesInNFA = workingStates.pop();
 			int stateInDFA = mapStates.get(statesInNFA);
-			
+
 			for(int input = 0; input < numLabels; input++){
 				for(int output = 0; output < numLabels; output++){
 					Set<Integer> destsInNFA =
 					    getEpsilonClosure(automata,
 							      getDests(automata, statesInNFA,
 								       input, output));
-					
+
 					if(!destsInNFA.isEmpty()){
 						Integer destInDFA = mapStates.get(destsInNFA);
-						
+
 						if(destInDFA == null){
 							destInDFA = mapStates.size();
 							mapStates.put(destsInNFA, destInDFA);
 							allStatesDFA.add(destInDFA);
-							
+
 							//new
 							workingStates.push(destsInNFA);
 						}
@@ -208,10 +208,10 @@ public class VerificationUltility {
 				}
 			}
 		}
-		
+
 		EdgeWeightedDigraph dfa = new EdgeWeightedDigraph(allStatesDFA.size());
 		dfa.setInitState(initInDFA);
-		
+
 		//compute accepting states
 		Set<Integer> acceptingDFA = new HashSet<Integer>();
 		for(Set<Integer> statesNFA: mapStates.keySet()){
@@ -223,33 +223,33 @@ public class VerificationUltility {
 			}
 		}
 		dfa.setAcceptingStates(acceptingDFA);
-		
+
 		for(DirectedEdgeWithInputOutput edge: edges){
 			dfa.addEdge(edge);
 		}
-		
+
 		//
 		return dfa;
 	}
-	
+
 	/**
 	 * Compute epsilon closure from a set of states
 	 */
 	public static Set<Integer> getEpsilonClosure(EdgeWeightedDigraph graph, Set<Integer> fromStates){
 		Set<Integer> result = new HashSet<Integer>();
-		
+
 		Stack<Integer> workingStates = new Stack<Integer>();
 		workingStates.addAll(fromStates);
-		
+
 		boolean [] isVisited = new boolean[graph.V()];
 		for(int fromState: fromStates){
 			isVisited[fromState] = true;
 		}
-		
+
 		while(!workingStates.isEmpty()){
 			int currentState = workingStates.pop();
 			result.add(currentState);
-			
+
 			//add new states to workingState
 			for(DirectedEdge edge: graph.adj(currentState)){
 				DirectedEdgeWithInputOutput tempEdge = (DirectedEdgeWithInputOutput) edge;
@@ -261,22 +261,22 @@ public class VerificationUltility {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
     /**
      * Compute epsilon closure from a set of states
      */
     public static void epsilonClosure(EdgeWeightedDigraph graph, BitSet fromStates){
 	Stack<Integer> workingStates = new Stack<Integer>();
-	
+
 	for (int i = fromStates.nextSetBit(0); i >= 0; i = fromStates.nextSetBit(i+1))
 	    workingStates.add(i);
-		
+
 	while(!workingStates.isEmpty()){
 	    int currentState = workingStates.pop();
-			
+
 	    //add new states to workingState
 	    for(DirectedEdge edge: graph.adj(currentState)){
 		DirectedEdgeWithInputOutput tempEdge = (DirectedEdgeWithInputOutput) edge;
@@ -290,10 +290,10 @@ public class VerificationUltility {
 	    }
 	}
     }
-	
+
 	private static Set<Integer> getDests(EdgeWeightedDigraph graph, Set<Integer> states, int input, int output){
 		Set<Integer> result = new HashSet<Integer>();
-		
+
 		for(int stateIndex: states){
 			Iterable<DirectedEdge> edges = graph.adj(stateIndex);
 			for(DirectedEdge edge: edges){
@@ -303,10 +303,10 @@ public class VerificationUltility {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static boolean isDFA(EdgeWeightedDigraph graph, int numLetters){
 		int numStates = graph.V();
 		for(int i = 0; i < numStates; i++){
@@ -316,7 +316,7 @@ public class VerificationUltility {
 				DirectedEdgeWithInputOutput tempEdge = (DirectedEdgeWithInputOutput) edge;
 				int input = tempEdge.getInput();
 				int output = tempEdge.getOutput();
-				
+
 				if(input == Automata.EPSILON_LABEL || output == Automata.EPSILON_LABEL){
 					return false;
 				}
@@ -328,26 +328,26 @@ public class VerificationUltility {
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	public static EdgeWeightedDigraph makeComplete(EdgeWeightedDigraph transducer, int numLetters){
 		EdgeWeightedDigraph completeTransducer = new EdgeWeightedDigraph(transducer.V() + 1, transducer.getInitState(), new HashSet<Integer>(transducer.getAcceptingStates()));
 		int dummyState = transducer.V();
-		
+
 		for(int i = 0; i < transducer.V(); i++){
 			boolean [][] hasTrans = new boolean[numLetters][numLetters];
 			Iterable<DirectedEdge> edges = transducer.adj(i);
-			
+
 			//copy transition
 			for(DirectedEdge edge: edges){
 				DirectedEdgeWithInputOutput tempEdge = (DirectedEdgeWithInputOutput) edge;
 				hasTrans[tempEdge.getInput()][tempEdge.getOutput()] = true;
-				
+
 				completeTransducer.addEdge(new DirectedEdgeWithInputOutput(tempEdge));
 			}
-			
+
 			//add dummy transition
 			for(int input = 0; input < numLetters; input++){
 				for(int output = 0; output < numLetters; output++){
@@ -357,20 +357,20 @@ public class VerificationUltility {
 				}
 			}
 		}
-		
+
 		//loop at dummy
 		for(int input = 0; input < numLetters; input++){
 			for(int output = 0; output < numLetters; output++){
 				completeTransducer.addEdge(new DirectedEdgeWithInputOutput(dummyState, dummyState, input, output));
 			}
 		}
-		
+
 		return completeTransducer;
 	}
-	
+
 	public static boolean isComplete(EdgeWeightedDigraph transducer, int numLetters){
 		int numStates = transducer.V();
-		
+
 		boolean [][][] hasTrans = new boolean[numStates] [numLetters] [numLetters];
 		for(DirectedEdge edge: transducer.edges()){
 			DirectedEdgeWithInputOutput tempEdge = (DirectedEdgeWithInputOutput) edge;
@@ -384,24 +384,24 @@ public class VerificationUltility {
 				hasTrans[source][input][output] = true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/*
 	 * States are counted from 0
 	 */
 	public static int hash(int state1, int state2, int numStates1) {
 		return state1 + numStates1 * state2;
 	}
-	
+
 	/*
 	 * States are counted from 0
 	 */
 	public static int hash(int state1, int state2, int state3, int numStates1, int numStates2){
 		return state1 + numStates1 * (state2 + numStates2 * state3);
 	}
-	
+
 	/*
 	 * States are counted from 0
 	 */
@@ -409,8 +409,8 @@ public class VerificationUltility {
 			   int numStates1, int numStates2, int numStates3){
 	return state1 + numStates1 * (state2 + numStates2 * (state3 + numStates3 * state4));
     }
-	
-		
+
+
 	/**
 	 * Convert accepting states to based 0.
 	 * @param acceptingStates
@@ -424,22 +424,22 @@ public class VerificationUltility {
 		}
 		return newAccept;
 	}
-	
+
 	public static Automata getUnion(Automata B, Automata F){
 		int numStatesB = B.getStates().length;
 		int numStatesF = F.getStates().length;
-		
+
 		int numStatesBF = 1 + numStatesB + numStatesF;
 		Automata result = new Automata(0, numStatesBF, B.getNumLabels());
-		
+
 		int offsetStateB = 1;
 		int offsetStateF = offsetStateB + numStatesB;
-		
+
 		Set<Integer> acceptings = new HashSet<Integer>();
 		for(int acceptB: B.getAcceptingStates()){
 			acceptings.add(acceptB + offsetStateB);
 		}
-		
+
 		for(int acceptF: F.getAcceptingStates()){
 			acceptings.add(acceptF + offsetStateF);
 		}
@@ -449,32 +449,32 @@ public class VerificationUltility {
 		    acceptings.add(0);
 
 		result.setAcceptingStates(acceptings);
-		
+
 		//add empty transition from new init to 2 inits of B, F
                 //		result.addTrans(0, Automata.EPSILON_LABEL, B.getInitState() + offsetStateB);
                 //		result.addTrans(0, Automata.EPSILON_LABEL, F.getInitState() + offsetStateF);
-		
+
 		List<DirectedEdgeWithInputOutput> edgesB = getEdges(B);
 		for(DirectedEdgeWithInputOutput edgeB: edgesB){
 			result.addTrans(edgeB.from() + offsetStateB, edgeB.getInput(), edgeB.to() + offsetStateB);
                         if (edgeB.from() == B.getInitState())
                             result.addTrans(0, edgeB.getInput(), edgeB.to() + offsetStateB);
 		}
-		
+
 		List<DirectedEdgeWithInputOutput> edgesF = getEdges(F);
 		for(DirectedEdgeWithInputOutput edgeF: edgesF){
 			result.addTrans(edgeF.from() + offsetStateF, edgeF.getInput(), edgeF.to() + offsetStateF);
                         if (edgeF.from() == F.getInitState())
                             result.addTrans(0, edgeF.getInput(), edgeF.to() + offsetStateF);
 		}
-		
+
 		return result;
-		
+
 	}
 
 	public static Automata getUniversalAutomaton(int numLetters) {
 	    Automata result = new Automata(0, 1, numLetters);
-	    
+
 	    Set<Integer> acceptings = new HashSet<Integer>();
 	    acceptings.add(0);
 	    result.setAcceptingStates(acceptings);
@@ -488,21 +488,21 @@ public class VerificationUltility {
 	public static Automata getIntersection(Automata B, Automata F){
 	    int numStatesB = B.getStates().length;
 	    int numStatesF = F.getStates().length;
-		
+
 	    int numStatesBF = numStatesB * numStatesF;
 	    Automata result = new Automata(hash(B.getInitState(), F.getInitState(), numStatesB),
 					   numStatesBF, B.getNumLabels());
-	    
+
 	    Set<Integer> acceptings = new HashSet<Integer>();
 	    for(int acceptB: B.getAcceptingStates())
 		for(int acceptF: F.getAcceptingStates())
 		    acceptings.add(hash(acceptB, acceptF, numStatesB));
-		
+
 	    result.setAcceptingStates(acceptings);
-	    
+
 	    List<DirectedEdgeWithInputOutput> edgesB = getEdges(B);
 	    List<DirectedEdgeWithInputOutput> edgesF = getEdges(F);
-	    
+
 	    for (DirectedEdgeWithInputOutput edgeB : edgesB)
 		for (DirectedEdgeWithInputOutput edgeF : edgesF)
 		    if (edgeB.getInput() == edgeF.getInput())
@@ -560,7 +560,7 @@ public class VerificationUltility {
 		    } else {
 			destsB = statesB[state.b].getDest(l);
 		    }
-			
+
 		    for (int destA : stateA.getDest(l))
 			for (int destB : destsB) {
 			    final IntPair dest = new IntPair (destA, destB);
@@ -593,12 +593,12 @@ public class VerificationUltility {
 		     acceptingB.contains(state.b)))
 		    acceptings.add(i);
 	    }
-		
+
 	    result.setAcceptingStates(acceptings);
 
 	    return result;
 	}
-	
+
     public static Automata getImage(Automata from,
 				    EdgeWeightedDigraph function) {
 	final int numFrom = from.getStates().length;
@@ -627,14 +627,14 @@ public class VerificationUltility {
 				    ioEdge.getOutput(),
 				    VerificationUltility.hash(to1, ioEdge.to(), numFrom));
 	}
-	
+
 	return result;
     }
 
 
 	public static List<DirectedEdgeWithInputOutput> getEdges(Automata automata){
 		List<DirectedEdgeWithInputOutput> result = new ArrayList<DirectedEdgeWithInputOutput>();
-		
+
 		int dummyOutput = -1;
 		for(State state: automata.getStates()){
 			for(int label = 0; label < automata.getNumLabels(); label++){
@@ -645,10 +645,10 @@ public class VerificationUltility {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/*
 	 * counterExample[i] contains labels i.th of words
 	 * return list of words
@@ -657,18 +657,20 @@ public class VerificationUltility {
 		if(counterExample == null){
 			return null;
 		}
-		
+
 		List<List<Integer>> result = new ArrayList<List<Integer>>();
 		for(int i = 0; i < NUM_WORDS; i++){
 			result.add(new ArrayList<Integer>());
 		}
-		
+
 		for(int[] tripple: counterExample){
 			for(int i = 0; i < NUM_WORDS; i++){
 				result.get(i).add(tripple[i]);
 			}
 		}
-		
+
 		return result;
 	}
 }
+
+// vim: ts=4

@@ -339,7 +339,7 @@ public class ReachabilityChecking {
 				System.out.println(labelToIndex);
 
 				//write to dot
-				//writeToDot(automatonB, transducer);
+				writeToDot(automatonB, transducer);
 			}
 
 			break;
@@ -551,9 +551,9 @@ public class ReachabilityChecking {
 	private void writeToDot(Automata automatonB,
 			EdgeWeightedDigraph transducer) {
 		try {
-			Ultility.writeOut(Ultility.toDot(automatonB, labelToIndex), "input/automataB.dot");
+			Ultility.writeOut(Ultility.toDot(automatonB, labelToIndex), "automataB.dot");
 
-			Ultility.writeOut(Ultility.toDot(transducer, labelToIndex), "input/transducer.dot");
+			Ultility.writeOut(Ultility.toDot(transducer, labelToIndex), "transducer.dot");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
