@@ -129,7 +129,8 @@ P1 {
     accepting: s1, s2;
 }
 
-// OL: the process; now also decrements the value of all clocks by one (if possible)
+// OL: the process; now also decrements the value of clocks of all processes
+// with at token by one (if possible)
 P2 {
     init: sinit;
 
@@ -140,7 +141,16 @@ P2 {
     // ///////
     //  NO wraparound
     // ///////
-    s0 -> t1 N/N;
+
+    // no-token
+    s0 -> t15 N/N;
+    t15 -> t15 1/1;
+    t15 -> t15 0/0;
+    t15 -> s0 1/1;
+    t15 -> s0 0/0;
+
+
+    // token
     s0 -> t1 T/T;
 
     // decrement the clock
@@ -172,7 +182,13 @@ P2 {
     // Pass token to right from s2
     s2 -> t3 N/T;
 
-    s1 -> t3 N/N;
+    // no-token
+    s1  -> t17 N/N;
+    t17 -> t17 1/1;
+    t17 -> t17 0/0;
+    t17 -> s1 1/1;
+    t17 -> s1 0/0;
+
     s1 -> t3 T/T;
 
     // ///////
@@ -190,7 +206,14 @@ P2 {
     t10 -> t10 0/0;
     t10 -> s4  0/0;
 
-    s4 -> t11 N/N;
+    // no-token
+    s4  -> t19 N/N;
+    t19 -> t19 1/1;
+    t19 -> t19 0/0;
+    t19 -> s4  1/1;
+    t19 -> s4  0/0;
+
+    // token
     s4 -> t11 T/T;
 
     // decrement the clock
