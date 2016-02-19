@@ -159,25 +159,13 @@ P2 {
     t8 -> s2 0/0;
 
     // Merge tokens
-    s2 -> t9 T/T;
+    s2 -> t3 T/T;
 
     // Pass token to right from s2
-    s2 -> t9 N/T;
+    s2 -> t3 N/T;
 
-    // decrement the clock
-    t9 -> t9 1/1;
-    t9 -> t10 1/0;
-    t10 -> t10 0/0;
-    t10 -> s1 0/0;
-
-    s1 -> t5 N/N;
-    s1 -> t5 T/T;
-
-    // decrement the clock
-    t5 -> t5 1/1;
-    t5 -> t6 1/0;
-    t6 -> t6 0/0;
-    t6 -> s1 0/0;
+    s1 -> t3 N/N;
+    s1 -> t3 T/T;
 
     accepting: s1;
 }
@@ -185,3 +173,4 @@ P2 {
 transducerStateGuessing: 1 .. 10;
 automatonStateGuessing: 0 .. 4;
 
+monolithicWitness;
