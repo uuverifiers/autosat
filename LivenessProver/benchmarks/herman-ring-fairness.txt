@@ -116,12 +116,17 @@ P1 {
     t2 -> s1 1/0;
 
 
-    s1 -> s1 N/N;
-    s1 -> s1 T/T;
-    s1 -> s1 0/0;
-    s1 -> s1 1/1;
+    // mark the end of the sub-word
+    s1 -> s2 N/N;
+    s1 -> s2 T/T;
 
-    accepting: s1;
+    // copy everything
+    s2 -> s2 N/N;
+    s2 -> s2 T/T;
+    s2 -> s2 0/0;
+    s2 -> s2 1/1;
+
+    accepting: s1, s2;
 }
 
 // OL: the process; now also decrements the value of all clocks by one (if possible)
@@ -206,7 +211,7 @@ P2 {
     accepting: s1, s5;
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 0 .. 4;
+transducerStateGuessing: 1 .. 12;
+automatonStateGuessing: 0 .. 10;
 
 monolithicWitness;
