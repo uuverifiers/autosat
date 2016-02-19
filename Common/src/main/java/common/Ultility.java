@@ -85,9 +85,19 @@ public class Ultility {
 
 		for(DirectedEdge edge: transducer.edges()){
 			DirectedEdgeWithInputOutput tempEdge = (DirectedEdgeWithInputOutput) edge;
-			String inputLabel = getLabel(transducerLabelToIndex, tempEdge.getInput());
-			String outputLabel = getLabel(transducerLabelToIndex, tempEdge.getOutput());
-			result.append(tempEdge.from() + " -> " + tempEdge.to() + " [ label = \"" + inputLabel + "/" + outputLabel + "\" ];");
+			String edgeLab;
+			if ((tempEdge.getInput() == common.finiteautomata.Automata.EPSILON_LABEL) &&
+				(tempEdge.getOutput() == common.finiteautomata.Automata.EPSILON_LABEL)) {
+				edgeLab = "";
+			}
+			else
+			{
+				String inputLabel = getLabel(transducerLabelToIndex, tempEdge.getInput());
+				String outputLabel = getLabel(transducerLabelToIndex, tempEdge.getOutput());
+				edgeLab = inputLabel + "/" + outputLabel;
+			}
+
+			result.append(tempEdge.from() + " -> " + tempEdge.to() + " [ label = \"" + edgeLab + "\" ];");
 			result.append(NEW_LINE);
 		}
 
