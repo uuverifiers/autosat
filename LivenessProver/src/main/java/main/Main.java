@@ -44,9 +44,9 @@ public class Main {
 	String fileName = args[0];
 	SymmetryProb problem = parse(fileName);
 
-	determize(problem);
-
 	writeInputProblem(problem);
+
+	determize(problem);
 
 	verifyFiniteInstances(problem, problem.getExplicitChecksUntilLength());
 

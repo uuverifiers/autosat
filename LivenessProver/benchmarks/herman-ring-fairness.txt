@@ -215,3 +215,5 @@ transducerStateGuessing: 1 .. 12;
 automatonStateGuessing: 0 .. 10;
 
 monolithicWitness;
+
+explicitChecksUntilLength: 6;
