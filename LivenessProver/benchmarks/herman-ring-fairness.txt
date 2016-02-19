@@ -116,22 +116,25 @@ P1 {
     t2 -> s1 1/0;
 
 
-    // To make sure the chosen process is not last
-    s1 -> s2 T/T;
-    s1 -> s2 N/N;
+    s1 -> s1 N/N;
+    s1 -> s1 T/T;
+    s1 -> s1 0/0;
+    s1 -> s1 1/1;
 
-    s2 -> s2 N/N;
-    s2 -> s2 T/T;
-    s2 -> s2 0/0;
-    s2 -> s2 1/1;
-
-    accepting: s2;
+    accepting: s1;
 }
 
 // OL: the process; now also decrements the value of all clocks by one (if possible)
 P2 {
-    init: s0;
+    init: sinit;
 
+    // nondeterministic choice whether we wraparound or don't
+    sinit -> s0;
+    sinit -> s3;
+
+    // ///////
+    //  NO wraparound
+    // ///////
     s0 -> t1 N/N;
     s0 -> t1 T/T;
 
@@ -167,7 +170,40 @@ P2 {
     s1 -> t3 N/N;
     s1 -> t3 T/T;
 
-    accepting: s1;
+    // ///////
+    // wraparound
+    // ///////
+
+    // receive from the right-most one
+    s3 -> t9 N/T;
+    // merge
+    s3 -> t9 T/T;
+
+    // decrement the clock
+    t9  -> t9  1/1;
+    t9  -> t10 1/0;
+    t10 -> t10 0/0;
+    t10 -> s4  0/0;
+
+    s4 -> t11 N/N;
+    s4 -> t11 T/T;
+
+    // decrement the clock
+    t11 -> t11 1/1;
+    t11 -> t12 1/0;
+    t12 -> t12 0/0;
+    t12 -> s4  0/0;
+
+    // the right-most one passes right
+    s4 -> t13 T_/N;
+
+    // decrement the clock
+    t13 -> t13 1/1;
+    t13 -> t14 1/0;
+    t14 -> t14 0/0;
+    t14 -> s5  0/0;
+
+    accepting: s1, s5;
 }
 
 transducerStateGuessing: 1 .. 10;
