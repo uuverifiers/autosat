@@ -1,0 +1,247 @@
+// herman-ring-even-fair.txt: this should be wrong
+// This an adaptation of Herman's protocol in a ring with fairness assumption.
+// Version which annihilates both tokens if a process is holding one and
+// receives another. Should not work for an even number of processes---the
+// number of tokens in the system is always even.
+//
+// N - no token
+// T - token
+
+// OL: modified from 'herman-linear.txt' to incorporate fairness:
+//   The encoding is changed in the following way: now, a process state is
+// represented not by a symbol 'a', but by a sub-word of the form "axxx...x"
+// where 'a' is a symbol from the process state alphabet (as previously) and
+// "xxx...x" is a sub-word over 1*0* representing the ``clock'' of the process,
+// where the number of '1's represents the value of the clock
+//   Added states are denoted as 't'.
+
+// Configurations with an even number of processes and at least one token
+// OL: now also initializes the clock sub-word
+I0 {
+    init: s0;
+
+    // non-token process state
+    s0 -> t1 T;
+
+    // initialize clock
+    t1 -> t1 1;
+    t1 -> t2 1;
+    t2 -> t2 0;
+    t2 -> s1 0;
+
+    // token process state (first, i.e. odd)
+    s1 -> t5 T;
+
+    // initialize clock
+    t5 -> t5 1;
+    t5 -> t6 1;
+    t6 -> t6 0;
+    t6 -> s2 0;
+
+    accepting: s2;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+// OL: extended for clocks + now also detects if the value of some clock is 0
+// (to force fairness)
+F {
+    init: t0;
+
+    // new initial state with epsilon transitions
+    t0 -> s0;
+    t0 -> t1;
+
+    // non-token
+    s0 -> s0 N;
+    s0 -> s0 0;
+    s0 -> s0 1;
+
+    // exactly one token
+    s0 -> s1 T;
+
+    // non-token
+    s1 -> s1 N;
+    s1 -> s1 0;
+    s1 -> s1 1;
+
+    // the part enforcing fairness
+
+    // arbitrary values
+    t1 -> t1 N;
+    t1 -> t1 T;
+    t1 -> t1 0;
+    t1 -> t1 1;
+
+    // a process with clocks at zero
+    t1 -> t2 N;
+    t1 -> t2 T;
+    t2 -> t3 0;
+
+    // arbitrary value again
+    t3 -> t3 N;
+    t3 -> t3 T;
+    t3 -> t3 0;
+    t3 -> t3 1;
+
+    accepting: s1, t3;
+    // accepting: s1;
+}
+
+// OL: the system; upon choosing a process, it also randomly sets its clock
+// value
+P1 {
+    init: si;
+
+    si -> s0;
+    si -> sii;
+
+    sii -> sii N/N;
+    sii -> sii 0/0;
+    sii -> sii 1/1;
+
+    //
+
+    s0 -> s0 N/N;
+    s0 -> s0 T/T;
+    s0 -> s0 0/0;
+    s0 -> s0 1/1;
+
+    s0 -> t1 T/T_;
+
+    // randomly set the clock value of the clock
+    t1 -> t1 0/1;
+    t1 -> t1 1/1;
+    t1 -> t2 0/1;
+    t1 -> t2 1/1;
+    t2 -> t2 0/0;
+    t2 -> t2 1/0;
+    t2 -> s1 0/0;
+    t2 -> s1 1/0;
+
+
+    // mark the end of the sub-word
+    s1 -> s2 N/N;
+    s1 -> s2 T/T;
+
+    // copy everything
+    s2 -> s2 N/N;
+    s2 -> s2 T/T;
+    s2 -> s2 0/0;
+    s2 -> s2 1/1;
+
+    accepting: s1, s2, sii;
+}
+
+// OL: the process; now also decrements the value of clocks of all processes
+// with at token by one (if possible)
+P2 {
+    init: sinit;
+
+    // nondeterministic choice whether we wraparound or don't
+    sinit -> s0;
+    sinit -> s3;
+
+    // ///////
+    //  NO wraparound
+    // ///////
+
+    // no-token
+    s0 -> t15 N/N;
+    t15 -> t15 1/1;
+    t15 -> t15 0/0;
+    t15 -> s0 1/1;
+    t15 -> s0 0/0;
+
+
+    // token
+    s0 -> t1 T/T;
+
+    // decrement the clock
+    t1 -> t1 1/1;
+    t1 -> t2 1/0;
+    t2 -> t2 0/0;
+    t2 -> s0 0/0;
+
+    // keep
+    s0 -> t3 T_/T;
+    // pass to right
+    s0 -> t7 T_/N;
+
+    // decrement the clock
+    t3 -> t3 1/1;
+    t3 -> t4 1/0;
+    t4 -> t4 0/0;
+    t4 -> s1 0/0;
+
+    // decrement the clock
+    t7 -> t7 1/1;
+    t7 -> t8 1/0;
+    t8 -> t8 0/0;
+    t8 -> s2 0/0;
+
+    // kill token
+    s2 -> t3 T/N;
+
+    // Pass token to right from s2
+    s2 -> t3 N/T;
+
+    // no-token
+    s1  -> t17 N/N;
+    t17 -> t17 1/1;
+    t17 -> t17 0/0;
+    t17 -> s1 1/1;
+    t17 -> s1 0/0;
+
+    s1 -> t3 T/T;
+
+    // ///////
+    // wraparound
+    // ///////
+
+    // receive from the right-most one
+    s3 -> t9 N/T;
+    // kill
+    s3 -> t9 T/N;
+
+    // decrement the clock
+    t9  -> t9  1/1;
+    t9  -> t10 1/0;
+    t10 -> t10 0/0;
+    t10 -> s4  0/0;
+
+    // no-token
+    s4  -> t19 N/N;
+    t19 -> t19 1/1;
+    t19 -> t19 0/0;
+    t19 -> s4  1/1;
+    t19 -> s4  0/0;
+
+    // token
+    s4 -> t11 T/T;
+
+    // decrement the clock
+    t11 -> t11 1/1;
+    t11 -> t12 1/0;
+    t12 -> t12 0/0;
+    t12 -> s4  0/0;
+
+    // the right-most one passes right
+    s4 -> t13 T_/N;
+
+    // decrement the clock
+    t13 -> t13 1/1;
+    t13 -> t14 1/0;
+    t14 -> t14 0/0;
+    t14 -> s5  0/0;
+
+    accepting: s1, s5;
+}
+
+transducerStateGuessing: 1 .. 12;
+automatonStateGuessing: 0 .. 10;
+
+monolithicWitness;
+
+explicitChecksUntilLength: 6;
