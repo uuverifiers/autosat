@@ -1,8 +1,9 @@
 // herman-ring-odd-fair.txt
-// This an adaptation of Herman's protocol in a linear array. The last
-// (rightmost) process is never enabled, even with a token.
+// This an adaptation of Herman's protocol in a ring with fairness assumption.
+// Version which annihilates both tokens if a process is holding one and
+// receives another. Works for an odd number of processes.
 //
-// Liveness holds under arbitrary schedulers here (unlike the ring case).
+// Liveness holds under fair schedulers here.
 //
 // N - no token
 // T - token
