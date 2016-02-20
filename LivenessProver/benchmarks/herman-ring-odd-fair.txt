@@ -1,7 +1,7 @@
 // herman-ring-odd-fair.txt
 // This an adaptation of Herman's protocol in a ring with fairness assumption.
 // Version which annihilates both tokens if a process is holding one and
-// receives another. Works for an odd number of processes.
+// receives another. Works for an odd number of tokens.
 //
 // Liveness holds under fair schedulers here.
 //
@@ -16,54 +16,48 @@
 // where the number of '1's represents the value of the clock
 //   Added states are denoted as 't'.
 
-// Configurations with an odd number of processes and at least one token
+// Configurations with an odd number of tokens
 // OL: now also initializes the clock sub-word
 I0 {
     init: s0;
 
-    // arbitrary process state
+    // non-token process state
     s0 -> t1 N;
-    s0 -> t1 T;
 
     // initialize clock
     t1 -> t1 1;
     t1 -> t2 1;
     t2 -> t2 0;
-    t2 -> s1 0;
+    t2 -> s0 0;
 
-    s1 -> t5 N;
-    s1 -> t5 T;
+    // token process state (first, i.e. odd)
+    s0 -> t5 T;
 
     // initialize clock
     t5 -> t5 1;
     t5 -> t6 1;
     t6 -> t6 0;
-    t6 -> s0 0;
+    t6 -> s1 0;
 
-    // at least one token
-    s0 -> t3 T;
+    // non-token again
+    s1 -> t5 N;
+
+    // even token
     s1 -> t7 T;
-
-    // initialize clock
-    t3 -> t3 1;
-    t3 -> t4 1;
-    t4 -> t4 0;
-    t4 -> s2 0;
 
     // initialize clock
     t7 -> t7 1;
     t7 -> t8 1;
     t8 -> t8 0;
-    t8 -> s3 0;
+    t8 -> s2 0;
 
-    // arbitrary process state
+    // non-token process state
     s2 -> t7 N;
-    s2 -> t7 T;
 
-    s3 -> t3 N;
-    s3 -> t3 T;
+    // odd token
+    s2 -> t5 T;
 
-    accepting: s2;
+    accepting: s1;
 }
 
 closedUnderTransitions;
