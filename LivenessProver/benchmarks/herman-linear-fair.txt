@@ -1,4 +1,4 @@
-// herman-linear-fairness.txt
+// herman-linear-fair.txt
 // This an adaptation of Herman's protocol in a linear array. The last
 // (rightmost) process is never enabled, even with a token.
 //
