@@ -1,0 +1,90 @@
+// herman-linear.txt
+// This an adaptation of Herman's protocol in a ring.
+//
+// Liveness holds under (weakly) fair schedulers.
+//
+// N - no token
+// T - token
+
+// Configurations with at least one token
+I0 {
+    init: s0;
+
+    s0 -> s0 N;
+    s0 -> s0 T;
+
+    s0 -> s1 T;
+
+    s1 -> s1 N;
+    s1 -> s1 T;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+F {
+    init: s0;
+
+    s0 -> s0 N;
+
+    s0 -> s1 T;
+
+    s1 -> s1 N;
+
+    accepting: s1;
+}
+
+P1 {
+    init: s0;
+
+    s0 -> s0 N/N;
+    s0 -> s0 T/T;
+
+    s0 -> s1 T/T_;
+
+    s1 -> s1 N/N;
+    s1 -> s1 T/T;
+
+    accepting: s1;
+}
+
+P2 {
+    init: sinit;
+
+    // normal passing
+    sinit -> s0;
+    // wraparound
+    sinit -> s3;
+
+    s0 -> s0 N/N;
+    s0 -> s0 T/T;
+
+    // keep
+    s0 -> s1 T_/T;
+    // pass to right
+    s0 -> s2 T_/N;
+
+    // Merge tokens
+    s2 -> s1 T/T;
+    // Pass token to right from s2
+    s2 -> s1 N/T;
+
+    s1 -> s1 N/N;
+    s1 -> s1 T/T;
+
+    s3 -> s4 N/T;
+    s3 -> s4 T/T;
+
+    s4 -> s4 N/N;
+    s4 -> s4 T/T;
+
+    s4 -> s5 T_/N;
+
+    accepting: s1, s5;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
