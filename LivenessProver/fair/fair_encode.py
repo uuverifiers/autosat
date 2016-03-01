@@ -11,6 +11,7 @@ class Problem:
     '''Represents a liveness problem'''
     def __init__(self):
         self.alphabet = set()
+        self.options = []
 
 
 # global instance of a problem
@@ -145,6 +146,11 @@ reEpsTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\
 # regex for start of automaton definition
 reAutDefStart = re.compile(r'^(?P<autname>[a-zA-Z0-9]+)\ +\{$')
 
+# regex for an option without a parameter
+reOptionNoParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+)\ *;$')
+
+# regex for an option with a parameter
+reOptionWithParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+:.+)\ *;$')
 
 # symbols for encoding counters
 ZERO = '0'
@@ -348,20 +354,24 @@ Automaton class.  Modifies it.
             raise Exception("Syntax error: " + line)
 
 
-def processTopFile(it, output):
-    '''processTopFile(it, output)
+def processTopFile(it):
+    '''processTopFile(it)
 
-Processes top file structures in a file.  Modifies it and output.
+Processes top file structures in a file.  Modifies it.
 '''
     for line in it:
         if (line[0:2] == "//"): # comments
-            output.append(line)
+            pass
         elif (line == ""): # empty string
-            output.append(line)
-        elif (re.match(r'^[a-zA-Z0-9]+;$', line)): # option
-            output.append(line)
-        elif (re.match(r'^[a-zA-Z0-9]+:.+;$', line)): # option with parameter
-            output.append(line)
+            pass
+        elif (reOptionNoParam.match(line)): # option
+            match = reOptionNoParam.match(line)
+            assert match is not None
+            problem.options.append(match.group('option'))
+        elif (reOptionWithParam.match(line)): # option with parameter
+            match = reOptionWithParam.match(line)
+            assert match is not None
+            problem.options.append(match.group('option'))
         elif (reAutDefStart.match(line)): # beginning of an automaton
             name = reAutDefStart.match(line).group('autname')
             if name == "I0": # aut for initial configurations
@@ -378,6 +388,7 @@ Processes top file structures in a file.  Modifies it and output.
             raise Exception("Syntax error: " + line)
 
 
+###############################################################################
 def processLines(inlines):
     '''processLines([inline]) -> [outline]
 
@@ -388,16 +399,24 @@ Process input lines into output lines, adding fairness into the system
 
     # we need to load the whole file first to collect all symbols in the
     # alphabet!
-    processTopFile(it, outlines)
+    processTopFile(it)
 
     problem.fairInit = autInitToFair(problem.autInit)
     problem.fairFinal = autFinalToFair(problem.autFinal)
     problem.fairPlay1 = autPlay1ToFair(problem.autPlay1)
     problem.fairPlay2 = autPlay2ToFair(problem.autPlay2)
 
-    # output all automata
+    outlines.append("I0 {\n")
+    outlines.append(str(problem.fairInit))
+    outlines.append("}\n\n")
+
+    CLOSED_UNDER_TRANSITIONS = "closedUnderTransitions"
+    if CLOSED_UNDER_TRANSITIONS in problem.options:
+        outlines.append(CLOSED_UNDER_TRANSITIONS + ";\n")
+        problem.options.remove(CLOSED_UNDER_TRANSITIONS)
+
+    # output all other automata
     for (name, aut) in [
-      ("I0", problem.fairInit),
       ("F", problem.fairFinal),
       ("P1", problem.fairPlay1),
       ("P2", problem.fairPlay2)]:
@@ -405,9 +424,13 @@ Process input lines into output lines, adding fairness into the system
         outlines.append(str(aut))
         outlines.append("}\n\n")
 
+    for option in problem.options:
+        outlines.append(option + ";\n")
+
     return outlines
 
 
+###############################################################################
 if __name__ == '__main__':
     options = parseOptions()
     # input
