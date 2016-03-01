@@ -26,23 +26,23 @@ class Automaton:
 
 Constructor.
 '''
-        self.startStates = None
+        self.startState = None
         self.acceptStates = None
         self.transitions = []
         self.epsTransitions = []
 
 
     ###########################################
-    def processStartStates(self, line):
-        '''processStartStates(line)
+    def processStartState(self, line):
+        '''processStartState(line)
 
-Parses a line with starting states of an automaton.
+Parses a line with the starting state of an automaton.
 '''
-        match = reStartStates.match(line)
+        match = reStartState.match(line)
         assert match is not None
-        if self.startStates is not None:
-            raise Exception("Defining starting states multiple times: " + line)
-        self.startStates = match.group('states')
+        if self.startState is not None:
+            raise Exception("Defining starting state multiple times: " + line)
+        self.startState = match.group('state')
 
 
     ###########################################
@@ -69,9 +69,9 @@ Processes an epsilon transition on line.
 
     ###########################################
     def processTrans(self, line):
-        '''processAutTrans(line)
+        '''processTrans(line)
 
-Processes an automaton transition on line.
+Processes automaton transition from line.
 '''
         if reAutTrans.match(line):
             match = reAutTrans.match(line)
@@ -107,7 +107,7 @@ Processes an automaton transition on line.
 Transforms automaton into a string.
 '''
         output = ""
-        output += "init: " + self.startStates + ";\n"
+        output += "init: " + self.startState + ";\n"
 
         for trans in self.epsTransitions:
             output += trans + "\n"
@@ -128,10 +128,10 @@ Transforms automaton into a string.
 ##############################################################################
 
 # regex for matching start states
-reStartStates = re.compile(r'^init:(?P<states>.+);$')
+reStartState = re.compile(r'^init:\ *(?P<state>[a-zA-Z0-9_]+);$')
 
 # regex for matching accepting states
-reAcceptStates = re.compile(r'^accepting:(?P<states>.+);$')
+reAcceptStates = re.compile(r'^accepting:\ *(?P<states>.+);$')
 
 # regex for matching automaton transitions
 reAutTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<symbol>[a-zA-Z_]+)\ *;$');
@@ -151,6 +151,7 @@ ZERO = '0'
 ONE = '1'
 
 # special states
+FINAL_NEW_PRE_INIT = "XX'pre_init"
 FINAL_NEW_INIT = "XX'init"
 FINAL_NEW_ZERO = "XX'zero"
 FINAL_NEW_ACCEPT = "XX'accept"
@@ -178,7 +179,7 @@ Encodes fairness into an automaton representing initial configurations of
 a system.
 '''
     output = Automaton()
-    output.startStates = aut.startStates
+    output.startState = aut.startState
     output.acceptStates = aut.acceptStates
     output.epsTransitions = aut.epsTransitions
 
@@ -199,6 +200,7 @@ a system.
     return output
 
 
+###############################################################################
 def autFinalToFair(aut):
     '''autFinalToFair(aut) -> Automaton
 
@@ -206,9 +208,11 @@ Encodes fairness into an automaton representing final configurations of
 a system.
 '''
     output = Automaton()
-    output.startStates = aut.startStates + ", " + FINAL_NEW_INIT
+    output.startState = FINAL_NEW_PRE_INIT
     output.acceptStates = aut.acceptStates + ", " + FINAL_NEW_ACCEPT
     output.epsTransitions = aut.epsTransitions
+    output.epsTransitions.append(FINAL_NEW_PRE_INIT + " -> " + aut.startState + ";")
+    output.epsTransitions.append(FINAL_NEW_PRE_INIT + " -> " + FINAL_NEW_INIT + ";")
 
     for trans in aut.transitions:
         assert len(trans) == 3
@@ -239,6 +243,83 @@ a system.
     return output
 
 
+###############################################################################
+def autPlay1ToFair(aut):
+    '''autPlay1ToFair(aut) -> Automaton
+
+Encodes fairness into aut for Player 1.
+'''
+    output = Automaton()
+    output.startState = aut.startState
+    output.acceptStates = aut.acceptStates
+    output.epsTransitions = aut.epsTransitions
+
+    for trans in aut.transitions:
+        assert len(trans) == 4
+        src = trans[0]
+        tgt = trans[1]
+        fstSymbol = trans[2]
+        sndSymbol = trans[3]
+        copyState = tgt + "'copy"
+        oneState = tgt + "'one"
+        zeroState = tgt + "'zero"
+
+        if (fstSymbol == sndSymbol): # no rewrite
+            output.transitions.append((src, copyState, fstSymbol, sndSymbol))
+            output.transitions.append((copyState, copyState, ONE, ONE))
+            output.transitions.append((copyState, copyState, ZERO, ZERO))
+            output.transitions.append((copyState, tgt, ZERO, ZERO))
+        else: # Player 1 selects a process
+            assert fstSymbol != sndSymbol
+            output.transitions.append((src, oneState, fstSymbol, sndSymbol))
+
+            # create 1's
+            output.transitions.append((oneState, oneState, ZERO, ONE))
+            output.transitions.append((oneState, oneState, ONE, ONE))
+            output.transitions.append((oneState, zeroState, ZERO, ONE))
+            output.transitions.append((oneState, zeroState, ONE, ONE))
+
+            # create 0's
+            output.transitions.append((zeroState, zeroState, ZERO, ZERO))
+            output.transitions.append((zeroState, zeroState, ONE, ZERO))
+            output.transitions.append((zeroState, tgt, ZERO, ZERO))
+            output.transitions.append((zeroState, tgt, ONE, ZERO))
+
+    return output
+
+
+###############################################################################
+def autPlay2ToFair(aut):
+    '''autPlay2ToFair(aut) -> Automaton
+
+Encodes fairness into aut for Player 2.
+'''
+    output = Automaton()
+    output.startState = aut.startState
+    output.acceptStates = aut.acceptStates
+    output.epsTransitions = aut.epsTransitions
+
+    for trans in aut.transitions:
+        assert len(trans) == 4
+        src = trans[0]
+        tgt = trans[1]
+        fstSymbol = trans[2]
+        sndSymbol = trans[3]
+        oneState = tgt + "'one"
+        zeroState = tgt + "'zero"
+
+        output.transitions.append((src, oneState, fstSymbol, sndSymbol))
+
+        # decrement!
+        output.transitions.append((oneState, oneState, ONE, ONE))
+        output.transitions.append((oneState, zeroState, ONE, ZERO))
+        output.transitions.append((zeroState, zeroState, ZERO, ZERO))
+        output.transitions.append((zeroState, tgt, ZERO, ZERO))
+
+    return output
+
+
+###############################################################################
 def parseAut(it):
     '''parseAut(it) -> Automaton
 
@@ -255,8 +336,8 @@ Automaton class.  Modifies it.
             pass
         elif (line == ""): # empty string
             pass
-        elif (reStartStates.match(line)): # start states
-            output.processStartStates(line)
+        elif (reStartState.match(line)): # start states
+            output.processStartState(line)
         elif (reAcceptStates.match(line)): # accepting states
             output.processAcceptStates(line)
         elif (reEpsTrans.match(line)): # epsilon transition
@@ -287,14 +368,14 @@ Processes top file structures in a file.  Modifies it and output.
                 problem.autInit = parseAut(it)
             elif name == "F": # aut for final configurations
                 problem.autFinal = parseAut(it)
-            elif name == "P1": # aut for process 1
-                problem.autProc1 = parseAut(it)
-            elif name == "P2": # aut for process 2
-                problem.autProc2 = parseAut(it)
+            elif name == "P1": # aut for Player 1
+                problem.autPlay1 = parseAut(it)
+            elif name == "P2": # aut for Player 2
+                problem.autPlay2 = parseAut(it)
             else:
-                raise Exception("Invalid automaton name")
+                raise Exception("Invalid automaton name: " + name)
         else:
-            output.append("*****" + line)
+            raise Exception("Syntax error: " + line)
 
 
 def processLines(inlines):
@@ -311,15 +392,15 @@ Process input lines into output lines, adding fairness into the system
 
     problem.fairInit = autInitToFair(problem.autInit)
     problem.fairFinal = autFinalToFair(problem.autFinal)
-    problem.fairProc1 = problem.autProc1
-    problem.fairProc2 = problem.autProc2
+    problem.fairPlay1 = autPlay1ToFair(problem.autPlay1)
+    problem.fairPlay2 = autPlay2ToFair(problem.autPlay2)
 
     # output all automata
     for (name, aut) in [
       ("I0", problem.fairInit),
       ("F", problem.fairFinal),
-      ("P1", problem.fairProc1),
-      ("P2", problem.fairProc2)]:
+      ("P1", problem.fairPlay1),
+      ("P2", problem.fairPlay2)]:
         outlines.append(name + " {\n")
         outlines.append(str(aut))
         outlines.append("}\n\n")
