@@ -10,7 +10,7 @@ from enum import Enum
 class Problem:
     '''Represents a liveness problem'''
     def __init__(self):
-        self.alphabet = []
+        self.alphabet = set()
 
 
 # global instance of a problem
@@ -76,6 +76,8 @@ Processes an automaton transition on line.
         if reAutTrans.match(line):
             match = reAutTrans.match(line)
 
+            problem.alphabet.add(match.group('symbol'))
+
             self.transitions.append(
                 (
                     match.group('src'),
@@ -84,6 +86,9 @@ Processes an automaton transition on line.
                 ))
         elif reTransdTrans.match(line):
             match = reTransdTrans.match(line)
+
+            problem.alphabet.add(match.group('fst_symbol'))
+            problem.alphabet.add(match.group('snd_symbol'))
 
             self.transitions.append(
                 (
@@ -145,6 +150,11 @@ reAutDefStart = re.compile(r'^(?P<autname>[a-zA-Z0-9]+)\ +\{$')
 ZERO = '0'
 ONE = '1'
 
+# special states
+FINAL_NEW_INIT = "XX'init"
+FINAL_NEW_ZERO = "XX'zero"
+FINAL_NEW_ACCEPT = "XX'accept"
+
 
 def parseOptions():
     '''parseOptions() -> options
@@ -196,8 +206,8 @@ Encodes fairness into an automaton representing final configurations of
 a system.
 '''
     output = Automaton()
-    output.startStates = aut.startStates + " brekeke"
-    output.acceptStates = aut.acceptStates + " halabala"
+    output.startStates = aut.startStates + ", " + FINAL_NEW_INIT
+    output.acceptStates = aut.acceptStates + ", " + FINAL_NEW_ACCEPT
     output.epsTransitions = aut.epsTransitions
 
     for trans in aut.transitions:
@@ -213,6 +223,18 @@ a system.
         output.transitions.append((oneState, zeroState, ONE))
         output.transitions.append((zeroState, zeroState, ZERO))
         output.transitions.append((zeroState, tgt, ZERO))
+
+    # transitions in FINAL_NEW_INIT
+    for symb in problem.alphabet | {ZERO, ONE}:
+        output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_INIT, symb))
+        output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_ZERO, symb))
+
+    # transitions in FINAL_NEW_ZERO
+    output.transitions.append((FINAL_NEW_ZERO, FINAL_NEW_ACCEPT, ZERO))
+
+    # transitions in FINAL_NEW_ACCEPT
+    for symb in problem.alphabet | {ZERO, ONE}:
+        output.transitions.append((FINAL_NEW_ACCEPT, FINAL_NEW_ACCEPT, symb))
 
     return output
 
@@ -283,6 +305,8 @@ Process input lines into output lines, adding fairness into the system
     outlines = []
     it = iter(inlines)
 
+    # we need to load the whole file first to collect all symbols in the
+    # alphabet!
     processTopFile(it, outlines)
 
     problem.fairInit = autInitToFair(problem.autInit)
