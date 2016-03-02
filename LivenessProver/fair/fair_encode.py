@@ -237,6 +237,7 @@ a system.
     # transitions in FINAL_NEW_INIT
     for symb in problem.alphabet | {ZERO, ONE}:
         output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_INIT, symb))
+    for symb in problem.alphabet:
         output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_ZERO, symb))
 
     # transitions in FINAL_NEW_ZERO
