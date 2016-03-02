@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -f *.dot *.svg *.pdf *.log
+rm -f *.dot *.svg *.pdf *.log source.txt

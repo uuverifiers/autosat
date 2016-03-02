@@ -6,7 +6,10 @@ if [ \( "$#" -eq 0 \) ] ; then
 	exit 1
 fi
 
-. ./run
-# exec java -Xss20000k -Xmx2000m -ea -cp $BASEDIR/dist/livenessprover.jar:$BASEDIR/../Common/lib/commons-io-2.4.jar:$BASEDIR/../Common/lib/commons-cli-1.2.jar:$BASEDIR/../Common/lib/org.sat4j.core.jar:$BASEDIR/../Common/lib/log4j-core-2.1.jar:$BASEDIR/../Common/lib/log4j-api-2.1.jar:$BASEDIR/../Common/lib/java-cup-11a.jar main.Main "$@" | tee "${OUTPUT_DIR}/output.log"
+SRC="${1}"
 
+# run the main script
+. ./run 
+
+cp ${SRC} "${OUTPUT_DIR}/source.txt"
 cd ${OUTPUT_DIR} && ./alltosvg
