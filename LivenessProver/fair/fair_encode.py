@@ -203,6 +203,7 @@ a system.
         output.transitions.append((zeroState, zeroState, ZERO))
         output.transitions.append((zeroState, tgt, ZERO))
 
+    output.transitions = list(set(output.transitions)) # kill duplicates
     return output
 
 
@@ -247,6 +248,7 @@ a system.
     for symb in problem.alphabet | {ZERO, ONE}:
         output.transitions.append((FINAL_NEW_ACCEPT, FINAL_NEW_ACCEPT, symb))
 
+    output.transitions = list(set(output.transitions)) # kill duplicates
     return output
 
 
@@ -292,6 +294,7 @@ Encodes fairness into aut for Player 1.
             output.transitions.append((zeroState, tgt, ZERO, ZERO))
             output.transitions.append((zeroState, tgt, ONE, ZERO))
 
+    output.transitions = list(set(output.transitions)) # kill duplicates
     return output
 
 
@@ -323,6 +326,7 @@ Encodes fairness into aut for Player 2.
         output.transitions.append((zeroState, zeroState, ZERO, ZERO))
         output.transitions.append((zeroState, tgt, ZERO, ZERO))
 
+    output.transitions = list(set(output.transitions)) # kill duplicates
     return output
 
 
