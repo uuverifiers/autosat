@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for file in *.dot ; do
+	OUTPUT="`dirname ${file}`/`basename ${file} .dot`.svg"
+
+	dot -Tsvg ${file} -o ${OUTPUT}
+done

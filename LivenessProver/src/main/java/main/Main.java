@@ -35,6 +35,9 @@ public class Main {
 
     private final static boolean verifySolutions = false;
 
+	/// directory name of the output
+	private final static String OUTPUT_DIR = "output";
+
     public static void main(String[] args) {
 	if(args.length < 1){
 	    System.out.println("No input, doing nothing");
@@ -144,11 +147,14 @@ public class Main {
     }
 	public static void writeInputProblem(SymmetryProb problem) {
 		try {
-			Ultility.writeOut(Ultility.toDot(problem.getI0(), problem.getLabelToIndex()), "automataI0.dot");
-
-			Ultility.writeOut(Ultility.toDot(problem.getF(), problem.getLabelToIndex()), "automatonF.dot");
-			Ultility.writeOut(Ultility.toDot(problem.getPlayer1(), problem.getLabelToIndex()), "transducerP1.dot");
-			Ultility.writeOut(Ultility.toDot(problem.getPlayer2(), problem.getLabelToIndex()), "transducerP2.dot");
+			Ultility.writeOut(Ultility.toDot(problem.getI0(),
+				problem.getLabelToIndex()), OUTPUT_DIR + "/automatonI0.dot");
+			Ultility.writeOut(Ultility.toDot(problem.getF(),
+				problem.getLabelToIndex()), OUTPUT_DIR + "/automatonF.dot");
+			Ultility.writeOut(Ultility.toDot(problem.getPlayer1(),
+				problem.getLabelToIndex()), OUTPUT_DIR + "/transducerP1.dot");
+			Ultility.writeOut(Ultility.toDot(problem.getPlayer2(),
+				problem.getLabelToIndex()), OUTPUT_DIR + "/transducerP2.dot");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

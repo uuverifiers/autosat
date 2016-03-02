@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for file in *.dot ; do
+	OUTPUT="`dirname ${file}`/`basename ${file} .dot`.pdf"
+
+	dot -Tpdf ${file} -o ${OUTPUT}
+done

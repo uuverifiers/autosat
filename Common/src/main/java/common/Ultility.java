@@ -1,5 +1,6 @@
 package common;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -124,9 +125,14 @@ public class Ultility {
 
 	public static void writeOut(String content, String fileName)
 			throws FileNotFoundException {
+		File file = new File(fileName);
+		file.getAbsoluteFile().getParentFile().mkdirs();
+
 		PrintWriter writer;
-		writer = new PrintWriter(fileName);
+		writer = new PrintWriter(file);
 		writer.write(content);
 		writer.close();
 	}
 }
+
+// vim: tabstop=4

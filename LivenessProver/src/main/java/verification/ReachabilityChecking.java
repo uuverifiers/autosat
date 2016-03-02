@@ -34,6 +34,8 @@ public class ReachabilityChecking {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private Map<String, Integer> labelToIndex = new HashMap<String, Integer>();
+    /// directory name of the output
+    private final static String OUTPUT_DIR = "output";
 
     private final boolean closeUnderTransitions;
     private final boolean checkI0Subset;
@@ -551,9 +553,10 @@ public class ReachabilityChecking {
 	private void writeToDot(Automata automatonB,
 			EdgeWeightedDigraph transducer) {
 		try {
-			Ultility.writeOut(Ultility.toDot(automatonB, labelToIndex), "automataB.dot");
-
-			Ultility.writeOut(Ultility.toDot(transducer, labelToIndex), "transducer.dot");
+			Ultility.writeOut(Ultility.toDot(automatonB, labelToIndex),
+				OUTPUT_DIR + "/automatonB.dot");
+			Ultility.writeOut(Ultility.toDot(transducer, labelToIndex),
+				OUTPUT_DIR + "/transducerOrder.dot");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
