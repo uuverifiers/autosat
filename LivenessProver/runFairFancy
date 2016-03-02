@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Check the number of command-line arguments
+if [ \( "$#" -eq 0 \) ] ; then
+	echo "usage: ${0} <file> [params]"
+	exit 1
+fi
+
+# source file
+FILE=$1
+# get rid of first argument
+shift
+
+# name of the file with encoded fairness
+ENC_FILE=$(mktemp)
+
+# encoder
+ENCODER="fair/fair_encode.py"
+
+# encode fairness
+${ENCODER} ${FILE} > ${ENC_FILE}
+
+# run the usual stuff
+./runFancy ${ENC_FILE} $@
