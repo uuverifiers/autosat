@@ -1,4 +1,4 @@
-// herman-linear.txt
+// herman-ring.txt
 // This an adaptation of Herman's protocol in a ring.
 //
 // Liveness holds under (weakly) fair schedulers.
