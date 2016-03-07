@@ -199,9 +199,11 @@ a system.
 
         output.transitions.append((src, oneState, symbol))
         output.transitions.append((oneState, oneState, ONE))
-        output.transitions.append((oneState, zeroState, ONE))
-        output.transitions.append((zeroState, zeroState, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO))
+        ## the following three lines were changed to reduce the state space
+        # output.transitions.append((oneState, zeroState, ONE))
+        # output.transitions.append((zeroState, zeroState, ZERO))
+        # output.transitions.append((zeroState, tgt, ZERO))
+        output.transitions.append((oneState, tgt, ZERO))
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
