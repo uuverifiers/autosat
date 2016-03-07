@@ -285,14 +285,17 @@ Encodes fairness into aut for Player 1.
             # create 1's
             output.transitions.append((oneState, oneState, ZERO, ONE))
             output.transitions.append((oneState, oneState, ONE, ONE))
-            output.transitions.append((oneState, zeroState, ZERO, ONE))
-            output.transitions.append((oneState, zeroState, ONE, ONE))
+            output.transitions.append((oneState, tgt, ZERO, ZERO))
+            ## the following lines were changed to reduce the state space
+            # output.transitions.append((oneState, zeroState, ZERO, ONE))
+            # output.transitions.append((oneState, zeroState, ONE, ONE))
 
             # create 0's
-            output.transitions.append((zeroState, zeroState, ZERO, ZERO))
-            output.transitions.append((zeroState, zeroState, ONE, ZERO))
-            output.transitions.append((zeroState, tgt, ZERO, ZERO))
-            output.transitions.append((zeroState, tgt, ONE, ZERO))
+            ## the following block was removed to reduce the state space
+            # output.transitions.append((zeroState, zeroState, ZERO, ZERO))
+            # output.transitions.append((zeroState, zeroState, ONE, ZERO))
+            # output.transitions.append((zeroState, tgt, ZERO, ZERO))
+            # output.transitions.append((zeroState, tgt, ONE, ZERO))
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
