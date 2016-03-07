@@ -231,9 +231,12 @@ a system.
 
         output.transitions.append((src, oneState, symbol))
         output.transitions.append((oneState, oneState, ONE))
-        output.transitions.append((oneState, zeroState, ONE))
-        output.transitions.append((zeroState, zeroState, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO))
+        output.transitions.append((oneState, oneState, ZERO))
+        output.transitions.append((oneState, tgt, ZERO))
+        ## the following three lines were changed to reduce the state space
+        # output.transitions.append((oneState, zeroState, ONE))
+        # output.transitions.append((zeroState, zeroState, ZERO))
+        # output.transitions.append((zeroState, tgt, ZERO))
 
     # transitions in FINAL_NEW_INIT
     for symb in problem.alphabet | {ZERO, ONE}:
