@@ -1,8 +1,7 @@
-// herman-ring-even-fair.txt: this should be wrong
+// herman-ring-two.txt: this should be wrong
 // This an adaptation of Herman's protocol in a ring with fairness assumption.
 // Version which annihilates both tokens if a process is holding one and
-// receives another. Should not work for an even number of processes---the
-// number of tokens in the system is always even.
+// receives another. Should not work for two processes.
 //
 // N - no token
 // T - token
