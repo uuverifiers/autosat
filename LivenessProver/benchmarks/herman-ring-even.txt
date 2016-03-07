@@ -1,15 +1,15 @@
-// herman-ring-odd.txt
+// herman-ring-even.txt
 // This an adaptation of Herman's protocol in a ring.  In particular, in this
 // version, if a process is holding a token and another token is passed to it,
-// both of the tokens are annihilated.  An odd number of tokens in the initial
-// configurations is required for convergence into a final configuration.
-//
-// Liveness holds under (weakly) fair schedulers.
+// both of the tokens are annihilated.
+
+// FAILS: because the number of tokens is even (convergence is guarantedd only
+// for an even number of tokens).
 //
 // N - no token
 // T - token
 
-// Configurations with an odd number of tokens
+// Configurations with an even (no-zero) number of tokens
 I0 {
     init: s0;
 
@@ -17,9 +17,12 @@ I0 {
     s0 -> s1 T;
 
     s1 -> s1 N;
-    s1 -> s0 T;
+    s1 -> s2 T;
 
-    accepting: s1;
+    s2 -> s2 N;
+    s2 -> s1 T;
+
+    accepting: s2;
 }
 
 closedUnderTransitions;

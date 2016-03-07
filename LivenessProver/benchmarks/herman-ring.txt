@@ -37,7 +37,10 @@ F {
 }
 
 P1 {
-    init: s0;
+    init: sinit;
+
+    sinit -> s0;
+    sinit -> sN;
 
     s0 -> s0 N/N;
     s0 -> s0 T/T;
@@ -47,7 +50,10 @@ P1 {
     s1 -> s1 N/N;
     s1 -> s1 T/T;
 
-    accepting: s1;
+    // Player 1 always needs to be able to make a move
+    sN -> sN N/N;
+
+    accepting: s1, sN;
 }
 
 P2 {
