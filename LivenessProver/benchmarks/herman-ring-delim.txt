@@ -1,0 +1,115 @@
+// herman-ring-delim.txt
+// This an adaptation of Herman's protocol in a ring.  This version uses a
+// delimiter to distinguish sub-words of individual processes.
+//
+// Liveness holds under (weakly) fair schedulers.
+//
+// N - no token
+// T - token
+// delim - delimiter
+
+// Configurations with at least one token
+I0 {
+    init: s0;
+
+    s0 -> s0p N;
+    s0 -> s0p T;
+    s0p -> s0 delim;
+
+    s0 -> s1p T;
+    s1p -> s1 delim;
+
+    s1 -> s1p N;
+    s1 -> s1p T;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+F {
+    init: s0;
+
+    s0 -> s0p N;
+    s0p -> s0 delim;
+
+    s0 -> s1p T;
+    s1p -> s1 delim;
+
+    s1 -> s1p N;
+    s1p -> s1 delim;
+
+    accepting: s1;
+}
+
+P1 {
+    init: sinit;
+
+    sinit -> s0;
+    sinit -> sN;
+
+    s0 -> s0p N/N;
+    s0 -> s0p T/T;
+    s0p -> s0 delim/delim;
+
+    s0 -> s1p T/T_;
+    s1p -> s1 delim/delim;
+
+    s1 -> s1p N/N;
+    s1 -> s1p T/T;
+
+    // Player 1 always needs to be able to make a move
+    sN -> sNp N/N;
+    sNp -> sN delim/delim;
+
+    accepting: s1, sN;
+}
+
+P2 {
+    init: sinit;
+
+    // normal passing
+    sinit -> s0;
+    // wraparound
+    sinit -> s3;
+
+    s0 -> s0p N/N;
+    s0 -> s0p T/T;
+    s0p -> s0 delim/delim;
+
+    // keep
+    s0 -> s1p T_/T;
+    s1p -> s1 delim/delim;
+    // pass to right
+    s0 -> s2p T_/N;
+    s2p -> s2 delim/delim;
+
+    // Merge tokens
+    s2 -> s1p T/T;
+    // Pass token to right from s2
+    s2 -> s1p N/T;
+
+    s1 -> s1p N/N;
+    s1 -> s1p T/T;
+
+    s3 -> s4p N/T;
+    s3 -> s4p T/T;
+    s4p -> s4 delim/delim;
+
+    s4 -> s4p N/N;
+    s4 -> s4p T/T;
+
+    s4 -> s5p T_/N;
+    s5p -> s5 delim/delim;
+
+    accepting: s1, s5;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+explicitChecksUntilLength: 6;
+
