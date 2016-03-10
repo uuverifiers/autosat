@@ -1,0 +1,1 @@
+for i in `seq 1 20` ; do bash -c "time ./runFairFancy benchmarks/herman-ring.txt > /dev/null" 2>&1 ; done | tee "file.txt"
