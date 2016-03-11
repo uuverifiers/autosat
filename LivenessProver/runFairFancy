@@ -12,7 +12,8 @@ FILE=$1
 shift
 
 # name of the file with encoded fairness
-ENC_FILE=$(mktemp)
+# ENC_FILE=$(mktemp)
+ENC_FILE=`mktemp /tmp/tmp.XXXXXXXXXXX`
 
 # encoder
 ENCODER="fair/fair_encode.py"
