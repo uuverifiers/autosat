@@ -12,6 +12,7 @@ class Problem:
     def __init__(self):
         self.alphabet = set()
         self.options = []
+        self.uses_delim = False
 
 
 # global instance of a problem
@@ -156,6 +157,9 @@ reOptionWithParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+:.+)\ *;$')
 ZERO = '0'
 ONE = '1'
 
+# the delimiter character
+DELIM = "delim"
+
 # special states
 FINAL_NEW_PRE_INIT = "XX'pre_init"
 FINAL_NEW_INIT = "XX'init"
@@ -197,11 +201,22 @@ a system.
         oneState = tgt + "'one"
         zeroState = tgt + "'zero"
 
-        output.transitions.append((src, oneState, symbol))
-        output.transitions.append((oneState, oneState, ONE))
-        output.transitions.append((oneState, zeroState, ONE))
-        output.transitions.append((zeroState, zeroState, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO))
+        if problem.contains_delim:
+            if symbol == DELIM:
+                output.transitions.append((src, src, ONE))
+                output.transitions.append((src, zeroState, ONE))
+                output.transitions.append((zeroState, zeroState, ZERO))
+                output.transitions.append((zeroState, tgt, ZERO))
+            else:
+                output.transitions.append(trans)
+        else:
+            assert not problem.contains_delim
+
+            output.transitions.append((src, oneState, symbol))
+            output.transitions.append((oneState, oneState, ONE))
+            output.transitions.append((oneState, zeroState, ONE))
+            output.transitions.append((zeroState, zeroState, ZERO))
+            output.transitions.append((zeroState, tgt, ZERO))
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
@@ -229,23 +244,34 @@ a system.
         oneState = tgt + "'one"
         zeroState = tgt + "'zero"
 
-        output.transitions.append((src, oneState, symbol))
-        output.transitions.append((oneState, oneState, ONE))
-        output.transitions.append((oneState, zeroState, ONE))
-        output.transitions.append((zeroState, zeroState, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO))
+        if problem.contains_delim:
+            if symbol == DELIM:
+                output.transitions.append((src, src, ONE))
+                output.transitions.append((src, zeroState, ONE))
+                output.transitions.append((zeroState, zeroState, ZERO))
+                output.transitions.append((zeroState, tgt, ZERO))
+            else:
+                output.transitions.append(trans)
+        else:
+            assert not problem.contains_delim
+
+            output.transitions.append((src, oneState, symbol))
+            output.transitions.append((oneState, oneState, ONE))
+            output.transitions.append((oneState, zeroState, ONE))
+            output.transitions.append((zeroState, zeroState, ZERO))
+            output.transitions.append((zeroState, tgt, ZERO))
 
     # transitions in FINAL_NEW_INIT
-    for symb in problem.alphabet | {ZERO, ONE}:
+    for symb in (problem.alphabet - {DELIM}) | {ZERO, ONE}:
         output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_INIT, symb))
-    for symb in problem.alphabet:
+    for symb in problem.alphabet - {DELIM}:
         output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_ZERO, symb))
 
     # transitions in FINAL_NEW_ZERO
     output.transitions.append((FINAL_NEW_ZERO, FINAL_NEW_ACCEPT, ZERO))
 
     # transitions in FINAL_NEW_ACCEPT
-    for symb in problem.alphabet | {ZERO, ONE}:
+    for symb in (problem.alphabet - {DELIM}) | {ZERO, ONE}:
         output.transitions.append((FINAL_NEW_ACCEPT, FINAL_NEW_ACCEPT, symb))
 
     output.transitions = list(set(output.transitions)) # kill duplicates
@@ -408,6 +434,16 @@ Process input lines into output lines, adding fairness into the system
     # we need to load the whole file first to collect all symbols in the
     # alphabet!
     processTopFile(it)
+
+    # sanity checks
+    assert ONE not in problem.alphabet
+    assert ZERO not in problem.alphabet
+
+    # if there is DELIM, encode fairness in a different way
+    if DELIM in problem.alphabet:
+        problem.contains_delim = True
+    else:
+        problem.contains_delim = False
 
     problem.fairInit = autInitToFair(problem.autInit)
     problem.fairFinal = autFinalToFair(problem.autFinal)
