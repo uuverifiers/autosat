@@ -1,6 +1,8 @@
 #!/bin/sh
 
-BASEDIR=`dirname $(readlink -e $0)`
+# BASEDIR=`dirname $(readlink -e $0)`
+TMP=$(cd -P -- "$(dirname -- "$0")" && printf '%s\n' "$(pwd -P)/$(basename -- "$0")")
+BASEDIR=$(dirname ${TMP})
 OUTPUT_DIR="${BASEDIR}/output"
 
 mkdir -p ${OUTPUT_DIR}
