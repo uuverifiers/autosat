@@ -79,8 +79,9 @@ public class ProgressChecking {
 	List<int[]> counterExample =
 	    findShortestCounterExample(invariant,
 				       complementF,
-				       VerificationUltility
-				       .getUniversalAutomaton(numLetters),
+                                       complementF,
+//				       VerificationUltility
+//				       .getUniversalAutomaton(numLetters),
 				       player1,
 				       right);
 	List<List<Integer>> result =
