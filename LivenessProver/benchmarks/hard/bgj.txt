@@ -1,0 +1,247 @@
+// Letters:
+// 00, 01, 10, 11
+//
+// Beauquier, Gradinariu, and Johnen randomized token circulation algorithm.
+// The first bit in the letter is the deterministic state while the second bit 
+// denotes the probabilistic state.
+
+I0 {
+    init: s0;
+
+    s0 -> s1 L00;
+    s0 -> s1 L01;
+    s0 -> s1 L10;
+    s0 -> s1 L11;
+
+    s1 -> s2 L00;
+    s1 -> s2 L01;
+    s1 -> s2 L10;
+    s1 -> s2 L11;
+
+    s2 -> s3 L00;
+    s2 -> s3 L01;
+    s2 -> s3 L10;
+    s2 -> s3 L11;
+
+    s3 -> s2 L00;
+    s3 -> s2 L01;
+    s3 -> s2 L10;
+    s3 -> s2 L11;
+
+    accepting: s3;
+}
+
+closedUnderTransitions;
+
+// One probabilistic token
+F {
+    init: si;
+
+    // the token is at the wraparound point
+    si -> s0;
+
+    s0 -> q0 L00;
+    s0 -> q0 L10;
+    q1 -> q0 L00;
+    q1 -> q0 L10;
+
+    s0 -> q1 L01;
+    s0 -> q1 L11;
+    q0 -> q1 L01;
+    q0 -> q1 L11;
+
+    // the token is in the middle
+    si -> sii;
+
+    sii -> p0 L00;
+    sii -> p0 L10;
+    p1 -> p0 L00;
+    p1 -> p0 L10;
+    p1 -> q1 L01;
+    p1 -> q1 L11;
+
+    sii -> p1 L01;
+    sii -> p1 L11;
+    p0 -> p1 L01;
+    p0 -> p1 L11;
+    p0 -> q0 L00;
+    p0 -> q0 L10;
+
+    accepting: q0, q1;
+}
+
+P1 {
+    init: s0;
+
+    // middle
+    s0 -> p0 L00/L00;
+    s0 -> p0 L01/L01;
+    s0 -> p1 L10/L10;
+    s0 -> p1 L11/L11;
+
+    p0 -> p0 L00/L00;
+    p0 -> p0 L01/L01;
+    p0 -> p1 L10/L10;
+    p0 -> p1 L11/L11;
+
+    p0 -> sff L00/L00_;
+    p0 -> sff L01/L01_;
+
+    p1 -> p0 L00/L00;
+    p1 -> p0 L01/L01;
+    p1 -> p1 L10/L10;
+    p1 -> p1 L11/L11;
+
+    p1 -> sff L10/L10_;
+    p1 -> sff L11/L11_;
+
+    sff -> sff L00/L00;
+    sff -> sff L01/L01;
+    sff -> sff L10/L10;
+    sff -> sff L11/L11;
+
+    // wraparound
+    s0 -> qf0 L00/L00_;
+    s0 -> qf0 L01/L01_;
+    s0 -> qf1 L10/L10_;
+    s0 -> qf1 L11/L11_;
+
+    q0 -> qf0 L00/L00;
+    q0 -> qf0 L01/L01;
+
+    q0 -> q0 L10/L10;
+    q0 -> q0 L11/L11;
+
+    qf0 -> qf0 L00/L00;
+    qf0 -> qf0 L01/L01;
+
+    qf0 -> q0 L10/L10;
+    qf0 -> q0 L11/L11;
+
+    q1 -> qf1 L10/L10;
+    q1 -> qf1 L11/L11;
+
+    q1 -> q1 L00/L00;
+    q1 -> q1 L01/L01;
+
+    qf1 -> qf1 L10/L10;
+    qf1 -> qf1 L11/L11;
+
+    qf1 -> q1 L00/L00;
+    qf1 -> q1 L01/L01;
+    
+
+    accepting: sff, qf0, qf1;
+}
+
+P2 {
+    init: s0;
+
+    s0 -> si;
+
+    // middle: record the probabilistic state
+    si -> p0 L00/L00;
+    si -> p1 L01/L01;
+    si -> p0 L10/L10;
+    si -> p1 L11/L11;
+
+    p0 -> p0 L00/L00;
+    p0 -> p1 L01/L01;
+    p0 -> p0 L10/L10;
+    p0 -> p1 L11/L11;
+
+    p1 -> p0 L00/L00;
+    p1 -> p1 L01/L01;
+    p1 -> p0 L10/L10;
+    p1 -> p1 L11/L11;
+
+        // deterministic
+    p0 -> f L01_/L11;
+    p0 -> f L11_/L01;
+
+    p1 -> f L00_/L10;
+    p1 -> f L10_/L00;
+
+        // probabilistic
+    p0 -> f L00_/L10;
+    p0 -> f L00_/L11;
+    p0 -> f L10_/L00;
+    p0 -> f L10_/L01;
+
+    p1 -> f L01_/L10;
+    p1 -> f L01_/L11;
+    p1 -> f L11_/L00;
+    p1 -> f L11_/L01;
+
+    f -> f L00/L00;
+    f -> f L01/L01;
+    f -> f L10/L10;
+    f -> f L11/L11;
+
+    // wraparound
+    s0 -> d; // deterministic
+    s0 -> q; // probabilistic
+
+    d -> d0 L00_/L10;
+    d -> d1 L01_/L11;
+    d -> d0 L10_/L00;
+    d -> d1 L11_/L01;
+
+    d0 -> d0 L00/L00;
+    d0 -> d0 L10/L10;
+    d0 -> df0 L01/L01;
+    d0 -> df0 L11/L11;
+
+    df0 -> d0 L00/L00;
+    df0 -> d0 L10/L10;
+    df0 -> df0 L01/L01;
+    df0 -> df0 L11/L11;
+
+    d1 -> d1 L01/L01;
+    d1 -> d1 L11/L11;
+    d1 -> df1 L00/L00;
+    d1 -> df1 L10/L10;
+
+    df1 -> d1 L01/L01;
+    df1 -> d1 L11/L11;
+    df1 -> df1 L00/L00;
+    df1 -> df1 L10/L10;
+
+        // probabilistic
+    
+    q -> qf0 L00_/L10;
+    q -> qf0 L00_/L11;
+    q -> qf1 L01_/L11;
+    q -> qf1 L01_/L10;
+    q -> qf0 L10_/L00;
+    q -> qf0 L10_/L01;
+    q -> qf1 L11_/L01;
+    q -> qf1 L11_/L00;
+
+    q0 -> qf0 L00/L00;
+    q0 -> qf0 L10/L10;
+    q0 -> q0 L01/L01;
+    q0 -> q0 L11/L11;
+
+    qf0 -> qf0 L00/L00;
+    qf0 -> qf0 L10/L10;
+    qf0 -> q0 L01/L01;
+    qf0 -> q0 L11/L11;
+
+    q1 -> qf1 L01/L01;
+    q1 -> qf1 L11/L11;
+    q1 -> q1 L00/L00;
+    q1 -> q1 L10/L10;
+
+    qf1 -> qf1 L01/L01;
+    qf1 -> qf1 L11/L11;
+    qf1 -> q1 L00/L00;
+    qf1 -> q1 L10/L10;
+
+    accepting: f, df0, df1, qf0, qf1;
+}
+
+transducerStateGuessing: 1 .. 2;
+automatonStateGuessing: 0 .. 10;
+
+symmetries: rotation;

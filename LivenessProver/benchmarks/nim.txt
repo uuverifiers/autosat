@@ -154,6 +154,11 @@ P1 {
 P2 {
     init: si;
 
+    // 
+    si -> sii;
+    sii -> siii bott/bott;
+    siii -> siii 000/000;
+
     // Empty
     si -> s0;
     s0 -> s1 bot/boto; // declare Player 1 wins if empty
@@ -270,7 +275,7 @@ P2 {
     r2 -> r2 101/100;
     r2 -> r2 111/110;
 
-    accepting: s1, p2, q2, r2;
+    accepting: s1, p2, q2, r2, siii;
 }
 
 transducerStateGuessing: 1 .. 10;
