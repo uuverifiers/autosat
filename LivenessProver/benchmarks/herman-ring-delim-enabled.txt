@@ -1,0 +1,108 @@
+// herman-ring-delim-enabled.txt
+// This an adaptation of Herman's protocol in a ring.  This version uses a
+// delimiter to distinguish sub-words of individual processes, and the Enabled
+// automaton to denote enabled transitions.
+//
+// Liveness holds under (weakly) fair schedulers.
+//
+// N - no token
+// T - token
+// delim - delimiter
+// chosen - process chosen by scheduler
+//
+
+// Configurations with at least one token
+I0 {
+    init: s0;
+
+    s0 -> s0p N;
+    s0 -> s0p T;
+    s0p -> s0 delim;
+
+    s0 -> s1p T;
+    s1p -> s1 delim;
+
+    s1 -> s1p N;
+    s1 -> s1p T;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+F {
+    init: s0;
+
+    s0 -> s0p N;
+    s0p -> s0 delim;
+
+    s0 -> s1p T;
+    s1p -> s1 delim;
+
+    s1 -> s1p N;
+    s1p -> s1 delim;
+
+    accepting: s1;
+}
+
+Enabled {
+    init: s0;
+
+    s0 -> sN N;
+    sN -> s0 disabled;
+
+    s0 -> sT T;
+    sT -> s0 enabled;
+
+    accepting: s0;
+}
+
+P2 {
+    init: sinit;
+
+    // normal passing
+    sinit -> s0;
+    // wraparound
+    sinit -> s3;
+
+    s0 -> s0p N/N;
+    s0 -> s0p T/T;
+    s0p -> s0 delim/delim;
+
+    // keep
+    s0 -> s1pc T/T;
+    s1pc -> s1 chosen/delim;
+    // pass to right
+    s0 -> s2p T/N;
+    s2p -> s2 chosen/delim;
+
+    // Merge tokens
+    s2 -> s1p T/T;
+    // Pass token to right from s2
+    s2 -> s1p N/T;
+    s1p -> s1 delim/delim;
+
+    s1 -> s1p N/N;
+    s1 -> s1p T/T;
+
+    s3 -> s4p N/T;
+    s3 -> s4p T/T;
+    s4p -> s4 delim/delim;
+
+    s4 -> s4p N/N;
+    s4 -> s4p T/T;
+
+    s4 -> s5p T/N;
+    s5p -> s5 chosen/delim;
+
+    accepting: s1, s5;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+explicitChecksUntilLength: 6;
+
