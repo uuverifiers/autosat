@@ -74,8 +74,8 @@ P2 {
     s0 -> s1pc T/T;
     s1pc -> s1 chosen/delim;
     // pass to right
-    s0 -> s2p T/N;
-    s2p -> s2 chosen/delim;
+    s0 -> s2pc T/N;
+    s2pc -> s2 chosen/delim;
 
     // Merge tokens
     s2 -> s1p T/T;
