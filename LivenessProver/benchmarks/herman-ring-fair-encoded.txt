@@ -54,24 +54,60 @@ closedUnderTransitions;
 
 // Configurations with precisely one token
 F {
-    init: s0;
+    init: sinit;
 
-    // DOESN'T WORK YET
+    sinit -> s2;
+    sinit -> s0;
 
+    // timeout (counter reaching zero)
+    s2 -> s2pt T;
+    s2pt -> s2pt 0;
+    s2pt -> s2pt 1;
+    s2pt -> s2 enabled;
+
+    s2 -> s2pn N;
+    s2pn -> s2pn 0;
+    s2pn -> s2pn 1;
+    s2pn -> s2 disabled;
+
+    s2 -> s3tt0 T;
+    s3tt0 -> s3tt0 0;
+    s3tt0 -> s3tt 0;
+    s3tt -> s3 enabled;
+
+    s3 -> s3pt T;
+    s3pt -> s3pt 0;
+    s3pt -> s3pt 1;
+    s3pt -> s3 enabled;
+
+    s3 -> s3pn N;
+    s3pn -> s3pn 0;
+    s3pn -> s3pn 1;
+    s3pn -> s3 disabled;
+
+    // configuration with a single token
     s0 -> s0pn N;
+    s0pn -> s0pn 0;
+    s0pn -> s0pn 1;
     s0pn -> s0 disabled;
 
     s0 -> s1pt T;
+    s1pt -> s1pt 0;
+    s1pt -> s1pt 1;
     s1pt -> s1 enabled;
 
     s1 -> s1pn N;
+    s1pn -> s1pn 0;
+    s1pn -> s1pn 1;
     s1pn -> s1 disabled;
 
-    accepting: s1;
+    accepting: s1, s3;
 }
 
 P1 {
     init: sinit;
+
+    // DOESN'T WORK YET
 
     sinit -> s0;
     sinit -> s1;
