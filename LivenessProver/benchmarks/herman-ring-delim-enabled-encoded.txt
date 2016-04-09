@@ -63,7 +63,7 @@ P1 {
     s1 -> s1pn N/N;
     s1pn -> s1 disabled/disabled;
     s1 -> s1pt T/T;
-    s1pn -> s1 enabled/enabled;
+    s1pt -> s1 enabled/enabled;
 
     // choose a process!
     s1 -> s2pc T/T;
@@ -72,7 +72,7 @@ P1 {
     s2 -> s2pn N/N;
     s2pn -> s2 disabled/disabled;
     s2 -> s2pt T/T;
-    s2pn -> s2 enabled/enabled;
+    s2pt -> s2 enabled/enabled;
 
     accepting: s0, s2;
 }

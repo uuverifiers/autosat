@@ -107,35 +107,49 @@ F {
 P1 {
     init: sinit;
 
-    // DOESN'T WORK YET
-
     sinit -> s0;
     sinit -> s1;
 
     // no process is enabled
     s0 -> s0pn N/N;
+    s0pn -> s0pn 0/0;
+    s0pn -> s0pn 1/1;
     s0pn -> s0 disabled/disabled;
 
     // at least one process is enabled
     s1 -> s1pn N/N;
+    s1pn -> s1pn 0/0;
+    s1pn -> s1pn 1/1;
     s1pn -> s1 disabled/disabled;
+
     s1 -> s1pt T/T;
-    s1pn -> s1 enabled/enabled;
+    s1pt -> s1pt 0/0;
+    s1pt -> s1pt 1/1;
+    s1pt -> s1 enabled/enabled;
 
     // choose a process!
     s1 -> s2pc T/T;
+    s2pc -> s2pc 0/0;
+    s2pc -> s2pc 1/1;
     s2pc -> s2 enabled/chosen;
 
     s2 -> s2pn N/N;
+    s2pn -> s2pn 0/0;
+    s2pn -> s2pn 1/1;
     s2pn -> s2 disabled/disabled;
+
     s2 -> s2pt T/T;
-    s2pn -> s2 enabled/enabled;
+    s2pt -> s2pt 0/0;
+    s2pt -> s2pt 1/1;
+    s2pt -> s2 enabled/enabled;
 
     accepting: s0, s2;
 }
 
 P2 {
     init: sinit;
+
+    // DOESN'T WORK YET
 
     // normal passing
     sinit -> s0;
