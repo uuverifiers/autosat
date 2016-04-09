@@ -1,7 +1,7 @@
 // herman-ring-fair-encoded.txt
 // This an adaptation of Herman's protocol in a ring.  This is a reference that
-// is supposed to be obtained from herman-ring-delim-enabled-encoeed.txt by
-encoding fairness inside..
+// is supposed to be obtained from herman-ring-delim-enabled-encoded.txt by
+// encoding fairness inside..
 //
 // Liveness holds under (weakly) fair schedulers.
 //
@@ -24,7 +24,7 @@ I0 {
     s0pn0 -> s0pn 0;
     s0pn -> s0 disabled;
 
-    s0 -> s0pt1 N;
+    s0 -> s0pt1 T;
     s0pt1 -> s0pt1 1;
     s0pt1 -> s0pt0 1;
     s0pt0 -> s0pt0 0;
@@ -38,9 +38,9 @@ I0 {
     s1pt0 -> s1pt 0;
     s1pt -> s1 enabled;
 
-    s1 -> s1pt T;
+    s1 -> s1pt1 T;
 
-    s1 -> s1pn N;
+    s1 -> s1pn1 N;
     s1pn1 -> s1pn1 1;
     s1pn1 -> s1pn0 1;
     s1pn0 -> s1pn0 0;
