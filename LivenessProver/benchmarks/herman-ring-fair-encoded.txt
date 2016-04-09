@@ -1,0 +1,154 @@
+// herman-ring-fair-encoded.txt
+// This an adaptation of Herman's protocol in a ring.  This is a reference that
+// is supposed to be obtained from herman-ring-delim-enabled-encoeed.txt by
+encoding fairness inside..
+//
+// Liveness holds under (weakly) fair schedulers.
+//
+// N - no token
+// T - token
+// chosen - process chosen by scheduler
+// enabled - process is enabled
+// disabled - process is disabled
+// 0,1 - symbols for unary counters
+//
+
+// Configurations with at least one token
+I0 {
+    init: s0;
+
+    s0 -> s0pn1 N;
+    s0pn1 -> s0pn1 1;
+    s0pn1 -> s0pn0 1;
+    s0pn0 -> s0pn0 0;
+    s0pn0 -> s0pn 0;
+    s0pn -> s0 disabled;
+
+    s0 -> s0pt1 N;
+    s0pt1 -> s0pt1 1;
+    s0pt1 -> s0pt0 1;
+    s0pt0 -> s0pt0 0;
+    s0pt0 -> s0pt 0;
+    s0pt -> s0 enabled;
+
+    s0 -> s1pt1 T;
+    s1pt1 -> s1pt1 1;
+    s1pt1 -> s1pt0 1;
+    s1pt0 -> s1pt0 0;
+    s1pt0 -> s1pt 0;
+    s1pt -> s1 enabled;
+
+    s1 -> s1pt T;
+
+    s1 -> s1pn N;
+    s1pn1 -> s1pn1 1;
+    s1pn1 -> s1pn0 1;
+    s1pn0 -> s1pn0 0;
+    s1pn0 -> s1pn 0;
+    s1pn -> s1 disabled;
+
+    accepting: s1;
+}
+
+closedUnderTransitions;
+
+// Configurations with precisely one token
+F {
+    init: s0;
+
+    // DOESN'T WORK YET
+
+    s0 -> s0pn N;
+    s0pn -> s0 disabled;
+
+    s0 -> s1pt T;
+    s1pt -> s1 enabled;
+
+    s1 -> s1pn N;
+    s1pn -> s1 disabled;
+
+    accepting: s1;
+}
+
+P1 {
+    init: sinit;
+
+    sinit -> s0;
+    sinit -> s1;
+
+    // no process is enabled
+    s0 -> s0pn N/N;
+    s0pn -> s0 disabled/disabled;
+
+    // at least one process is enabled
+    s1 -> s1pn N/N;
+    s1pn -> s1 disabled/disabled;
+    s1 -> s1pt T/T;
+    s1pn -> s1 enabled/enabled;
+
+    // choose a process!
+    s1 -> s2pc T/T;
+    s2pc -> s2 enabled/chosen;
+
+    s2 -> s2pn N/N;
+    s2pn -> s2 disabled/disabled;
+    s2 -> s2pt T/T;
+    s2pn -> s2 enabled/enabled;
+
+    accepting: s0, s2;
+}
+
+P2 {
+    init: sinit;
+
+    // normal passing
+    sinit -> s0;
+    // wraparound
+    sinit -> s3;
+
+    // normal passing part
+    s0 -> s0pn N/N;
+    s0pn -> s0 disabled/disabled;
+    s0 -> s0pt T/T;
+    s0pt -> s0 enabled/enabled;
+
+    // keep
+    s0 -> s1pc T/T;
+    s1pc -> s1 chosen/disabled;
+    // pass to right
+    s0 -> s2pc T/N;
+    s2pc -> s2 chosen/disabled;
+
+    // Merge tokens
+    s2 -> s1pt T/T;
+    s1pt -> s1 enabled/enabled;
+    // Pass token to right from s2
+    s2 -> s1pn N/T;
+    s1pn -> s1 disabled/disabled;
+
+    s1 -> s1pn N/N;
+    s1 -> s1pt T/T;
+
+    // wraparound part
+    s3 -> s4pe N/T;
+    s3 -> s4pe T/T;
+    s4pt -> s4 disabled/enabled;
+    s4pt -> s4 enabled/enabled;
+
+    s4 -> s4pt T/T;
+    s4 -> s4pn N/N;
+    s4pn -> s4 disabled/disabled;
+
+    s4 -> s5pd T/N;
+    s5pd -> s5 chosen/disabled;
+
+    accepting: s1, s5;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+explicitChecksUntilLength: 6;
+
