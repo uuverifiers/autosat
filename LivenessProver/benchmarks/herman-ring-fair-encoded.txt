@@ -149,8 +149,6 @@ P1 {
 P2 {
     init: sinit;
 
-    // DOESN'T WORK YET
-
     // normal passing
     sinit -> s0;
     // wraparound
@@ -158,39 +156,77 @@ P2 {
 
     // normal passing part
     s0 -> s0pn N/N;
+    s0pn -> s0pn 0/0;
+    s0pn -> s0pn 1/1;
     s0pn -> s0 disabled/disabled;
-    s0 -> s0pt T/T;
-    s0pt -> s0 enabled/enabled;
+
+    s0 -> s0pt1 T/T;
+    s0pt1 -> s0pt1 1/1;
+    s0pt1 -> s0pt0 1/0;
+    s0pt0 -> s0pt0 0/0;
+    s0pt0 -> s0 enabled/enabled;
 
     // keep
-    s0 -> s1pc T/T;
-    s1pc -> s1 chosen/disabled;
+    s0 -> s1pc1 T/T;
+    s1pc1 -> s1pc1 1/1;
+    s1pc1 -> s1pc1 0/1;
+    s1pc1 -> s1pc 0/0;
+    s1pc -> s1 chosen/enabled;
+
     // pass to right
     s0 -> s2pc T/N;
+    s2pc -> s2pc 0/0;
+    s2pc -> s2pc 1/1;
     s2pc -> s2 chosen/disabled;
 
-    // Merge tokens
-    s2 -> s1pt T/T;
-    s1pt -> s1 enabled/enabled;
-    // Pass token to right from s2
-    s2 -> s1pn N/T;
-    s1pn -> s1 disabled/disabled;
+    // DOESN'T WORK YET
 
-    s1 -> s1pn N/N;
-    s1 -> s1pt T/T;
+    // Merge tokens
+    s2 -> s1ptt1 T/T;
+    s1ptt1 -> s1ptt1 1/1;
+    s1ptt1 -> s1ptt0 1/0;
+    s1ptt0 -> s1ptt0 0/0;
+    s1ptt0 -> s1 enabled/enabled;
+
+    // Pass token to right from s2
+    s2 -> s1pnt1 N/T;
+    s1pnt1 -> s1pnt1 0/1;
+    s1pnt1 -> s1pnt1 1/1;
+    s1pnt1 -> s1pnt 0/0;
+    s1pnt -> s1 disabled/enabled;
+
+    s1 -> s1ptt1 T/T;
+
+    s1 -> s1pnn N/N;
+
+    s1pnn -> s1pnn 0/0;
+    s1pnn -> s1pnn 1/1;
+    s1pnn -> s1 disabled/disabled;
 
     // wraparound part
-    s3 -> s4pe N/T;
-    s3 -> s4pe T/T;
-    s4pt -> s4 disabled/enabled;
-    s4pt -> s4 enabled/enabled;
+    s3 -> s4ptt1 T/T;
+    s4ptt1 -> s4ptt1 1/1;
+    s4ptt1 -> s4ptt0 1/0;
+    s4ptt0 -> s4ptt0 0/0;
+    s4ptt0 -> s4 enabled/enabled;
 
-    s4 -> s4pt T/T;
-    s4 -> s4pn N/N;
-    s4pn -> s4 disabled/disabled;
+    s3 -> s4pnt1 N/T;
+    s4pnt1 -> s4pnt1 0/1;
+    s4pnt1 -> s4pnt1 1/1;
+    s4pnt1 -> s4pnt 0/0;
+    s4pnt -> s4 disabled/enabled;
 
-    s4 -> s5pd T/N;
-    s5pd -> s5 chosen/disabled;
+    s4 -> s4ptt1 T/T;
+
+    s4 -> s4pnn N/N;
+    s4pnn -> s4pnn 0/0;
+    s4pnn -> s4pnn 1/1;
+    s4pnn -> s4 disabled/disabled;
+
+    s4 -> s5pn T/N;
+    s5pn -> s5pn 0/0;
+    s5pn -> s5pn 1/1;
+    s5pn -> s5 chosen/disabled;
 
     accepting: s1, s5;
 }

@@ -93,24 +93,26 @@ P2 {
 
     // keep
     s0 -> s1pc T/T;
-    s1pc -> s1 chosen/disabled;
+    s1pc -> s1 chosen/enabled;
     // pass to right
     s0 -> s2pc T/N;
     s2pc -> s2 chosen/disabled;
 
     // Merge tokens
-    s2 -> s1pt T/T;
-    s1pt -> s1 enabled/enabled;
+    s2 -> s1ptt T/T;
+    s1ptt -> s1 enabled/enabled;
     // Pass token to right from s2
-    s2 -> s1pn N/T;
-    s1pn -> s1 disabled/disabled;
+    s2 -> s1pnt N/T;
+    s1pnt -> s1 disabled/enabled;
 
-    s1 -> s1pn N/N;
-    s1 -> s1pt T/T;
+    s1 -> s1pnn N/N;
+    s1 -> s1ptt T/T;
+
+    s1pnn -> s1 disabled/disabled;
 
     // wraparound part
-    s3 -> s4pe N/T;
-    s3 -> s4pe T/T;
+    s3 -> s4pt N/T;
+    s3 -> s4pt T/T;
     s4pt -> s4 disabled/enabled;
     s4pt -> s4 enabled/enabled;
 
