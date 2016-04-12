@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +37,7 @@ public class IncrementalVerifier {
     private static final int     initialFiniteExplorationBound = 3;
     // try to find a progress relation that covers as many
     // configurations as possible
-    private static final boolean maximiseProgressRelations = true;
+    private static final boolean maximiseProgressRelations = false;
     // try to find a progress relation with as many transitions (and
     // accepting states) as possible
     private static final boolean maximiseTransducer = false;
@@ -56,6 +57,9 @@ public class IncrementalVerifier {
     private FiniteStateSets finiteStates;
     private Automata systemInvariant;
     private int explorationBound;
+
+    private int exploredBoundSofar;
+    private List<Configuration> configurationsUpToBound;
 
     private List<Automata> chosenBs;
     private List<EdgeWeightedDigraph> chosenTs;
@@ -147,32 +151,37 @@ public class IncrementalVerifier {
         chosenBs = new ArrayList<Automata> ();
         chosenTs = new ArrayList<EdgeWeightedDigraph> ();
         distinctRelations = new ArrayList<EdgeWeightedDigraph> ();
+
+	exploredBoundSofar = 0;
+	configurationsUpToBound = new ArrayList<Configuration>();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    private void setupExploredConfigurations() {
+	for (; exploredBoundSofar <= explorationBound; ++exploredBoundSofar) {
+	    final List<List<List<Integer>>> levels =
+                finiteStates.getLevelSets(exploredBoundSofar);
+	    for (int i = 2; i < levels.size(); i += 2) {
+		for (List<Integer> word : levels.get(i))
+		    configurationsUpToBound.add(new Configuration(word, exploredBoundSofar + i));
+	    }
+	}
+
+	Collections.sort(configurationsUpToBound);
+
+	//	System.out.println(configurationsUpToBound);
     }
 
     ////////////////////////////////////////////////////////////////////////////
 
     public boolean verify() {
-	int exploredLevel = 0;
-
-	List<Configuration> configurationSample = new ArrayList<Configuration>();
-
 	mainLoop : while (true) {
 
-	for (; exploredLevel <= explorationBound; ++exploredLevel) {
-	    final List<List<List<Integer>>> levels =
-                finiteStates.getLevelSets(exploredLevel);
-	    for (int i = 2; i < levels.size(); i += 2) {
-		for (List<Integer> word : levels.get(i))
-		    configurationSample.add(new Configuration(word, exploredLevel + i));
-	    }
-	}
+        setupExploredConfigurations();
 
-	Collections.sort(configurationSample);
-
-	//	System.out.println(configurationSample);
-
-	for (int configNum = 0; configNum < configurationSample.size();) {
-	    final Configuration config = configurationSample.get(configNum);
+	for (int configNum = 0; configNum < configurationsUpToBound.size();) {
+	    final Configuration config = configurationsUpToBound.get(configNum);
 	    final int rank = config.rank;
 	    LOGGER.info("checking configuration " + config.word + ", rank " +
 			rank + " ...");
@@ -184,8 +193,8 @@ public class IncrementalVerifier {
 	    } else {
 		LOGGER.info("not covered, extending progress relation");
 
-                if (!distinctRelations.isEmpty() && reuseProgressRelations())
-                    continue;
+                //                if (!distinctRelations.isEmpty() && reuseProgressRelations())
+                //                    continue;
 
 		final List<List<Integer>> elimWords =
 		    new ArrayList<List<Integer>>();
@@ -193,126 +202,78 @@ public class IncrementalVerifier {
 
 		if (eliminateMultipleConfigurations) {
 		    for (int i = configNum + 1;
-			 i < configurationSample.size() &&
-			     configurationSample.get(i).rank == rank;
+			 i < configurationsUpToBound.size() &&
+			     configurationsUpToBound.get(i).rank == rank;
 			 ++i)
-			if (!winningStates.accepts(configurationSample.get(i).word))
-			    elimWords.add(configurationSample.get(i).word);
-
-		    LOGGER.info("trying to eliminate one of " + elimWords);
+			if (!winningStates.accepts(configurationsUpToBound.get(i).word))
+			    elimWords.add(configurationsUpToBound.get(i).word);
 		}
 
-		OldCounterExamples oldCEs = new OldCounterExamples();
+                LOGGER.info("trying to rank one of " + elimWords);
 
-		sosLoop: for (int fixedSOS = 1; fixedSOS <= sosBound; ++fixedSOS) {
-		    for(int numStateTransducer = problem.getMinNumOfStatesTransducer();
-			numStateTransducer <= problem.getMaxNumOfStatesTransducer();
-			numStateTransducer++){
-			for(int numStateAutomata = problem.getMinNumOfStatesAutomaton();
-			    numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
-			    numStateAutomata++){
+                final CountDownLatch finishLatch = new CountDownLatch(1);
 
-			    final int sos =
-				numStateTransducer * numStateTransducer +
-				numStateAutomata * numStateAutomata;
+                final List<ProgressBuilder> builders = new ArrayList<ProgressBuilder> ();
+                final List<Thread> builderThreads = new ArrayList<Thread> ();
 
-			    if (sos != fixedSOS)
-				continue;
+                final ProgressBuilder newRelationBuilder =
+                    new ProgressRelationBuilder(finishLatch, elimWords);
+                builders.add(newRelationBuilder);
+                builderThreads.add(new Thread(newRelationBuilder));
 
-			    ReachabilityChecking checking =
-                                createReachabilityChecking(useRankingFunctions,
-                                                           numStateAutomata,
-                                                           numStateTransducer,
-                                                           oldCEs);
+                int num = 0;
+                for (EdgeWeightedDigraph relation : distinctRelations) {
+                    List<List<Integer>> extraWords = new ArrayList<List<Integer>> ();
+                    for (int len = 0; len <= explorationBound; ++len) {
+                        Set<List<Integer>> rankable = null;
+                        for (List<Integer> w : elimWords)
+                            if (w.size() == len) {
+                                if (rankable == null)
+                                    rankable =
+                                        finiteStates.getRankableConfigs(len, winningStates, relation);
+                                if (rankable.contains(w))
+                                    extraWords.add(w);
+                            }
+                    }
 
-			    checking.setup();
-			    checking.addDisjBMembershipConstraint(elimWords);
+                    if (!extraWords.isEmpty()) {
+                        LOGGER.info("relation #" + num + " can rank " + extraWords);
+                        final ProgressBuilder builder =
+                            new ReusingRelationBuilder(finishLatch, relation, num, extraWords);
+                        builders.add(builder);
+                        builderThreads.add(new Thread(builder));
+                    }
 
-			    if (checking.findNextSolution(false)) {
-				Automata B = checking.getAutomatonB();
-				EdgeWeightedDigraph transducer = checking.getTransducer();
+                    ++num;
+                }
 
-				// can the solution be made more general?
-				if (maximiseTransducer) {
-				    while (true) {
-					LOGGER.info("trying to maximise transducer");
-					checking.assertLargerTransducer(transducer);
-					if (checking.findNextSolution(false)) {
-					    B = checking.getAutomatonB();
-					    transducer = checking.getTransducer();
-					} else
-					    break;
-				    }
-				} else if (eliminateMultipleConfigurations) {
-				    if (maximiseProgressRelations)
-					while (true) {
-					    final List<List<Integer>> remElimWords =
-						new ArrayList<List<Integer>>();
-					    for (List<Integer> w : elimWords) {
-						if (B.accepts(w))
-						    checking.addBMembershipConstraint(w);
-						else
-						    remElimWords.add(w);
-					    }
+                //                computeProgressRelation(elimWords);
 
-					    if (remElimWords.isEmpty())
-						break;
+                for (Thread t : builderThreads)
+                    t.start();
 
-					    LOGGER.info("trying to cover also one of " + remElimWords);
+                try {
+                    finishLatch.await();
 
-					    checking.addDisjBMembershipConstraint(remElimWords);
-					    if (checking.findNextSolution(false)) {
-						B = checking.getAutomatonB();
-						transducer = checking.getTransducer();
-					    } else
-						break;
-					}
-				} else {
-				    if (maximiseProgressRelations) {
-					while (++configNum < configurationSample.size()) {
-					    List<Integer> w = configurationSample.get(configNum).word;
+                    // stop all threads
+                    for (ProgressBuilder builder : builders)
+                        builder.stopBuilding();
+                    for (Thread t : builderThreads)
+                        t.join();
 
-					    if (winningStates.accepts(w)) {
-						LOGGER.info("already covered: " + w);
-					    } else {
-						LOGGER.info("trying to cover also word " + w);
-						checking.addBMembershipConstraint(w);
-						if (checking.findNextSolution(false)) {
-						    B = checking.getAutomatonB();
-						    transducer = checking.getTransducer();
-						} else
-						    break;
-					    }
-					}
-				    } else {
-					++configNum;
-				    }
-				}
+                    boolean oneDone = false;
+                    for (ProgressBuilder builder : builders) {
+                        if (builder.finished) {
+                            builder.copyBackResults();
+                            oneDone = true;
+                            break;
+                        }
+                    }
 
-				// augment the set of winning states and continue
-				// with the next configuration
-                                augmentWinningStates(checking, B, transducer);
-                                distinctRelations.add(0, transducer);
-
-				while (distinctRelations.size() >
-				       maxStoredRelationNum)
-				    distinctRelations.remove
-					(distinctRelations.size() - 1);
-
-				LOGGER.info("new progress relation: " +
-					    transducer);
-
-                                LOGGER.info("now have " +
-                                            distinctRelations.size() +
-                                            " distinct progress relations");
-
-				break sosLoop;
-			    }
-
-			    systemInvariant = checking.getSystemInvariant();
-			}
-		    }
-		}
+                    assert(oneDone);
+                } catch(InterruptedException e) {
+                    LOGGER.error("interrupted");
+                }
 	    }
 	}
 
@@ -333,31 +294,18 @@ public class IncrementalVerifier {
     ////////////////////////////////////////////////////////////////////////////
 
     private boolean reuseProgressRelations() {
-        LOGGER.info("checking whether old progress relations can" +
-                    " be reused");
+        LOGGER.info("checking whether old progress relations can be reused");
 
         List<List<Integer>> extraWords = new ArrayList<List<Integer>> ();
 
         int num = 0;
         for (EdgeWeightedDigraph relation : distinctRelations) {
             LOGGER.info("again checking relation #" + num);
-            for (int len = 0;
-		 len <= explorationBound &&
-		     (eliminateMultipleConfigurations || extraWords.isEmpty());
-		 ++len)
-		if (eliminateMultipleConfigurations) {
-		    for (List<Integer> w :
-			     finiteStates.getRankableConfigs(len, winningStates,
-							     relation))
-			if (!winningStates.accepts(w))
-			    extraWords.add(w);
-		} else {
-		    List<Integer> w =
-			finiteStates.getFirstRankableConfig(len, winningStates,
-							    relation);
-		    if (w != null)
-			extraWords.add(w);
-		}
+            for (int len = 0; len <= explorationBound; ++len)
+                for (List<Integer> w :
+                         finiteStates.getRankableConfigs(len, winningStates, relation))
+                    if (!winningStates.accepts(w))
+                        extraWords.add(w);
 
             if (!extraWords.isEmpty()) {
                 // try to find a new set of states that can be
@@ -365,49 +313,12 @@ public class IncrementalVerifier {
 
                 LOGGER.info("covers: " + extraWords);
 
-		OldCounterExamples oldCEs = new OldCounterExamples();
-
-                for(int numStateAutomata = 1;
-                    numStateAutomata <= problem.getMaxNumOfStatesAutomaton() &&
-                      numStateAutomata <= explorationBound;
-                    numStateAutomata++) {
-
-                    ReachabilityChecking checking =
-                        createReachabilityChecking(false, numStateAutomata,
-                                                   relation.V(), oldCEs);
-
-                    checking.setup();
-                    checking.addDisjBMembershipConstraint(extraWords);
-                    checking.fixTransducer(relation);
-
-                    // exclude words that we know cannot be ranked
-                    for (int len = 0; len <= explorationBound; ++len) {
-                        final Set<List<Integer>> rankable =
-                            finiteStates.getRankableConfigs(len, winningStates,
-                                                            relation);
-                        for (List<Integer> w :
-                                 AutomataConverter.getWords(player1Configs, len))
-                            if (!winningStates.accepts(w) &&
-                                !rankable.contains(w) &&
-                                finiteStates.isReachable(w)) {
-				//                                LOGGER.info("excluding " + w);
-                                checking.addBNonMembershipConstraint(w);
-                            }
-                    }
-
-                    if (checking.findNextSolution(false)) {
-                        LOGGER.info("could reuse progress relation!");
-                        augmentWinningStates(checking,
-					     checking.getAutomatonB(),
-					     relation);
-
-                        // move successful relation to the beginning
-                        distinctRelations.remove(num);
-                        distinctRelations.add(0, relation);
-                        return true;
-                    }
+                if (reuseProgressRelation(relation, extraWords)) {
+                    // move successful relation to the beginning
+                    distinctRelations.remove(num);
+                    distinctRelations.add(0, relation);
+                    return true;
                 }
-
                 extraWords.clear();
             }
 
@@ -417,9 +328,380 @@ public class IncrementalVerifier {
         return false;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+
+    private abstract class ProgressBuilder implements Runnable {
+        private final CountDownLatch finishLatch;
+        public boolean finished = false;
+
+        public ProgressBuilder(CountDownLatch finishLatch) {
+            this.finishLatch = finishLatch;
+        }
+
+        protected void callFinished() {
+            finished = true;
+            finishLatch.countDown();
+        }
+
+        protected boolean stopped = false;
+
+        public abstract void copyBackResults();
+
+        public void stopBuilding() {
+            stopped = true;
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Compute a progress relation and set that eliminate at least one
+     * of the given words.
+     */
+    private class ProgressRelationBuilder extends ProgressBuilder {
+        private final List<List<Integer>> elimWords;
+
+        private Automata localInvariant;
+
+        private ReachabilityChecking checking = null;
+        private Automata B = null;
+        private EdgeWeightedDigraph transducer = null;
+
+        public ProgressRelationBuilder(CountDownLatch finishLatch,
+                                       List<List<Integer>> elimWords) {
+            super(finishLatch);
+            this.elimWords = elimWords;
+            this.localInvariant = systemInvariant;
+        }
+
+        public void run() {
+            LOGGER.info("computing new progress relation for one of " + elimWords);
+
+            OldCounterExamples oldCEs = new OldCounterExamples();
+
+            sosLoop: for (int fixedSOS = 1;
+                          fixedSOS <= sosBound;
+                          ++fixedSOS) {
+                for(int numStateTransducer = problem.getMinNumOfStatesTransducer();
+                    numStateTransducer <= problem.getMaxNumOfStatesTransducer();
+                    numStateTransducer++){
+                    for(int numStateAutomata = problem.getMinNumOfStatesAutomaton();
+                        numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
+                        numStateAutomata++){
+
+                        if (stopped) {
+                            LOGGER.info("stopped");
+                            return;
+                        }
+
+                        final int sos =
+                            numStateTransducer * numStateTransducer +
+                            numStateAutomata * numStateAutomata;
+
+                        if (sos != fixedSOS)
+                            continue;
+
+                        checking =
+                            createReachabilityChecking(useRankingFunctions,
+                                                       numStateAutomata,
+                                                       numStateTransducer,
+                                                       oldCEs,
+                                                       localInvariant);
+
+                        checking.setup();
+                        checking.addDisjBMembershipConstraint(elimWords);
+
+                        if (checking.findNextSolution(false)) {
+                            B = checking.getAutomatonB();
+                            transducer = checking.getTransducer();
+                        
+                            // can the solution be made more general?
+                            if (maximiseProgressRelations)
+                                while (true) {
+                                    final List<List<Integer>> remElimWords =
+                                        new ArrayList<List<Integer>>();
+                                    for (List<Integer> w : elimWords) {
+                                        if (B.accepts(w))
+                                            checking.addBMembershipConstraint(w);
+                                        else
+                                            remElimWords.add(w);
+                                    }
+
+                                    if (remElimWords.isEmpty())
+                                        break;
+
+                                    LOGGER.info("trying to cover also one of " + remElimWords);
+                                
+                                    checking.addDisjBMembershipConstraint(remElimWords);
+                                    if (checking.findNextSolution(false)) {
+                                        B = checking.getAutomatonB();
+                                        transducer = checking.getTransducer();
+                                    } else
+                                        break;
+                                }
+                            
+                            localInvariant = checking.getSystemInvariant();
+                            LOGGER.info("finished, found new progress relation!");
+                            callFinished();
+                            return;
+                        }
+                    
+                        localInvariant = checking.getSystemInvariant();
+                    }
+                }
+            }
+
+            LOGGER.info("giving up");
+        }
+        
+        public void copyBackResults() {
+            // augment the set of winning states and continue
+            // with the next configuration
+            augmentWinningStates(checking, B, transducer);
+            distinctRelations.add(0, transducer);
+
+            while (distinctRelations.size() > maxStoredRelationNum)
+                distinctRelations.remove(distinctRelations.size() - 1);
+
+            LOGGER.info("new progress relation: " + transducer);
+            
+            LOGGER.info("now have " + distinctRelations.size() +
+                        " distinct progress relations");
+
+            systemInvariant = localInvariant;
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Compute a progress relation and set that eliminate at least one
+     * of the given words.
+     */
+    private boolean computeProgressRelation(List<List<Integer>> elimWords) {
+        LOGGER.info("computing new progress relation for one of " + elimWords);
+
+        OldCounterExamples oldCEs = new OldCounterExamples();
+
+        sosLoop: for (int fixedSOS = 1; fixedSOS <= sosBound; ++fixedSOS) {
+            for(int numStateTransducer = problem.getMinNumOfStatesTransducer();
+                numStateTransducer <= problem.getMaxNumOfStatesTransducer();
+                numStateTransducer++){
+                for(int numStateAutomata = problem.getMinNumOfStatesAutomaton();
+                    numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
+                    numStateAutomata++){
+
+                    final int sos =
+                        numStateTransducer * numStateTransducer +
+                        numStateAutomata * numStateAutomata;
+
+                    if (sos != fixedSOS)
+                        continue;
+
+                    ReachabilityChecking checking =
+                        createReachabilityChecking(useRankingFunctions,
+                                                   numStateAutomata,
+                                                   numStateTransducer,
+                                                   oldCEs,
+                                                   systemInvariant);
+
+                    checking.setup();
+                    checking.addDisjBMembershipConstraint(elimWords);
+
+                    if (checking.findNextSolution(false)) {
+                        Automata B = checking.getAutomatonB();
+                        EdgeWeightedDigraph transducer = checking.getTransducer();
+                        
+                        // can the solution be made more general?
+                        if (maximiseProgressRelations)
+                            while (true) {
+                                final List<List<Integer>> remElimWords =
+                                    new ArrayList<List<Integer>>();
+                                for (List<Integer> w : elimWords) {
+                                    if (B.accepts(w))
+                                        checking.addBMembershipConstraint(w);
+                                    else
+                                        remElimWords.add(w);
+                                }
+
+                                if (remElimWords.isEmpty())
+                                    break;
+
+                                LOGGER.info("trying to cover also one of " + remElimWords);
+                                
+                                checking.addDisjBMembershipConstraint(remElimWords);
+                                if (checking.findNextSolution(false)) {
+                                    B = checking.getAutomatonB();
+                                    transducer = checking.getTransducer();
+                                } else
+                                    break;
+                            }
+
+                        // augment the set of winning states and continue
+                        // with the next configuration
+                        augmentWinningStates(checking, B, transducer);
+                        distinctRelations.add(0, transducer);
+
+                        while (distinctRelations.size() > maxStoredRelationNum)
+                            distinctRelations.remove(distinctRelations.size() - 1);
+
+                        LOGGER.info("new progress relation: " + transducer);
+                        
+                        LOGGER.info("now have " + distinctRelations.size() +
+                                    " distinct progress relations");
+                        
+                        return true;
+                    }
+                    
+                    systemInvariant = checking.getSystemInvariant();
+                }
+            }
+        }
+
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Compute a regular set B for which the given progress relation
+     * eliminates at least one of the given words.
+     */
+    private class ReusingRelationBuilder extends ProgressBuilder {
+        private final EdgeWeightedDigraph relation;
+        private final int relationNum;
+        private final List<List<Integer>> elimWords;
+
+        private Automata localInvariant;
+
+        private ReachabilityChecking checking = null;
+        private Automata B = null;
+
+        public ReusingRelationBuilder(CountDownLatch finishLatch,
+                                      EdgeWeightedDigraph relation,
+                                      int relationNum,
+                                      List<List<Integer>> elimWords) {
+            super(finishLatch);
+            this.relation = relation;
+            this.relationNum = relationNum;
+            this.elimWords = elimWords;
+            this.localInvariant = systemInvariant;
+        }
+
+        public void run() {
+            LOGGER.info("reusing relation for one of " + elimWords);
+
+            OldCounterExamples oldCEs = new OldCounterExamples();
+
+            for(int numStateAutomata = 1;
+                numStateAutomata <= problem.getMaxNumOfStatesAutomaton() &&
+                    numStateAutomata <= explorationBound;
+                numStateAutomata++) {
+
+                if (stopped) {
+                    LOGGER.info("stopped");
+                    return;
+                }
+
+                checking =
+                    createReachabilityChecking(false, numStateAutomata,
+                                               relation.V(), oldCEs,
+                                               systemInvariant);
+
+                checking.setup();
+                checking.addDisjBMembershipConstraint(elimWords);
+                checking.fixTransducer(relation);
+
+                // exclude words that we know cannot be ranked
+                for (int len = 0; len <= explorationBound; ++len) {
+                    final Set<List<Integer>> rankable =
+                        finiteStates.getRankableConfigs(len, winningStates, relation);
+                    for (List<Integer> w : AutomataConverter.getWords(player1Configs, len))
+                        if (!winningStates.accepts(w) &&
+                            !rankable.contains(w) &&
+                            finiteStates.isReachable(w)) {
+                            //                                LOGGER.info("excluding " + w);
+                            checking.addBNonMembershipConstraint(w);
+                        }
+                }
+
+                if (checking.findNextSolution(false)) {
+                    LOGGER.info("finished, could reuse progress relation!");
+                    callFinished();
+                    return;
+                }
+            }
+
+            LOGGER.info("giving up");
+        }
+
+        public void copyBackResults() {
+            // augment the set of winning states and continue
+            // with the next configuration
+            augmentWinningStates(checking, checking.getAutomatonB(), relation);
+
+            // move successful relation to the beginning
+            distinctRelations.remove(relationNum);
+            distinctRelations.add(0, relation);
+
+            systemInvariant = localInvariant;
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Compute a regular set B for which the given progress relation
+     * eliminates at least one of the given words.
+     */
+    private boolean reuseProgressRelation(EdgeWeightedDigraph relation,
+                                          List<List<Integer>> elimWords) {
+        OldCounterExamples oldCEs = new OldCounterExamples();
+
+        for(int numStateAutomata = 1;
+            numStateAutomata <= problem.getMaxNumOfStatesAutomaton() &&
+                numStateAutomata <= explorationBound;
+            numStateAutomata++) {
+
+            ReachabilityChecking checking =
+                createReachabilityChecking(false, numStateAutomata,
+                                           relation.V(), oldCEs,
+                                           systemInvariant);
+
+            checking.setup();
+            checking.addDisjBMembershipConstraint(elimWords);
+            checking.fixTransducer(relation);
+
+            // exclude words that we know cannot be ranked
+            for (int len = 0; len <= explorationBound; ++len) {
+                final Set<List<Integer>> rankable =
+                    finiteStates.getRankableConfigs(len, winningStates, relation);
+                for (List<Integer> w : AutomataConverter.getWords(player1Configs, len))
+                    if (!winningStates.accepts(w) &&
+                        !rankable.contains(w) &&
+                        finiteStates.isReachable(w)) {
+                        //                                LOGGER.info("excluding " + w);
+                        checking.addBNonMembershipConstraint(w);
+                    }
+            }
+
+            if (checking.findNextSolution(false)) {
+                LOGGER.info("could reuse progress relation!");
+                augmentWinningStates(checking, checking.getAutomatonB(), relation);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
     private ReachabilityChecking createReachabilityChecking
         (boolean useRF, int numStateAutomata, int numStateTransducer,
-         OldCounterExamples oldCEs) {
+         OldCounterExamples oldCEs, Automata systemInvariant) {
         LOGGER.info("Transducer states: " + numStateTransducer +
                     ", automaton states: " + numStateAutomata);
         ReachabilityChecking checking =

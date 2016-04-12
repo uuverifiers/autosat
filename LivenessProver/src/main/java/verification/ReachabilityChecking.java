@@ -67,6 +67,12 @@ public class ReachabilityChecking {
 
     private int round = 0;
 
+    private boolean stopped = false;
+
+    public void stopChecking() {
+        stopped = true;
+    }
+
     public ReachabilityChecking(boolean lexOrder,
 				boolean closeUnderTransitions,
 				boolean checkI0Subset,

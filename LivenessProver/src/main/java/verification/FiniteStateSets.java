@@ -57,7 +57,7 @@ public class FiniteStateSets {
 	    indexToLabel.put(labelToIndex.get(l), l);
     }
 
-    public Set<List<Integer>> getReachableStates(int wordLen) {
+    public synchronized Set<List<Integer>> getReachableStates(int wordLen) {
 	Set<List<Integer>> reachable = reachableStates.get(wordLen);
 	if (reachable == null) {
 	    reachable = new HashSet<List<Integer>>();
@@ -117,7 +117,7 @@ public class FiniteStateSets {
 	return reachable;
     }
 
-    public Automata getReachableStateAutomaton(int wordLen) {
+    public synchronized Automata getReachableStateAutomaton(int wordLen) {
 	Automata reachable = reachableStateAutomata.get(wordLen);
 	if (reachable == null) {
 	    LOGGER.debug("computing automaton describing reachable " +
