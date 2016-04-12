@@ -138,6 +138,11 @@ public class ReachabilityChecking {
 			LOGGER.debug("Satisfiable, round " + round + ", clause num " +
 				     solver.getClauseNum());
 
+                        if (stopped) {
+                            LOGGER.info("stopped");
+                            return false;
+                        }
+
 			unsat = false;
 			Set<Integer> modelPosVars = solver.positiveModelVars();
 
