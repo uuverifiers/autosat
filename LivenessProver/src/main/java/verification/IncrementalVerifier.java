@@ -439,6 +439,11 @@ public class IncrementalVerifier {
                                     } else
                                         break;
                                 }
+
+                            if (stopped) {
+                                LOGGER.info("stopped");
+                                return;
+                            }
                             
                             localInvariant = checking.getSystemInvariant();
                             LOGGER.info("finished, found new progress relation!");
@@ -469,6 +474,12 @@ public class IncrementalVerifier {
                         " distinct progress relations");
 
             systemInvariant = localInvariant;
+        }
+
+        public void stopBuilding() {
+            super.stopBuilding();
+            if (checking != null)
+                checking.stopChecking();
         }
     }
 
@@ -645,6 +656,12 @@ public class IncrementalVerifier {
             distinctRelations.add(0, relation);
 
             systemInvariant = localInvariant;
+        }
+
+        public void stopBuilding() {
+            super.stopBuilding();
+            if (checking != null)
+                checking.stopChecking();
         }
     }
 
