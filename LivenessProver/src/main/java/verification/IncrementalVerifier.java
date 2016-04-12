@@ -594,8 +594,7 @@ public class IncrementalVerifier {
             OldCounterExamples oldCEs = new OldCounterExamples();
 
             for(int numStateAutomata = 1;
-                numStateAutomata <= problem.getMaxNumOfStatesAutomaton() &&
-                    numStateAutomata <= explorationBound;
+                numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
                 numStateAutomata++) {
 
                 if (stopped) {
