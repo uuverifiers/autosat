@@ -44,6 +44,7 @@ public class IncrementalVerifier {
     private static final boolean eliminateMultipleConfigurations = true;
     private static final int     maxStoredRelationNum = 5;
     private static final int     finiteVerificationBound = 6;
+    private static final boolean exploreTransducersParallel = true;
 
     private final boolean verifySolutions;
     private final boolean closeUnderRotation;
@@ -216,10 +217,15 @@ public class IncrementalVerifier {
                 final List<ProgressBuilder> builders = new ArrayList<ProgressBuilder> ();
                 final List<Thread> builderThreads = new ArrayList<Thread> ();
 
-                final ProgressBuilder newRelationBuilder =
-                    new ProgressRelationBuilder(finishLatch, elimWords);
-                builders.add(newRelationBuilder);
-                builderThreads.add(new Thread(newRelationBuilder));
+                for (int n = exploreTransducersParallel ?
+                               1 : problem.getMaxNumOfStatesTransducer();
+                     n <= problem.getMaxNumOfStatesTransducer();
+                     ++n) {
+                    final ProgressBuilder newRelationBuilder =
+                        new ProgressRelationBuilder(finishLatch, elimWords, n);
+                    builders.add(newRelationBuilder);
+                    builderThreads.add(new Thread(newRelationBuilder));
+                }
 
                 int num = 0;
                 for (EdgeWeightedDigraph relation : distinctRelations) {
@@ -323,6 +329,7 @@ public class IncrementalVerifier {
      */
     private class ProgressRelationBuilder extends ProgressBuilder {
         private final List<List<Integer>> elimWords;
+        private final int maxNumStatesTransducer;
 
         private Automata localInvariant;
 
@@ -331,10 +338,12 @@ public class IncrementalVerifier {
         private EdgeWeightedDigraph transducer = null;
 
         public ProgressRelationBuilder(CountDownLatch finishLatch,
-                                       List<List<Integer>> elimWords) {
+                                       List<List<Integer>> elimWords,
+                                       int maxNumStatesTransducer) {
             super(finishLatch);
             this.elimWords = elimWords;
             this.localInvariant = systemInvariant;
+            this.maxNumStatesTransducer = maxNumStatesTransducer;
         }
 
         public void run() {
@@ -346,8 +355,8 @@ public class IncrementalVerifier {
                           fixedSOS <= sosBound;
                           ++fixedSOS) {
                 for(int numStateTransducer = problem.getMinNumOfStatesTransducer();
-                    numStateTransducer <= problem.getMaxNumOfStatesTransducer();
-                    numStateTransducer++){
+                    numStateTransducer <= maxNumStatesTransducer;
+                    numStateTransducer++) {
                     for(int numStateAutomata = problem.getMinNumOfStatesAutomaton();
                         numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
                         numStateAutomata++){
