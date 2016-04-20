@@ -147,7 +147,7 @@ public class IncrementalVerifier {
 		(problem.getNumberOfLetters());
 	}
 
-	int explorationBound = initialFiniteExplorationBound;
+	explorationBound = initialFiniteExplorationBound;
 
         chosenBs = new ArrayList<Automata> ();
         chosenTs = new ArrayList<EdgeWeightedDigraph> ();
@@ -170,8 +170,6 @@ public class IncrementalVerifier {
 	}
 
 	Collections.sort(configurationsUpToBound);
-
-	//	System.out.println(configurationsUpToBound);
     }
 
     ////////////////////////////////////////////////////////////////////////////

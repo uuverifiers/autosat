@@ -218,6 +218,11 @@ public class FiniteStateSets {
     }
 
     public List<List<List<Integer>>> getLevelSets(int wordLen) {
+        return getLevelSets(wordLen, AutomataConverter.getWords(F, wordLen));
+    }
+
+    public List<List<List<Integer>>> getLevelSets(int wordLen,
+                                                  List<List<Integer>> knownWinningStates) {
 	final Set<List<Integer>> reachable = getReachableStates(wordLen);
 	final List<List<List<Integer>>> res = new ArrayList<List<List<Integer>>>();
 
@@ -225,9 +230,6 @@ public class FiniteStateSets {
 	    new HashMap<List<Integer>, List<List<Integer>>>();
 	Map<List<Integer>, List<List<Integer>>> player2Moves =
 	    new HashMap<List<Integer>, List<List<Integer>>>();
-
-	List<List<Integer>> finalStates =
-	    AutomataConverter.getWords(F, wordLen);
 
 	for (List<Integer> w : reachable) {
 	    List<List<Integer>> player1Dest =
@@ -245,7 +247,7 @@ public class FiniteStateSets {
 		player2Moves.put(w, player2Dest);
 
 	    if (player1Dest.isEmpty() && player2Dest.isEmpty() &&
-		!finalStates.contains(w))
+		!knownWinningStates.contains(w))
 		throw new RuntimeException(
                   "There is a non-final reachable configuration from " +
 		  "which neither player can make a move: " + w);
@@ -256,9 +258,9 @@ public class FiniteStateSets {
 	}
 
 	Set<List<Integer>> winningStates = new HashSet<List<Integer>>();
-	winningStates.addAll(finalStates);
+	winningStates.addAll(knownWinningStates);
 
-	res.add(finalStates);
+	res.add(knownWinningStates);
 
 	boolean changed = true;
 	while (changed) {
