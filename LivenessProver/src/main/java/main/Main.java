@@ -9,6 +9,8 @@ import java.io.Reader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import encoding.MinisatSolver;
 import encoding.ISatSolverFactory;
@@ -46,6 +48,18 @@ public class Main {
 
 	String fileName = args[0];
 	SymmetryProb problem = parse(fileName);
+
+        switch (problem.getLogLevel()) {
+        case 1:
+            Configurator.setRootLevel(Level.INFO);
+            break;
+        case 2:
+            Configurator.setRootLevel(Level.ALL);
+            break;
+        default:
+            Configurator.setRootLevel(Level.ERROR);
+            break;
+        }
 
 	writeInputProblem(problem);
 

@@ -194,6 +194,18 @@ public class ComposVisitor<A> implements
 
       return new grammar.Absyn.NoPrecomputedInv();
     }
+    public VerifierOption visit(grammar.Absyn.LogLevel p, A arg)
+    {
+      Integer integer_ = p.integer_;
+
+      return new grammar.Absyn.LogLevel(integer_);
+    }
+    public VerifierOption visit(grammar.Absyn.ParLevel p, A arg)
+    {
+      Integer integer_ = p.integer_;
+
+      return new grammar.Absyn.ParLevel(integer_);
+    }
 
 /* SymmetryOption */
     public SymmetryOption visit(grammar.Absyn.RotationSymmetry p, A arg)

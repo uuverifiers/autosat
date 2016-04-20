@@ -42,13 +42,15 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>explicitChecksUntilLength { return new Symbol(sym._SYMB_15); }
 <YYINITIAL>init { return new Symbol(sym._SYMB_16); }
 <YYINITIAL>initAutomatonStateGuessing { return new Symbol(sym._SYMB_17); }
-<YYINITIAL>loop { return new Symbol(sym._SYMB_18); }
-<YYINITIAL>monolithicWitness { return new Symbol(sym._SYMB_19); }
-<YYINITIAL>noPrecomputedInvariant { return new Symbol(sym._SYMB_20); }
-<YYINITIAL>rotation { return new Symbol(sym._SYMB_21); }
-<YYINITIAL>symmetries { return new Symbol(sym._SYMB_22); }
-<YYINITIAL>transducerStateGuessing { return new Symbol(sym._SYMB_23); }
-<YYINITIAL>useRankingFunctions { return new Symbol(sym._SYMB_24); }
+<YYINITIAL>logLevel { return new Symbol(sym._SYMB_18); }
+<YYINITIAL>loop { return new Symbol(sym._SYMB_19); }
+<YYINITIAL>monolithicWitness { return new Symbol(sym._SYMB_20); }
+<YYINITIAL>noPrecomputedInvariant { return new Symbol(sym._SYMB_21); }
+<YYINITIAL>parallel { return new Symbol(sym._SYMB_22); }
+<YYINITIAL>rotation { return new Symbol(sym._SYMB_23); }
+<YYINITIAL>symmetries { return new Symbol(sym._SYMB_24); }
+<YYINITIAL>transducerStateGuessing { return new Symbol(sym._SYMB_25); }
+<YYINITIAL>useRankingFunctions { return new Symbol(sym._SYMB_26); }
 <YYINITIAL>"//"[^\n]*\n { /* BNFC single-line comment */ }
 <YYINITIAL>"/**" { yybegin(COMMENT); }
 <COMMENT>"**/" { yybegin(YYINITIAL); }

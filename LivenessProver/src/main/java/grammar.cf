@@ -34,6 +34,8 @@ ExplicitChecks.                VerifierOption ::= "explicitChecksUntilLength" ":
 UseRankingFunctions.           VerifierOption ::= "useRankingFunctions";
 MonolithicWitness.             VerifierOption ::= "monolithicWitness";
 NoPrecomputedInv.              VerifierOption ::= "noPrecomputedInvariant";
+LogLevel.                      VerifierOption ::= "logLevel" ":" Integer;
+ParLevel.                      VerifierOption ::= "parallel" ":" Integer;
 
 terminator VerifierOption ";";
 

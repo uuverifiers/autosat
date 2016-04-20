@@ -139,7 +139,7 @@ public class ReachabilityChecking {
 				     solver.getClauseNum());
 
                         if (stopped) {
-                            LOGGER.info("stopped");
+                            LOGGER.debug("stopped");
                             return false;
                         }
 
@@ -369,11 +369,11 @@ public class ReachabilityChecking {
 		}
 
 		if (!success) {
-			LOGGER.info("No more models exist.");
+			LOGGER.debug("No more models exist.");
 		}
 
 		if (unsat) {
-			LOGGER.info("Unsatisfiable!");
+			LOGGER.debug("Unsatisfiable!");
 		}
 		return false;
 	}

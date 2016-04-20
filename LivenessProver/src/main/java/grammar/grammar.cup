@@ -59,13 +59,15 @@ terminal _SYMB_14;    //   closedUnderTransitions
 terminal _SYMB_15;    //   explicitChecksUntilLength
 terminal _SYMB_16;    //   init
 terminal _SYMB_17;    //   initAutomatonStateGuessing
-terminal _SYMB_18;    //   loop
-terminal _SYMB_19;    //   monolithicWitness
-terminal _SYMB_20;    //   noPrecomputedInvariant
-terminal _SYMB_21;    //   rotation
-terminal _SYMB_22;    //   symmetries
-terminal _SYMB_23;    //   transducerStateGuessing
-terminal _SYMB_24;    //   useRankingFunctions
+terminal _SYMB_18;    //   logLevel
+terminal _SYMB_19;    //   loop
+terminal _SYMB_20;    //   monolithicWitness
+terminal _SYMB_21;    //   noPrecomputedInvariant
+terminal _SYMB_22;    //   parallel
+terminal _SYMB_23;    //   rotation
+terminal _SYMB_24;    //   symmetries
+terminal _SYMB_25;    //   transducerStateGuessing
+terminal _SYMB_26;    //   useRankingFunctions
 
 
 
@@ -86,7 +88,7 @@ InitRule ::= _SYMB_16 _SYMB_2 Name:p_3 _SYMB_3  {: RESULT = new grammar.Absyn.Tr
 ;
 TransitionRule ::= Name:p_1 _SYMB_4 Name:p_3 Name:p_4 _SYMB_5 Name:p_6  {: RESULT = new grammar.Absyn.FulTransition(p_1,p_3,p_4,p_6); :} 
   | Name:p_1 _SYMB_4 Name:p_3  {: RESULT = new grammar.Absyn.EmptyTransition(p_1,p_3); :}
-  | _SYMB_18 _SYMB_2 ListName:p_3  {: RESULT = new grammar.Absyn.LoopingTransition(p_3); :}
+  | _SYMB_19 _SYMB_2 ListName:p_3  {: RESULT = new grammar.Absyn.LoopingTransition(p_3); :}
 ;
 AcceptingRule ::= _SYMB_12 _SYMB_2 ListName:p_3 _SYMB_3  {: RESULT = new grammar.Absyn.TransducerAccepting(p_3); :} 
 ;
@@ -99,19 +101,21 @@ AutomataTransitionRule ::= Name:p_1 _SYMB_4 Name:p_3 Name:p_4  {: RESULT = new g
 ;
 AutomataAcceptingsRule ::= _SYMB_12 _SYMB_2 ListName:p_3 _SYMB_3  {: RESULT = new grammar.Absyn.AutomataAcceptings(p_3); :} 
 ;
-VerifierOption ::= _SYMB_23 _SYMB_2 _INTEGER_:p_3 _SYMB_6 _INTEGER_:p_5  {: RESULT = new grammar.Absyn.NumOfStatesTransducerGuess(p_3,p_5); :} 
+VerifierOption ::= _SYMB_25 _SYMB_2 _INTEGER_:p_3 _SYMB_6 _INTEGER_:p_5  {: RESULT = new grammar.Absyn.NumOfStatesTransducerGuess(p_3,p_5); :} 
   | _SYMB_13 _SYMB_2 _INTEGER_:p_3 _SYMB_6 _INTEGER_:p_5  {: RESULT = new grammar.Absyn.NumOfStatesAutomatonGuess(p_3,p_5); :}
   | _SYMB_17 _SYMB_2 _INTEGER_:p_3 _SYMB_6 _INTEGER_:p_5  {: RESULT = new grammar.Absyn.NumOfInitStatesAutomatonGuess(p_3,p_5); :}
-  | _SYMB_22 _SYMB_2 ListSymmetryOption:p_3  {: RESULT = new grammar.Absyn.SymmetryOptions(p_3); :}
+  | _SYMB_24 _SYMB_2 ListSymmetryOption:p_3  {: RESULT = new grammar.Absyn.SymmetryOptions(p_3); :}
   | _SYMB_15 _SYMB_2 _INTEGER_:p_3  {: RESULT = new grammar.Absyn.ExplicitChecks(p_3); :}
-  | _SYMB_24  {: RESULT = new grammar.Absyn.UseRankingFunctions(); :}
-  | _SYMB_19  {: RESULT = new grammar.Absyn.MonolithicWitness(); :}
-  | _SYMB_20  {: RESULT = new grammar.Absyn.NoPrecomputedInv(); :}
+  | _SYMB_26  {: RESULT = new grammar.Absyn.UseRankingFunctions(); :}
+  | _SYMB_20  {: RESULT = new grammar.Absyn.MonolithicWitness(); :}
+  | _SYMB_21  {: RESULT = new grammar.Absyn.NoPrecomputedInv(); :}
+  | _SYMB_18 _SYMB_2 _INTEGER_:p_3  {: RESULT = new grammar.Absyn.LogLevel(p_3); :}
+  | _SYMB_22 _SYMB_2 _INTEGER_:p_3  {: RESULT = new grammar.Absyn.ParLevel(p_3); :}
 ;
 ListVerifierOption ::=  /* empty */  {: RESULT = new grammar.Absyn.ListVerifierOption(); :} 
   | ListVerifierOption:p_1 VerifierOption:p_2 _SYMB_3  {: RESULT = p_1; p_1.addLast(p_2); :}
 ;
-SymmetryOption ::= _SYMB_21  {: RESULT = new grammar.Absyn.RotationSymmetry(); :} 
+SymmetryOption ::= _SYMB_23  {: RESULT = new grammar.Absyn.RotationSymmetry(); :} 
 ;
 ListSymmetryOption ::=  /* empty */  {: RESULT = new grammar.Absyn.ListSymmetryOption(); :} 
   | SymmetryOption:p_1  {: RESULT = new grammar.Absyn.ListSymmetryOption(); RESULT.addLast(p_1); :}

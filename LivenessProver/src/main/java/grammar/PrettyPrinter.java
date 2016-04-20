@@ -569,6 +569,24 @@ public class PrettyPrinter
        render("noPrecomputedInvariant");
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof grammar.Absyn.LogLevel)
+    {
+       grammar.Absyn.LogLevel _loglevel = (grammar.Absyn.LogLevel) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("logLevel");
+       render(":");
+       pp(_loglevel.integer_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof grammar.Absyn.ParLevel)
+    {
+       grammar.Absyn.ParLevel _parlevel = (grammar.Absyn.ParLevel) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("parallel");
+       render(":");
+       pp(_parlevel.integer_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
   }
 
   private static void pp(grammar.Absyn.ListVerifierOption foo, int _i_)
@@ -905,6 +923,22 @@ public class PrettyPrinter
     {
        grammar.Absyn.NoPrecomputedInv _noprecomputedinv = (grammar.Absyn.NoPrecomputedInv) foo;
        render("NoPrecomputedInv");
+    }
+    if (foo instanceof grammar.Absyn.LogLevel)
+    {
+       grammar.Absyn.LogLevel _loglevel = (grammar.Absyn.LogLevel) foo;
+       render("(");
+       render("LogLevel");
+       sh(_loglevel.integer_);
+       render(")");
+    }
+    if (foo instanceof grammar.Absyn.ParLevel)
+    {
+       grammar.Absyn.ParLevel _parlevel = (grammar.Absyn.ParLevel) foo;
+       render("(");
+       render("ParLevel");
+       sh(_parlevel.integer_);
+       render(")");
     }
   }
 

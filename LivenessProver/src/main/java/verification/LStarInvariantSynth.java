@@ -45,7 +45,7 @@ public class LStarInvariantSynth {
     }
     
     public Automata infer() {
-	LOGGER.debug("Using L* to infer system invariant");
+	LOGGER.info("Using L* to infer system invariant");
 
 	final Teacher invTeacher = new InvTeacher();
 	final LStar lstar = new LStar(numLetters, invTeacher);
@@ -53,8 +53,8 @@ public class LStarInvariantSynth {
 	lstar.setup();
 	lstar.solve();
 
-	LOGGER.debug("FOUND SOLUTION!");
-	LOGGER.debug(lstar.getSolution());
+	LOGGER.info("FOUND SOLUTION!");
+	LOGGER.info(lstar.getSolution());
 
 	return lstar.getSolution();
     }   

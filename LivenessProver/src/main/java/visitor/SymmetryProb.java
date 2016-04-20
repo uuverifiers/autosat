@@ -26,6 +26,9 @@ public class SymmetryProb {
 	private int minNumOfInitStatesAutomaton = 0;
 	private int maxNumOfInitStatesAutomaton = 0;
 
+	private int logLevel = 0;
+	private int parLevel = 0;
+
     private boolean closeInitStates = false;
     private boolean useRankingFunctions = false;
     private boolean alwaysMonolithic = false;
@@ -150,6 +153,20 @@ public class SymmetryProb {
     }
     public void setPrecomputedInv(boolean t) {
         precomputedInv = t;
+    }
+
+    public int getLogLevel() {
+        return logLevel;
+    }
+    public void setLogLevel(int t) {
+        logLevel = t;
+    }
+
+    public int getParLevel() {
+        return parLevel;
+    }
+    public void setParLevel(int t) {
+        parLevel = t;
     }
 }
 

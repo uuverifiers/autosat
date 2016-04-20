@@ -56,12 +56,12 @@ public class SatSolver implements ISatSolver {
 	}
 
 	public boolean isSatisfiable() throws TimeoutException {
-	    LOGGER.info("Calling Sat4j");
+	    LOGGER.debug("Calling Sat4j");
 	    final long startTime = System.currentTimeMillis();
 
 	    final boolean res = solver.isSatisfiable();
 
-	    LOGGER.info("Solving time " +
+	    LOGGER.debug("Solving time " +
 			(System.currentTimeMillis() - startTime) + "ms");
 
 	    return res;

@@ -349,4 +349,14 @@ public class AllVisitorImpl implements AllVisitor<Object, SymmetryProb>{
         return null;
     }
 
+    public Object visit(grammar.Absyn.LogLevel p, SymmetryProb arg) {
+        arg.setLogLevel(p.integer_);
+        return null;
+    }
+
+    public Object visit(grammar.Absyn.ParLevel p, SymmetryProb arg) {
+        arg.setParLevel(p.integer_);
+        return null;
+    }
+
 }

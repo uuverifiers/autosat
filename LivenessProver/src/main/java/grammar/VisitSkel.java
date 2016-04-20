@@ -230,6 +230,22 @@ public class VisitSkel
 
       return null;
     }
+    public R visit(grammar.Absyn.LogLevel p, A arg)
+    {
+      /* Code For LogLevel Goes Here */
+
+      //p.integer_;
+
+      return null;
+    }
+    public R visit(grammar.Absyn.ParLevel p, A arg)
+    {
+      /* Code For ParLevel Goes Here */
+
+      //p.integer_;
+
+      return null;
+    }
 
   }
   public class SymmetryOptionVisitor<R,A> implements SymmetryOption.Visitor<R,A>

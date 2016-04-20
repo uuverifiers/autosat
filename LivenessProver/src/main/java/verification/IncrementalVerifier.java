@@ -44,7 +44,9 @@ public class IncrementalVerifier {
     private static final boolean eliminateMultipleConfigurations = true;
     private static final int     maxStoredRelationNum = 5;
     private static final int     finiteVerificationBound = 6;
-    private static final boolean exploreTransducersParallel = true;
+
+    private final boolean parallelise;
+    private final boolean exploreTransducersParallel;
 
     private final boolean verifySolutions;
     private final boolean closeUnderRotation;
@@ -92,6 +94,20 @@ public class IncrementalVerifier {
         this.preComputeReachable = preComputeReachable;
         this.closeUnderRotation = problem.getSymmetries().contains("rotation");
 	this.verifySolutions = verifySolutions;
+        switch (problem.getParLevel()) {
+        case 1:
+            parallelise = true;
+            exploreTransducersParallel = false;
+            break;
+        case 2:
+            parallelise = true;
+            exploreTransducersParallel = true;
+            break;
+        default:
+            parallelise = false;
+            exploreTransducersParallel = false;
+            break;
+        }
     }
 
     /**
@@ -175,6 +191,8 @@ public class IncrementalVerifier {
     ////////////////////////////////////////////////////////////////////////////
 
     public boolean verify() {
+        LOGGER.info("Constructing disjunctive advice bits");
+
 	mainLoop : while (true) {
 
         setupExploredConfigurations();
@@ -182,15 +200,15 @@ public class IncrementalVerifier {
 	for (int configNum = 0; configNum < configurationsUpToBound.size();) {
 	    final Configuration config = configurationsUpToBound.get(configNum);
 	    final int rank = config.rank;
-	    LOGGER.info("checking configuration " + config.word + ", rank " +
-			rank + " ...");
+	    LOGGER.debug("checking configuration " + config.word + ", rank " +
+                         rank + " ...");
 
 	    final boolean coveredConfig = winningStates.accepts(config.word);
 	    if (coveredConfig) {
-		LOGGER.info("already covered");
+		LOGGER.debug("already covered");
 		++configNum;
 	    } else {
-		LOGGER.info("not covered, extending progress relation");
+		LOGGER.debug("not covered, extending progress relation");
 
                 //                if (!distinctRelations.isEmpty() && reuseProgressRelations())
                 //                    continue;
@@ -208,23 +226,14 @@ public class IncrementalVerifier {
 			    elimWords.add(configurationsUpToBound.get(i).word);
 		}
 
-                LOGGER.info("trying to rank one of " + elimWords);
+                LOGGER.debug("trying to rank one of " + elimWords);
 
                 final CountDownLatch finishLatch = new CountDownLatch(1);
 
                 final List<ProgressBuilder> builders = new ArrayList<ProgressBuilder> ();
                 final List<Thread> builderThreads = new ArrayList<Thread> ();
 
-                for (int n = exploreTransducersParallel ?
-                               1 : problem.getMaxNumOfStatesTransducer();
-                     n <= problem.getMaxNumOfStatesTransducer();
-                     ++n) {
-                    final ProgressBuilder newRelationBuilder =
-                        new ProgressRelationBuilder(finishLatch, elimWords, n);
-                    builders.add(newRelationBuilder);
-                    builderThreads.add(new Thread(newRelationBuilder));
-                }
-
+                // builders for reusing old relations
                 int num = 0;
                 for (EdgeWeightedDigraph relation : distinctRelations) {
                     List<List<Integer>> extraWords = new ArrayList<List<Integer>> ();
@@ -241,7 +250,7 @@ public class IncrementalVerifier {
                     }
 
                     if (!extraWords.isEmpty()) {
-                        LOGGER.info("relation #" + num + " can rank " + extraWords);
+                        LOGGER.debug("relation #" + num + " can rank " + extraWords);
                         final ProgressBuilder builder =
                             new ReusingRelationBuilder(finishLatch, relation, num, extraWords);
                         builders.add(builder);
@@ -251,19 +260,40 @@ public class IncrementalVerifier {
                     ++num;
                 }
 
+                // builders for constructing new relations
+                for (int n = exploreTransducersParallel ?
+                               1 : problem.getMaxNumOfStatesTransducer();
+                     n <= problem.getMaxNumOfStatesTransducer();
+                     ++n) {
+                    final ProgressBuilder newRelationBuilder =
+                        new ProgressRelationBuilder(finishLatch, elimWords, n);
+                    builders.add(newRelationBuilder);
+                    builderThreads.add(new Thread(newRelationBuilder));
+                }
+
                 //                computeProgressRelation(elimWords);
 
-                for (Thread t : builderThreads)
-                    t.start();
-
                 try {
-                    finishLatch.await();
+                    if (parallelise) {
+                        for (Thread t : builderThreads)
+                            t.start();
 
-                    // stop all threads
-                    for (ProgressBuilder builder : builders)
-                        builder.stopBuilding();
-                    for (Thread t : builderThreads)
-                        t.join();
+                        finishLatch.await();
+
+                        // stop all threads
+                        for (ProgressBuilder builder : builders)
+                            builder.stopBuilding();
+                        for (Thread t : builderThreads)
+                            t.join();
+                    } else {
+                        // run the threads one by one
+                        for (int i = 0; i < builders.size(); ++i) {
+                            builderThreads.get(i).start();
+                            builderThreads.get(i).join();
+                            if (builders.get(i).finished)
+                                break;
+                        }
+                    }
 
                     boolean oneDone = false;
                     for (ProgressBuilder builder : builders) {
@@ -274,7 +304,9 @@ public class IncrementalVerifier {
                         }
                     }
 
-                    assert(oneDone);
+                    if (!oneDone)
+                        throw new RuntimeException
+                            ("Could not extend advice bit further");
                 } catch(InterruptedException e) {
                     LOGGER.error("interrupted");
                 }
@@ -345,7 +377,7 @@ public class IncrementalVerifier {
         }
 
         public void run() {
-            LOGGER.info("computing new progress relation for one of " + elimWords);
+            LOGGER.debug("computing new progress relation for one of " + elimWords);
 
             OldCounterExamples oldCEs = new OldCounterExamples();
 
@@ -360,7 +392,7 @@ public class IncrementalVerifier {
                         numStateAutomata++){
 
                         if (stopped) {
-                            LOGGER.info("stopped");
+                            LOGGER.debug("stopped");
                             return;
                         }
 
@@ -400,7 +432,7 @@ public class IncrementalVerifier {
                                     if (remElimWords.isEmpty())
                                         break;
 
-                                    LOGGER.info("trying to cover also one of " + remElimWords);
+                                    LOGGER.debug("trying to cover also one of " + remElimWords);
                                 
                                     checking.addDisjBMembershipConstraint(remElimWords);
                                     if (checking.findNextSolution(false)) {
@@ -411,12 +443,12 @@ public class IncrementalVerifier {
                                 }
 
                             if (stopped) {
-                                LOGGER.info("stopped");
+                                LOGGER.debug("stopped");
                                 return;
                             }
                             
                             localInvariant = checking.getSystemInvariant();
-                            LOGGER.info("finished, found new progress relation!");
+                            LOGGER.debug("found new progress relation!");
                             callFinished();
                             return;
                         }
@@ -426,7 +458,7 @@ public class IncrementalVerifier {
                 }
             }
 
-            LOGGER.info("giving up");
+            LOGGER.debug("giving up");
         }
         
         public void copyBackResults() {
@@ -438,7 +470,7 @@ public class IncrementalVerifier {
             while (distinctRelations.size() > maxStoredRelationNum)
                 distinctRelations.remove(distinctRelations.size() - 1);
 
-            LOGGER.info("new progress relation: " + transducer);
+            LOGGER.debug("new progress relation: " + transducer);
             
             LOGGER.info("now have " + distinctRelations.size() +
                         " distinct progress relations");
@@ -481,7 +513,7 @@ public class IncrementalVerifier {
         }
 
         public void run() {
-            LOGGER.info("reusing relation for one of " + elimWords);
+            LOGGER.debug("reusing relation for one of " + elimWords);
 
             OldCounterExamples oldCEs = new OldCounterExamples();
 
@@ -490,7 +522,7 @@ public class IncrementalVerifier {
                 numStateAutomata++) {
 
                 if (stopped) {
-                    LOGGER.info("stopped");
+                    LOGGER.debug("stopped");
                     return;
                 }
 
@@ -518,7 +550,7 @@ public class IncrementalVerifier {
 
                 if (checking.findNextSolution(false)) {
                     localInvariant = checking.getSystemInvariant();
-                    LOGGER.info("finished, could reuse progress relation!");
+                    LOGGER.debug("could reuse progress relation!");
                     callFinished();
                     return;
                 }
@@ -526,7 +558,7 @@ public class IncrementalVerifier {
                 localInvariant = checking.getSystemInvariant();
             }
 
-            LOGGER.info("giving up");
+            LOGGER.debug("giving up");
         }
 
         public void copyBackResults() {
@@ -553,8 +585,8 @@ public class IncrementalVerifier {
     private ReachabilityChecking createReachabilityChecking
         (boolean useRF, int numStateAutomata, int numStateTransducer,
          OldCounterExamples oldCEs, Automata systemInvariant) {
-        LOGGER.info("Transducer states: " + numStateTransducer +
-                    ", automaton states: " + numStateAutomata);
+        LOGGER.debug("Transducer states: " + numStateTransducer +
+                     ", automaton states: " + numStateAutomata);
         ReachabilityChecking checking =
             new ReachabilityChecking(useRF, false, false, SOLVER_FACTORY);
         checking.setAutomataNumStates(numStateAutomata);
@@ -613,7 +645,7 @@ public class IncrementalVerifier {
 		LOGGER.info("now checking configurations up to length " + explorationBound);
 		break checkConvergence;
 	    } else {
-		LOGGER.info("" + cex + " is not reachable, strengthening invariant");
+		LOGGER.debug("" + cex + " is not reachable, strengthening invariant");
 
 		OldCounterExamples oldCEs = new OldCounterExamples();
 		Automata newInv = null;
