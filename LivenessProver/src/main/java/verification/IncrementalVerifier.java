@@ -774,42 +774,36 @@ public class IncrementalVerifier {
 
         Map<Integer, String> indexToLabel = problem.getIndexToLabel();
 
-	System.out.println("Verdict: Player 2 can win from every reachable configuration");
+	System.out.println("VERDICT: Player 2 can win from every reachable configuration");
 	System.out.println();
 
 	System.out.println("// Approximation of reachable states");
-	System.out.println(systemInvariant.prettyPrint("I", indexToLabel));
-	System.out.println();
+	System.out.println(systemInvariant.prettyPrint("A", indexToLabel));
 
 	System.out.println("// States from which player 2 can move and win");
 	System.out.println(winningStates.prettyPrint("W", indexToLabel));
-	System.out.println();
 
-	System.out.println("Progress relations" +
-                           (closeUnderRotation ? " (all closed under rotation)" : "") +
-                           ":");
-	System.out.println();
+	System.out.println("// Progress relations" +
+                           (closeUnderRotation ? " (all to be closed under rotation)" : ""));
 
         for (int i = 0; i < chosenBs.size(); ++i) {
-            System.out.println("B" + i + ":");
-            System.out.println(chosenBs.get(i));
-            System.out.println("T" + i + ":");
-            System.out.println(chosenTs.get(i));
+            System.out.println(chosenBs.get(i).prettyPrint("B" + i, indexToLabel));
+            System.out.println(chosenTs.get(i).prettyPrint("T" + i, indexToLabel, indexToLabel));
         }
         System.out.println();
 
-	System.out.println("Assumptions made (but not checked):");
-	System.out.println("* players move in alternation");
-	System.out.println("* from every reachable non-terminal configuration, exactly one");
-	System.out.println("  of the players can make a move");
+	System.out.println("// Assumptions made (but not checked):");
+	System.out.println("// * players move in alternation");
+	System.out.println("// * from every reachable non-terminal configuration, exactly one");
+	System.out.println("//   of the players can make a move");
 	if (closeUnderRotation)
-	    System.out.println("* the game is symmetric under rotation");
+	    System.out.println("// * the game is symmetric under rotation");
 
 	System.out.println();
 
 	if (verifySolutions)
 	    for (int len = 0; len <= finiteVerificationBound; ++len) {
-		System.out.print("Verifying solution for configurations of " +
+		System.out.print("// Verifying solution for configurations of " +
 				 "length " + len + " ... ");
 		verifyResults(len);
 		System.out.println("done");

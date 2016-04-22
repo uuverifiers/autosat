@@ -63,10 +63,12 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <COMMENT>[\n] { }
 
 
+<YYINITIAL>({LETTER}|{DIGIT}|_)*({LETTER}|_){DIGIT}* { return new Symbol(sym.LabelIdent, yytext().intern()); }
+<YYINITIAL>{DIGIT}+ { return new Symbol(sym.MyInteger, yytext().intern()); }
 
 
 
 
-<YYINITIAL>{DIGIT}+ { return new Symbol(sym._INTEGER_, new Integer(yytext())); }
-<YYINITIAL>{LETTER}{IDENT}* { return new Symbol(sym._IDENT_, yytext().intern()); }
+
+
 <YYINITIAL>[ \t\r\n\f] { /* ignore white space. */ }

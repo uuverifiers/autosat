@@ -328,33 +328,35 @@ public class ReachabilityChecking {
 			success = true;
 
 			if (printResult) {
-				System.out.println("Verdict: Player 2 can win from every initial configuration");
+                            Map<Integer, String> indexToLabel = new HashMap<Integer, String> ();
+                            for (Map.Entry<String, Integer> entry : labelToIndex.entrySet())
+                                indexToLabel.put(entry.getValue(), entry.getKey());
+        
+                            System.out.println("VERDICT: Player 2 can win from every initial configuration");
+                            System.out.println();
 
-                                System.out.println();
-                                System.out.println("Approximation of reachable states:");
-				System.out.println(automatonB);
+                            System.out.println("// Approximation of reachable states");
+                            System.out.println(automatonB.prettyPrint("B", indexToLabel));
 
-				if (rankingFunction != null) {
-					System.out.println("Ranking function:");
-					System.out.println(rankingFunction);
-					System.out.println();
-				}
+                            if (rankingFunction != null) {
+                                System.out.println("// Ranking function");
+                                Map<Integer, String> idMap = new HashMap<Integer, String> ();
+                                for (int i = 0; i < numLetters; ++i)
+                                    idMap.put(i, "" + i);
+                                System.out.println(rankingFunction.prettyPrint("RF", indexToLabel, idMap));
+                            }
 
-				if (systemInvariant != null) {
-					System.out.println("System invariant:");
-					System.out.println(systemInvariant);
-					System.out.println();
-				}
+                            if (systemInvariant != null) {
+                                System.out.println("// System invariant");
+                                System.out.println(systemInvariant.prettyPrint("I", indexToLabel));
+                            }
 
-				System.out.println("Progress relation:");
-				System.out.println(transducer);
+                            System.out.println("// Progress relation" +
+                                               ((rankingFunction != null) ? " induced by ranking function" : ""));
+                            System.out.println(transducer.prettyPrint("T", indexToLabel, indexToLabel));
 
-				System.out.println();
-				System.out.println("Character mapping:");
-				System.out.println(labelToIndex);
-
-				//write to dot
-				writeToDot(automatonB, transducer);
+                            //write to dot
+                            writeToDot(automatonB, transducer);
 			}
 
 			break;

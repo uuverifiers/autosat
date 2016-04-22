@@ -145,24 +145,24 @@ public class ComposVisitor<A> implements
 /* VerifierOption */
     public VerifierOption visit(grammar.Absyn.NumOfStatesTransducerGuess p, A arg)
     {
-      Integer integer_1 = p.integer_1;
-      Integer integer_2 = p.integer_2;
+      String myinteger_1 = p.myinteger_1;
+      String myinteger_2 = p.myinteger_2;
 
-      return new grammar.Absyn.NumOfStatesTransducerGuess(integer_1, integer_2);
+      return new grammar.Absyn.NumOfStatesTransducerGuess(myinteger_1, myinteger_2);
     }
     public VerifierOption visit(grammar.Absyn.NumOfStatesAutomatonGuess p, A arg)
     {
-      Integer integer_1 = p.integer_1;
-      Integer integer_2 = p.integer_2;
+      String myinteger_1 = p.myinteger_1;
+      String myinteger_2 = p.myinteger_2;
 
-      return new grammar.Absyn.NumOfStatesAutomatonGuess(integer_1, integer_2);
+      return new grammar.Absyn.NumOfStatesAutomatonGuess(myinteger_1, myinteger_2);
     }
     public VerifierOption visit(grammar.Absyn.NumOfInitStatesAutomatonGuess p, A arg)
     {
-      Integer integer_1 = p.integer_1;
-      Integer integer_2 = p.integer_2;
+      String myinteger_1 = p.myinteger_1;
+      String myinteger_2 = p.myinteger_2;
 
-      return new grammar.Absyn.NumOfInitStatesAutomatonGuess(integer_1, integer_2);
+      return new grammar.Absyn.NumOfInitStatesAutomatonGuess(myinteger_1, myinteger_2);
     }
     public VerifierOption visit(grammar.Absyn.SymmetryOptions p, A arg)
     {
@@ -175,9 +175,9 @@ public class ComposVisitor<A> implements
     }
     public VerifierOption visit(grammar.Absyn.ExplicitChecks p, A arg)
     {
-      Integer integer_ = p.integer_;
+      String myinteger_ = p.myinteger_;
 
-      return new grammar.Absyn.ExplicitChecks(integer_);
+      return new grammar.Absyn.ExplicitChecks(myinteger_);
     }
     public VerifierOption visit(grammar.Absyn.UseRankingFunctions p, A arg)
     {
@@ -196,15 +196,15 @@ public class ComposVisitor<A> implements
     }
     public VerifierOption visit(grammar.Absyn.LogLevel p, A arg)
     {
-      Integer integer_ = p.integer_;
+      String myinteger_ = p.myinteger_;
 
-      return new grammar.Absyn.LogLevel(integer_);
+      return new grammar.Absyn.LogLevel(myinteger_);
     }
     public VerifierOption visit(grammar.Absyn.ParLevel p, A arg)
     {
-      Integer integer_ = p.integer_;
+      String myinteger_ = p.myinteger_;
 
-      return new grammar.Absyn.ParLevel(integer_);
+      return new grammar.Absyn.ParLevel(myinteger_);
     }
 
 /* SymmetryOption */
@@ -229,15 +229,15 @@ public class ComposVisitor<A> implements
 /* Name */
     public Name visit(grammar.Absyn.NumberName p, A arg)
     {
-      Integer integer_ = p.integer_;
+      String myinteger_ = p.myinteger_;
 
-      return new grammar.Absyn.NumberName(integer_);
+      return new grammar.Absyn.NumberName(myinteger_);
     }
     public Name visit(grammar.Absyn.LiteralName p, A arg)
     {
-      String ident_ = p.ident_;
+      String labelident_ = p.labelident_;
 
-      return new grammar.Absyn.LiteralName(ident_);
+      return new grammar.Absyn.LiteralName(labelident_);
     }
 
 }

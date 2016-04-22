@@ -26,16 +26,16 @@ AutomataEmptyTransition. AutomataTransitionRule ::= Name "->" Name;
 AutomataAcceptings. AutomataAcceptingsRule ::= "accepting" ":" [Name] ";";
 
 --Number of state guessing
-NumOfStatesTransducerGuess.    VerifierOption ::= "transducerStateGuessing" ":" Integer ".." Integer ;
-NumOfStatesAutomatonGuess.     VerifierOption ::= "automatonStateGuessing" ":" Integer ".." Integer ;
-NumOfInitStatesAutomatonGuess. VerifierOption ::= "initAutomatonStateGuessing" ":" Integer ".." Integer ;
+NumOfStatesTransducerGuess.    VerifierOption ::= "transducerStateGuessing" ":" MyInteger ".." MyInteger ;
+NumOfStatesAutomatonGuess.     VerifierOption ::= "automatonStateGuessing" ":" MyInteger ".." MyInteger ;
+NumOfInitStatesAutomatonGuess. VerifierOption ::= "initAutomatonStateGuessing" ":" MyInteger ".." MyInteger ;
 SymmetryOptions.               VerifierOption ::= "symmetries" ":" [SymmetryOption];
-ExplicitChecks.                VerifierOption ::= "explicitChecksUntilLength" ":" Integer;
+ExplicitChecks.                VerifierOption ::= "explicitChecksUntilLength" ":" MyInteger;
 UseRankingFunctions.           VerifierOption ::= "useRankingFunctions";
 MonolithicWitness.             VerifierOption ::= "monolithicWitness";
 NoPrecomputedInv.              VerifierOption ::= "noPrecomputedInvariant";
-LogLevel.                      VerifierOption ::= "logLevel" ":" Integer;
-ParLevel.                      VerifierOption ::= "parallel" ":" Integer;
+LogLevel.                      VerifierOption ::= "logLevel" ":" MyInteger;
+ParLevel.                      VerifierOption ::= "parallel" ":" MyInteger;
 
 terminator VerifierOption ";";
 
@@ -48,8 +48,11 @@ ClosedInit.     MaybeClosed ::= "closedUnderTransitions" ";" ;
 NotClosedInit.  MaybeClosed ::= ;
 
 
-NumberName. Name ::= Integer;
-LiteralName. Name ::= Ident;
+NumberName. Name ::= MyInteger;
+LiteralName. Name ::= LabelIdent;
+
+token LabelIdent (letter | digit | '_')* (letter | '_') digit*;
+token MyInteger digit +;
 
 comment "/**" "**/" ;
 comment "/*" "*/" ;

@@ -503,9 +503,9 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        render("transducerStateGuessing");
        render(":");
-       pp(_numofstatestransducerguess.integer_1, 0);
+       pp(_numofstatestransducerguess.myinteger_1, 0);
        render("..");
-       pp(_numofstatestransducerguess.integer_2, 0);
+       pp(_numofstatestransducerguess.myinteger_2, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof grammar.Absyn.NumOfStatesAutomatonGuess)
@@ -514,9 +514,9 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        render("automatonStateGuessing");
        render(":");
-       pp(_numofstatesautomatonguess.integer_1, 0);
+       pp(_numofstatesautomatonguess.myinteger_1, 0);
        render("..");
-       pp(_numofstatesautomatonguess.integer_2, 0);
+       pp(_numofstatesautomatonguess.myinteger_2, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof grammar.Absyn.NumOfInitStatesAutomatonGuess)
@@ -525,9 +525,9 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        render("initAutomatonStateGuessing");
        render(":");
-       pp(_numofinitstatesautomatonguess.integer_1, 0);
+       pp(_numofinitstatesautomatonguess.myinteger_1, 0);
        render("..");
-       pp(_numofinitstatesautomatonguess.integer_2, 0);
+       pp(_numofinitstatesautomatonguess.myinteger_2, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof grammar.Absyn.SymmetryOptions)
@@ -545,7 +545,7 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        render("explicitChecksUntilLength");
        render(":");
-       pp(_explicitchecks.integer_, 0);
+       pp(_explicitchecks.myinteger_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof grammar.Absyn.UseRankingFunctions)
@@ -575,7 +575,7 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        render("logLevel");
        render(":");
-       pp(_loglevel.integer_, 0);
+       pp(_loglevel.myinteger_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof grammar.Absyn.ParLevel)
@@ -584,7 +584,7 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        render("parallel");
        render(":");
-       pp(_parlevel.integer_, 0);
+       pp(_parlevel.myinteger_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
   }
@@ -650,14 +650,14 @@ public class PrettyPrinter
     {
        grammar.Absyn.NumberName _numbername = (grammar.Absyn.NumberName) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_numbername.integer_, 0);
+       pp(_numbername.myinteger_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof grammar.Absyn.LiteralName)
     {
        grammar.Absyn.LiteralName _literalname = (grammar.Absyn.LiteralName) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_literalname.ident_, 0);
+       pp(_literalname.labelident_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
   }
@@ -869,8 +869,8 @@ public class PrettyPrinter
        grammar.Absyn.NumOfStatesTransducerGuess _numofstatestransducerguess = (grammar.Absyn.NumOfStatesTransducerGuess) foo;
        render("(");
        render("NumOfStatesTransducerGuess");
-       sh(_numofstatestransducerguess.integer_1);
-       sh(_numofstatestransducerguess.integer_2);
+       sh(_numofstatestransducerguess.myinteger_1);
+       sh(_numofstatestransducerguess.myinteger_2);
        render(")");
     }
     if (foo instanceof grammar.Absyn.NumOfStatesAutomatonGuess)
@@ -878,8 +878,8 @@ public class PrettyPrinter
        grammar.Absyn.NumOfStatesAutomatonGuess _numofstatesautomatonguess = (grammar.Absyn.NumOfStatesAutomatonGuess) foo;
        render("(");
        render("NumOfStatesAutomatonGuess");
-       sh(_numofstatesautomatonguess.integer_1);
-       sh(_numofstatesautomatonguess.integer_2);
+       sh(_numofstatesautomatonguess.myinteger_1);
+       sh(_numofstatesautomatonguess.myinteger_2);
        render(")");
     }
     if (foo instanceof grammar.Absyn.NumOfInitStatesAutomatonGuess)
@@ -887,8 +887,8 @@ public class PrettyPrinter
        grammar.Absyn.NumOfInitStatesAutomatonGuess _numofinitstatesautomatonguess = (grammar.Absyn.NumOfInitStatesAutomatonGuess) foo;
        render("(");
        render("NumOfInitStatesAutomatonGuess");
-       sh(_numofinitstatesautomatonguess.integer_1);
-       sh(_numofinitstatesautomatonguess.integer_2);
+       sh(_numofinitstatesautomatonguess.myinteger_1);
+       sh(_numofinitstatesautomatonguess.myinteger_2);
        render(")");
     }
     if (foo instanceof grammar.Absyn.SymmetryOptions)
@@ -906,7 +906,7 @@ public class PrettyPrinter
        grammar.Absyn.ExplicitChecks _explicitchecks = (grammar.Absyn.ExplicitChecks) foo;
        render("(");
        render("ExplicitChecks");
-       sh(_explicitchecks.integer_);
+       sh(_explicitchecks.myinteger_);
        render(")");
     }
     if (foo instanceof grammar.Absyn.UseRankingFunctions)
@@ -929,7 +929,7 @@ public class PrettyPrinter
        grammar.Absyn.LogLevel _loglevel = (grammar.Absyn.LogLevel) foo;
        render("(");
        render("LogLevel");
-       sh(_loglevel.integer_);
+       sh(_loglevel.myinteger_);
        render(")");
     }
     if (foo instanceof grammar.Absyn.ParLevel)
@@ -937,7 +937,7 @@ public class PrettyPrinter
        grammar.Absyn.ParLevel _parlevel = (grammar.Absyn.ParLevel) foo;
        render("(");
        render("ParLevel");
-       sh(_parlevel.integer_);
+       sh(_parlevel.myinteger_);
        render(")");
     }
   }
@@ -992,7 +992,7 @@ public class PrettyPrinter
        grammar.Absyn.NumberName _numbername = (grammar.Absyn.NumberName) foo;
        render("(");
        render("NumberName");
-       sh(_numbername.integer_);
+       sh(_numbername.myinteger_);
        render(")");
     }
     if (foo instanceof grammar.Absyn.LiteralName)
@@ -1000,7 +1000,7 @@ public class PrettyPrinter
        grammar.Absyn.LiteralName _literalname = (grammar.Absyn.LiteralName) foo;
        render("(");
        render("LiteralName");
-       sh(_literalname.ident_);
+       sh(_literalname.labelident_);
        render(")");
     }
   }

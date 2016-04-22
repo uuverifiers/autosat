@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 import java.util.Stack;
 
 
@@ -183,6 +184,44 @@ public class EdgeWeightedDigraph {
         return s.toString();
     }
     
+    public String prettyPrint(String name,
+                              Map<Integer, String> inputLabels,
+                              Map<Integer, String> outputLabels) {
+        String NEWLINE = System.getProperty("line.separator");
+        StringBuilder s = new StringBuilder();
+
+        s.append(name);
+        s.append(" {" + NEWLINE);
+        s.append("  init: s" + initState + ";" + NEWLINE);
+
+        for (int v = 0; v < V; v++)
+            for (DirectedEdge e : adj[v]) {
+                s.append("  s" + v + " -> s" + e.to());
+                if (e instanceof DirectedEdgeWithInputOutput) {
+                    DirectedEdgeWithInputOutput ioe = (DirectedEdgeWithInputOutput)e;
+                    s.append(" " +
+                             inputLabels.get(ioe.getInput()) + "/" +
+                             outputLabels.get(ioe.getOutput()));
+                }
+                s.append(";" + NEWLINE);
+            }
+
+        if (!acceptingStates.isEmpty()) {
+            s.append("  accepting: ");
+            String sep = "";
+            for (int state : acceptingStates) {
+                s.append(sep + "s" + state);
+                sep = ", ";
+            }
+            s.append(";" + NEWLINE);
+        }
+
+        s.append("}" + NEWLINE);
+
+        return s.toString();
+    }
+    
+
     /**
      * Return the edges from root to a state in goal. return null if unreachable
      * @param root

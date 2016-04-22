@@ -224,29 +224,29 @@ public class AllVisitorImpl implements AllVisitor<Object, SymmetryProb>{
 	}
 
 	public Object visit(NumberName p, SymmetryProb arg) {
-		return p.integer_.toString();
+		return p.myinteger_;
 	}
 
 	public Object visit(LiteralName p, SymmetryProb arg) {
-		return p.ident_;
+		return p.labelident_;
 	}
 	
 	public Object visit(NumOfStatesTransducerGuess p, SymmetryProb arg) {
-		arg.setMinNumOfStatesTransducer(p.integer_1);
-		arg.setMaxNumOfStatesTransducer(p.integer_2);
-		return null;
+            arg.setMinNumOfStatesTransducer(Integer.parseInt(p.myinteger_1));
+            arg.setMaxNumOfStatesTransducer(Integer.parseInt(p.myinteger_2));
+            return null;
 	}
 
 	public Object visit(NumOfStatesAutomatonGuess p, SymmetryProb arg) {
-		arg.setMinNumOfStatesAutomaton(p.integer_1);
-		arg.setMaxNumOfStatesAutomaton(p.integer_2);
-		return null;
+            arg.setMinNumOfStatesAutomaton(Integer.parseInt(p.myinteger_1));
+            arg.setMaxNumOfStatesAutomaton(Integer.parseInt(p.myinteger_2));
+            return null;
 	}
 
     public Object visit(NumOfInitStatesAutomatonGuess p, SymmetryProb arg)
     {
-        arg.setMinNumOfInitStatesAutomaton(p.integer_1);
-        arg.setMaxNumOfInitStatesAutomaton(p.integer_2);
+        arg.setMinNumOfInitStatesAutomaton(Integer.parseInt(p.myinteger_1));
+        arg.setMaxNumOfInitStatesAutomaton(Integer.parseInt(p.myinteger_2));
         return null;
     }
     public Object visit(NoInitStatesAutomatonGuess p, SymmetryProb arg)
@@ -330,7 +330,7 @@ public class AllVisitorImpl implements AllVisitor<Object, SymmetryProb>{
     }
 
     public Object visit(grammar.Absyn.ExplicitChecks p, SymmetryProb arg) {
-        arg.setExplicitChecksUntilLength(p.integer_);
+        arg.setExplicitChecksUntilLength(Integer.parseInt(p.myinteger_));
         return null;
     }
 
@@ -350,12 +350,12 @@ public class AllVisitorImpl implements AllVisitor<Object, SymmetryProb>{
     }
 
     public Object visit(grammar.Absyn.LogLevel p, SymmetryProb arg) {
-        arg.setLogLevel(p.integer_);
+        arg.setLogLevel(Integer.parseInt(p.myinteger_));
         return null;
     }
 
     public Object visit(grammar.Absyn.ParLevel p, SymmetryProb arg) {
-        arg.setParLevel(p.integer_);
+        arg.setParLevel(Integer.parseInt(p.myinteger_));
         return null;
     }
 
