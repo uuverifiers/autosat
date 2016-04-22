@@ -328,8 +328,10 @@ public class ReachabilityChecking {
 			success = true;
 
 			if (printResult) {
-				System.out.println("FOUND SOLUTION!");
-				System.out.println("A:");
+				System.out.println("Verdict: Player 2 can win from every initial configuration");
+
+                                System.out.println();
+                                System.out.println("Approximation of reachable states:");
 				System.out.println(automatonB);
 
 				if (rankingFunction != null) {
@@ -344,7 +346,7 @@ public class ReachabilityChecking {
 					System.out.println();
 				}
 
-				System.out.println("Well-founded order:");
+				System.out.println("Progress relation:");
 				System.out.println(transducer);
 
 				System.out.println();

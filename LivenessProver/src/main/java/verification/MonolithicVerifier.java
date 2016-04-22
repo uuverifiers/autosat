@@ -33,6 +33,8 @@ public class MonolithicVerifier {
     }
 
     public boolean verify() {
+        LOGGER.info("Constructing monolithic advice bits");
+
 	int bound =
 	    problem.getMaxNumOfStatesTransducer() * problem.getMaxNumOfStatesTransducer() +
 	    problem.getMaxNumOfStatesAutomaton() * problem.getMaxNumOfStatesAutomaton();
@@ -75,8 +77,10 @@ public class MonolithicVerifier {
 			if (sos != fixedSOS)
 			    continue;
 
-			LOGGER.info("Transducer states: " + numStateTransducer +
-				    ", automaton states: " + numStateAutomata);
+			LOGGER.info("Advice bit size: # transducer states: " +
+                                    numStateTransducer +
+				    ", # automaton states: " +
+                                    numStateAutomata);
 			ReachabilityChecking checking =
 			    new ReachabilityChecking(useRankingFunctions,
 						     problem.getCloseInitStates(),
