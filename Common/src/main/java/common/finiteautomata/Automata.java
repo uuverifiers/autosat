@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Map;
 
 /**
  * States are labeled from 0 to V-1 where V is number of states.
@@ -186,8 +187,42 @@ public class Automata {
         		s.append(NEWLINE);
         	}
         }
-        s.append("init: 0" + NEWLINE);
+        s.append("init: " + getInitState() + NEWLINE);
         s.append("accepting: " + acceptingStates + NEWLINE);
+       
+        return s.toString();
+    }
+    
+    public String prettyPrint(String name,
+                              Map<Integer, String> indexToLabel) {
+        String NEWLINE = System.getProperty("line.separator");
+        StringBuilder s = new StringBuilder();
+
+        s.append(name);
+        s.append(" {" + NEWLINE);
+        s.append("  init: s" + getInitState() + ";" + NEWLINE);
+
+        for(State v: states){
+        	Set<Integer> labels = v.getOutgoingLabels();
+        	for(int label: labels){
+                    for (int dest : v.getDest(label)) {
+        		s.append("  s" +
+                                 v.getId() + " -> s" + dest + " " +
+                                 indexToLabel.get(label));
+        		s.append(";" + NEWLINE);
+                    }
+        	}
+        }
+        if (!acceptingStates.isEmpty()) {
+            s.append("  accepting: ");
+            String sep = "";
+            for (int state : acceptingStates) {
+                s.append(sep + "s" + state);
+                sep = ", ";
+            }
+            s.append(";" + NEWLINE);
+        }
+        s.append("}" + NEWLINE);
        
         return s.toString();
     }

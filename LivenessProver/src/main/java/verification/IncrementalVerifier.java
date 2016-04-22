@@ -3,6 +3,7 @@ package verification;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -771,15 +772,17 @@ public class IncrementalVerifier {
     private void printResult() {
 	LOGGER.info("FINISHED");
 
+        Map<Integer, String> indexToLabel = problem.getIndexToLabel();
+
 	System.out.println("Verdict: Player 2 can win from every reachable configuration");
 	System.out.println();
 
-	System.out.println("Approximation of reachable states:");
-	System.out.println(systemInvariant);
+	System.out.println("// Approximation of reachable states");
+	System.out.println(systemInvariant.prettyPrint("I", indexToLabel));
 	System.out.println();
 
-	System.out.println("States from which player 2 can move and win:");
-	System.out.println(winningStates);
+	System.out.println("// States from which player 2 can move and win");
+	System.out.println(winningStates.prettyPrint("W", indexToLabel));
 	System.out.println();
 
 	System.out.println("Progress relations" +

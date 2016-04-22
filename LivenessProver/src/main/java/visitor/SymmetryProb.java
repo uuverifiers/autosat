@@ -69,6 +69,14 @@ public class SymmetryProb {
 	public void setLabelToIndex(Map<String, Integer> labelToIndex) {
 		this.labelToIndex = labelToIndex;
 	}
+
+    public Map<Integer, String> getIndexToLabel() {
+        Map<Integer, String> res = new HashMap<Integer, String> ();
+        for (Map.Entry<String, Integer> entry : labelToIndex.entrySet())
+            res.put(entry.getValue(), entry.getKey());
+        return res;
+    }
+
 	public int getNumberOfLetters() {
 		return numberOfLetters;
 	}
