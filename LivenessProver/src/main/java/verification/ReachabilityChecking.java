@@ -335,7 +335,7 @@ public class ReachabilityChecking {
                             System.out.println("VERDICT: Player 2 can win from every initial configuration");
                             System.out.println();
 
-                            System.out.println("// Approximation of reachable states");
+                            System.out.println("// Configurations visited in the game");
                             System.out.println(automatonB.prettyPrint("B", indexToLabel));
 
                             if (rankingFunction != null) {
@@ -351,8 +351,8 @@ public class ReachabilityChecking {
                                 System.out.println(systemInvariant.prettyPrint("I", indexToLabel));
                             }
 
-                            System.out.println("// Progress relation" +
-                                               ((rankingFunction != null) ? " induced by ranking function" : ""));
+                            System.out.println("// Progress relation <" +
+                                               ((rankingFunction != null) ? " induced by the ranking function" : ""));
                             System.out.println(transducer.prettyPrint("T", indexToLabel, indexToLabel));
 
                             //write to dot

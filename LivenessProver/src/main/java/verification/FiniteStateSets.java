@@ -41,6 +41,13 @@ public class FiniteStateSets {
     private final Map<Integer, Automata> reachableStateAutomata =
 	new HashMap<Integer, Automata>();
 
+    private List<String> makeReadable(List<Integer> w) {
+        List<String> res = new ArrayList<String> ();
+        for (int n : w)
+            res.add(indexToLabel.get(n));
+        return res;
+    }
+
     public FiniteStateSets(int numLetters,
 			   Automata I0, Automata F,
 			   EdgeWeightedDigraph player1,
@@ -250,11 +257,13 @@ public class FiniteStateSets {
 		!knownWinningStates.contains(w))
 		throw new RuntimeException(
                   "There is a non-final reachable configuration from " +
-		  "which neither player can make a move: " + w);
+		  "which neither player can make a move: " +
+                  makeReadable(w));
 	    if (!player1Dest.isEmpty() && !player2Dest.isEmpty())
 		throw new RuntimeException(
                   "There is a reachable configuration from " +
-		  "which both players can make a move: " + w);
+		  "which both players can make a move: " +
+                  makeReadable(w));
 	}
 
 	Set<List<Integer>> winningStates = new HashSet<List<Integer>>();
@@ -304,17 +313,6 @@ public class FiniteStateSets {
 	    winningStates.addAll(nextLevel);
 	}
 
-	/*
-	if (!winningStates.containsAll(reachable))
-	    throw new RuntimeException(
-	       "There is a reachable configuration from which player 2 cannot win!");
-
-	for (int i = 0; i < res.size(); ++i) {
-	    System.out.println("Level " + i);
-	    System.out.println(res.get(i));
-	}
-	*/
-
 	return res;
     }
 
@@ -340,7 +338,8 @@ public class FiniteStateSets {
 	if (cex != null)
 	    throw new RuntimeException
 		("There is a reachable configuration from " +
-		 "which player 2 cannot win: " + cex);
+		 "which player 2 cannot win: " +
+                 makeReadable(cex));
     }
 
     public Set<List<Integer>> getRankableConfigs(int wordLen,
