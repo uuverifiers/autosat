@@ -113,13 +113,41 @@ P2 {
     accepting: s1;
 }
 
-/**
- * The rest of the file gives verification options.
- */
+/////////////////////////////////////////////////////////////////////////////
+// The rest of the file contains verification options
  
-// Number of states considered for the progress relation T
+/**
+ * Number of states considered for the progress relations T
+ */
 transducerStateGuessing: 1 .. 10;
 
-// Number of states considered for the regular set A
+/**
+ * Number of states considered for the regular sets A, B of
+ * configurations
+ */
 automatonStateGuessing: 0 .. 4;
+
+/**
+ * Only search for progress relations that represent lexicographic
+ * ranking functions (not used here).
+ */
+// useRankingFunctions;
+
+/**
+ * Disable disjunctive advice bits (not used here).
+ */
+// monolithicWitness;
+
+/**
+ * Accelerate using symmetries of the game (not used here).
+ */
+// symmetries: rotation;
+
+/**
+ * Run sanity checks before parameterised analysis: solve instances
+ * of the game up to length 6 using explicit-state model checking.
+ * This is often useful for finding bugs in models (not used here).
+ */
+// explicitChecksUntilLength: 6;
+
 ```
