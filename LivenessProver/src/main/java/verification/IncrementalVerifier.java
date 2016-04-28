@@ -95,19 +95,16 @@ public class IncrementalVerifier {
         this.preComputeReachable = preComputeReachable;
         this.closeUnderRotation = problem.getSymmetries().contains("rotation");
 	this.verifySolutions = verifySolutions;
-        switch (problem.getParLevel()) {
-        case 1:
-            parallelise = true;
-            exploreTransducersParallel = false;
-            break;
-        case 2:
-            parallelise = true;
-            exploreTransducersParallel = true;
-            break;
-        default:
+
+        if (problem.getParLevel() <= 0) {
             parallelise = false;
             exploreTransducersParallel = false;
-            break;
+        } else if (problem.getParLevel() == 1) {
+            parallelise = true;
+            exploreTransducersParallel = false;
+        } else {
+            parallelise = true;
+            exploreTransducersParallel = true;
         }
     }
 
@@ -253,7 +250,8 @@ public class IncrementalVerifier {
                     if (!extraWords.isEmpty()) {
                         LOGGER.debug("relation #" + num + " can rank " + extraWords);
                         final ProgressBuilder builder =
-                            new ReusingRelationBuilder(finishLatch, relation, num, extraWords);
+                            new ReusingRelationBuilder(finishLatch, relation, num, extraWords,
+                                                       problem.getMaxNumOfStatesAutomaton());
                         builders.add(builder);
                         builderThreads.add(new Thread(builder));
                     }
@@ -473,8 +471,8 @@ public class IncrementalVerifier {
 
             LOGGER.debug("new progress relation: " + transducer);
             
-            LOGGER.info("now have " + distinctRelations.size() +
-                        " distinct progress relations");
+            LOGGER.info("storing " + distinctRelations.size() +
+                        " progress relations for reuse");
 
             systemInvariant = localInvariant;
         }
@@ -496,6 +494,7 @@ public class IncrementalVerifier {
         private final EdgeWeightedDigraph relation;
         private final int relationNum;
         private final List<List<Integer>> elimWords;
+        private final int maxNumStatesAutomaton;
 
         private Automata localInvariant;
 
@@ -505,12 +504,14 @@ public class IncrementalVerifier {
         public ReusingRelationBuilder(CountDownLatch finishLatch,
                                       EdgeWeightedDigraph relation,
                                       int relationNum,
-                                      List<List<Integer>> elimWords) {
+                                      List<List<Integer>> elimWords,
+                                      int maxNumStatesAutomaton) {
             super(finishLatch);
             this.relation = relation;
             this.relationNum = relationNum;
             this.elimWords = elimWords;
             this.localInvariant = systemInvariant;
+            this.maxNumStatesAutomaton = maxNumStatesAutomaton;
         }
 
         public void run() {
@@ -519,7 +520,7 @@ public class IncrementalVerifier {
             OldCounterExamples oldCEs = new OldCounterExamples();
 
             for(int numStateAutomata = 1;
-                numStateAutomata <= problem.getMaxNumOfStatesAutomaton();
+                numStateAutomata <= maxNumStatesAutomaton;
                 numStateAutomata++) {
 
                 if (stopped) {
@@ -621,7 +622,7 @@ public class IncrementalVerifier {
         chosenBs.add(B);
         chosenTs.add(transducer);
 
-        LOGGER.info("extending set of winning states, now have " +
+        LOGGER.info("extending winning set, now have " +
                     chosenBs.size() + " (Bi, Ti) pairs");
 
         systemInvariant = checking.getSystemInvariant();

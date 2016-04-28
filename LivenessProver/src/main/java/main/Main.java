@@ -49,17 +49,12 @@ public class Main {
 	String fileName = args[0];
 	SymmetryProb problem = parse(fileName);
 
-        switch (problem.getLogLevel()) {
-        case 1:
-            Configurator.setRootLevel(Level.INFO);
-            break;
-        case 2:
-            Configurator.setRootLevel(Level.ALL);
-            break;
-        default:
+        if (problem.getLogLevel() <= 0)
             Configurator.setRootLevel(Level.ERROR);
-            break;
-        }
+        else if (problem.getLogLevel() == 1)
+            Configurator.setRootLevel(Level.INFO);
+        else
+            Configurator.setRootLevel(Level.ALL);
 
 	writeInputProblem(problem);
 

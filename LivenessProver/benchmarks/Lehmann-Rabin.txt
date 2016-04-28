@@ -293,8 +293,9 @@ P2 {
 
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 1 .. 10;
+transducerStateGuessing: 1 .. 3;
+automatonStateGuessing: 1 .. 5;
 
 symmetries: rotation;
 
+logLevel: 1;

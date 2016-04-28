@@ -150,4 +150,19 @@ automatonStateGuessing: 0 .. 4;
  */
 // explicitChecksUntilLength: 6;
 
+/**
+ * Parallelise the search for strategies to make use of multiple
+ * available cores; currently on a scale from
+ * 0 (fully sequential) to 2.
+ * (not used here)
+ */
+// parallel: 1;
+
+/**
+ * How much log output to produce, currently on a scale from
+ * 0 (quiet) to 2 (full log).
+ * (not used here)
+ */
+// logLevel: 1;
+
 ```
