@@ -6,10 +6,22 @@ if [ \( "$#" -eq 0 \) ] ; then
 	exit 1
 fi
 
+if [ $(uname) = "Linux" ]; then
+    pathCmd="readlink -f"
+elif [ $(uname) = "Darwin" ]; then
+    pathCmd="stat -f %N"
+else
+    pathCmd="realpath"
+fi
 SRC="${1}"
 
+LIVENESSBASE="`dirname $($pathCmd $0)`/../LivenessProver/"
+
+# set the base directory
+BASEDIR="${LIVENESSBASE}"
+
 # run the main script
-. ./run 
+. ../LivenessProver/autosat
 
 cp ${SRC} "${OUTPUT_DIR}/source.txt"
 cd ${OUTPUT_DIR} && ./alltosvg
