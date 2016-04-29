@@ -10,6 +10,18 @@ we call "advice bits" in the paper). The basic framework is to guess the advice
 bits (either using Angluin's L* algorithm or SAT solving), and verify the guess
 using an automata method. 
 
+## Usage
+
+On a Linux/UNIX system, SLRP can be invoked using the provided script:
+
+```
+> ./slrp benchmarks/herman-linear.txt 
+VERDICT: Player 2 can win from every reachable configuration
+[...]
+```
+
+A collection of examples is provided in the "benchmarks" directory.
+
 ## Input format
 
 A parameterised reachability game is defined as a tuple (I0, F, P1, P2) of 
