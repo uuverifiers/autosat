@@ -1,20 +1,37 @@
-# Liveness Checking for Randomised Parameterised Systems
+# SLRP: Solver for Liveness of Randomised Parameterised systems
 
-The tool in this directory implements a solver for parameterised
-reachability games. Liveness (almost sure termination) of randomised
-parameterised systems can be reduced to such games, by considering 
-process transitions as one of the players ("Process", usually called
-Player 2 in our setting), and the "Scheduler" (Player 1). The tool
-uses a variety of techniques to automatically compute well-founded
-relations and invariants representing winning strategies of Player 2,
-including Angluin's L* algorithm and SAT solving.
+The tool SLRP (pronounced slurp) implements a solver for (almost sure) liveness 
+of randomised parameterised systems. The tool reduces this problem to
+parameterised reachability games between the "Process" player (Player 2 in
+our setting) and the "Scheduler" (Player 1 in our setting). The tool
+uses a variety of CEGAR techniques to automatically compute well-founded
+relations and invariants representing winning strategies of Player 2 (which
+we call "advice bits" in the paper). The basic framework is to guess the advice
+bits (either using Angluin's L* algorithm or SAT solving), and verify the guess
+using an automata method. 
 
 ## Input format
 
-We illustrate the input format of the tool using a simple example,
-a linear version of the Herman protocol (i.e., instead of ring topology,
-as normally assumed for Herman, we just arrange processes as a linear
-array). The example is also available in the file
+A parameterised reachability game is defined as a tuple (I0, F, P1, P2) of 
+automata, where:
+* I0 represents the set of initial states
+* F represents the set of final states
+* P1 represents the transition relation of Player 1 (Scheduler)
+* P2 represents the transition relation of Player 2 (Process)
+
+The objective is for Player 2 to be able to reach F (i.e. win), regardless of 
+the moves of Player 1. The set of initial states that Player 2 should be able 
+to win from depends on some flags, which can be enabled/disabled according
+to the verification problem. If almost sure liveness for randomised 
+parameterised systems is considered, then the flag `ClosedUnderTransition`
+should be inserted in the file (see below). There are also other flags that
+can be enabled/disabled depending on the different CEGAR techniques employed
+(see below).
+
+We illustrate this input format of the tool using a simple example,
+a linear version of the Herman randomised self-stabilising protocol (i.e., 
+instead of ring topology, as normally assumed for Herman, we just arrange 
+processes as a linear array). The example is also available in the file
 benchmarks/herman-linear.txt
 
 ```
@@ -42,7 +59,7 @@ I0 {
 /**
  * The following flag specifies that the set I0 of initial configurations
  * has to be closed under Player 1 and Player 2 transitions. This is
- * usually necessary when analysing randomised systems.
+ * necessary when analysing liveness for randomised systems.
  */
 closedUnderTransitions;
 
@@ -117,12 +134,13 @@ P2 {
 // The rest of the file contains verification options
  
 /**
- * Number of states considered for the progress relations T
+ * Lower/Upper bound (inclusive) on the number of states considered for the 
+ * progress relations T
  */
 transducerStateGuessing: 1 .. 10;
 
 /**
- * Number of states considered for the regular sets A, B of
+ * Lower/Upper bound (inclusive) on the number of states considered for the regular sets A, B of
  * configurations
  */
 automatonStateGuessing: 0 .. 4;
