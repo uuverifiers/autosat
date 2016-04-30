@@ -6,10 +6,11 @@
 // R - no left fork, Right fork
 // E - both forks held
 //
-// Leftmost philosopher (in the linearisation of the circular order) picks
-// right first, and then left.
+// Leftmost philosopher (in a linearisation of the circular order) picks
+// right first, and then left. The other philosophers pick up the left fork
+// first.
 
-// at least three philosophers
+// Assumption: at least three philosophers. 
 I0 {
     init: s0;
 
