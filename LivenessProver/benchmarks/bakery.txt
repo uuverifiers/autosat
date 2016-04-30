@@ -4,6 +4,9 @@
 // I = Idle
 // W = Wait
 // C = Critical
+//
+// Please see the paper for a detailed description (it can be found
+// in the appendix of the paper).
 
 I0 {
     init: s0;
