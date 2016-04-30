@@ -12,7 +12,8 @@ using an automata method.
 
 ## Usage
 
-On a Linux/UNIX system, SLRP can be invoked using the provided script:
+SLRP requires Java 1.8 to run. On a Linux/UNIX or Mac system, SLRP can
+be invoked using the provided script:
 
 ```
 > ./slrp benchmarks/herman-linear.txt 
@@ -191,14 +192,14 @@ automatonStateGuessing: 0 .. 4;
  * Parallelise the search for strategies to make use of multiple
  * available cores; currently on a scale from
  * 0 (fully sequential) to 2.
- * (not used here)
+ * (default is 0)
  */
 // parallel: 1;
 
 /**
  * How much log output to produce, currently on a scale from
  * 0 (quiet) to 2 (full log).
- * (not used here)
+ * (default is 0)
  */
 // logLevel: 1;
 
