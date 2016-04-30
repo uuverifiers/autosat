@@ -1,17 +1,43 @@
-// Letters:
-// H, Wl, Wr, Sl, Sr, E
-
+// Lehmann-Rabin dining philosopher protocol (LR'81)
+// 
+// We follow the presentation of Duflot et al. (2004). This protocol is
+// the first symmetric solution to the dining philosopher problem (i.e.
+// all processes run precisely the same program). It is well-known that
+// there is no deterministic solution (see Lynch textbook). 
+//
+// We use the following letters to denote the states of the local processes:
+// 1. H --- hungry
+// 2. Wl --- waiting for left fork
+// 3. Wr --- waiting for right fork
+// 4. Sl --- left fork selected, waiting for right fork
+// 5. Sr --- right fork selected, waiting for left fork
+// 6. E --- eat
+//
+// We now briefly describe the protocol below. Notice that when there are
+// more than one processes with enabled actions, the choice of which process
+// gets to move is nondeterministically determined by the scheduler.
+//
+// Each hungry philosopher tosses a coin to determine whether to wait for 
+// left/right fork:
 // H -> Wl
 // H -> Wr
-
+//
+// When a fork is available, it can be picked up:
 // X Wl -> X Sl   (X in {H, Wl, Wr, Sl})
 // Wr X -> Sr X   (X in {H, Wl, Wr, Sr})
-
+//
+// When a fork has been picked up but the second one is being used by a
+// neighbour, the first fork may be dropped and the philosopher may go back
+// to the waiting state:
 // Sr Sr -> Sr H
 // Sl Sl -> H Sl
-
+//
+// When the second fork is available, pick it up and eat.
 // X Sr -> E      (X in {H, Wl, Wr, Sl})
 // Sl X -> E      (X in {H, Wl, Wr, Sr})
+//
+// The property to prove is that, under all schedulers, with probability 1 
+// at least one philosopher gets to eat. 
 
 I0 {
 
