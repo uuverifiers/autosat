@@ -1,8 +1,11 @@
 // herman-ring.txt
 // This an adaptation of Herman's protocol in a ring.
 //
-// Liveness holds under (weakly) fair schedulers.
+// Liveness holds under (weakly) fair schedulers, but *not* under
+// some unfair schedulers. For this reason, SLRP will not terminate
+// when run on this example.
 //
+// Letters used:
 // N - no token
 // T - token
 
