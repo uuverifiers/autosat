@@ -47,7 +47,8 @@ processes as a linear array). The example is also available in the file
 benchmarks/herman-linear.txt. Loosely speaking, the processes holding a token
 in Herman protocol will toss a coin, when chosen by the Scheduler, and keep the 
 token with probability 1/2 and pass the token to its *right* with probability
-1/2. A stable configuration is one in which precisely one process holding a 
+1/2. Two tokens held by the same process are *merged*. A stable configuration 
+is one in which precisely one process holding a 
 token. The initial configurations are those in which more than one processes
 are holding a token. The liveness property to prove is reaching a stable
 configuration with probability 1.
