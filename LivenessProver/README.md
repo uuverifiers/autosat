@@ -44,7 +44,13 @@ We illustrate this input format of the tool using a simple example,
 a linear version of the Herman randomised self-stabilising protocol (i.e., 
 instead of ring topology, as normally assumed for Herman, we just arrange 
 processes as a linear array). The example is also available in the file
-benchmarks/herman-linear.txt
+benchmarks/herman-linear.txt. Loosely speaking, the processes holding a token
+in Herman protocol will toss a coin, when chosen by the Scheduler, and keep the 
+token with probability 1/2 and pass the token to its *right* with probability
+1/2. A stable configuration is one in which precisely one process holding a 
+token. The initial configurations are those in which more than one processes
+are holding a token. The liveness property to prove is reaching a stable
+configuration with probability 1.
 
 ```
 /**
