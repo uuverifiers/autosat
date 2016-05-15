@@ -15,10 +15,12 @@ else
 fi
 SRC="${1}"
 
+OUTPUT_DIR="./output"
+
 LIVENESSBASE="`dirname $($pathCmd $0)`/../LivenessProver/"
 
-# set the base directory
-BASEDIR="${LIVENESSBASE}"
+# set the base directory for the main script
+export BASEDIR="${LIVENESSBASE}"
 
 # run the main script
 . ../LivenessProver/autosat
