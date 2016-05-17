@@ -13,10 +13,9 @@ class Automaton:
 
 Constructor.
 '''
-        self.startState = None
+        self.startStates = []
         self.acceptStates = []
         self.transitions = []
-        self.epsTransitions = []
 
     ###########################################
     def clearAcceptStates(self):
@@ -25,9 +24,23 @@ Constructor.
 Clear accepting states of an automaton.
 '''
         result = Automaton()
-        result.startState = self.startState
+        result.startStates = self.startStates[:]
         result.transitions = self.transitions[:]
         result.acceptStates = []
+
+        return result
+
+
+    ###########################################
+    def clearStartStates(self):
+        '''clearStartStates() -> Automaton
+
+Clear starting states of an automaton.
+'''
+        result = Automaton()
+        result.startStates = []
+        result.transitions = self.transitions[:]
+        result.acceptStates = self.acceptStates[:]
 
         return result
 
@@ -146,9 +159,8 @@ Flatten names of states of a product automaton.
             return prodState[0] + "_" + prodState[1]
 
         result = Automaton()
-        result.startState = flattenProdState(self.startState)
-        result.acceptStates = list(map(lambda state: flattenProdState(state),
-            self.acceptStates))
+        result.startStates = list(map(flattenProdState, self.startStates))
+        result.acceptStates = list(map(flattenProdState, self.acceptStates))
 
         # hey, without list(..), I get only an ierator
         result.transitions = list(map(lambda trans: (
@@ -172,13 +184,13 @@ determined using funDetSymb.  Generates only reachable transitions and states.
         print('generalIntersection: warning: ignoring epsilon transitions')
 
         result = Automaton()
-        newStartState = (autLhs.startState, autRhs.startState)
-        result.startState = newStartState
+        newStartStates = list(product(autLhs.startStates, autRhs.startStates))
+        result.startState = newStartStates
         result.acceptStates = []
-        allAcceptStates = product(autLhs.acceptStates, autRhs.acceptStates)
+        allAcceptStates = list(product(autLhs.acceptStates, autRhs.acceptStates))
 
-        worklist = [newStartState]
-        processed = {newStartState}
+        worklist = newStartStates
+        processed = set(newStartStates)
 
         while not (len(worklist) == 0):
             (lhs, rhs) = worklist.pop(0)
@@ -209,7 +221,7 @@ Rename states of the automaton using funcRem.
 '''
         result = Automaton()
 
-        result.startState = funcRem(self.startState)
+        result.startStates = list(map(funcRem, self.startStates))
         result.acceptStates = list(map(funcRem, self.acceptStates))
 
         ##############################################
@@ -243,12 +255,12 @@ Rename states of the automaton using funcRem.
 Removes useless (forward and backward) states from the automaton.
 '''
         result = Automaton()
-        result.startState = self.startState
+        result.startStates = []
         result.acceptStates = []
 
         # keep only forward reachable states
-        worklist = [self.startState]
-        processed = {self.startState}
+        worklist = self.startStates[:]
+        processed = set(self.startStates)
 
         while not (len(worklist) == 0):
             state = worklist.pop(0)
@@ -271,6 +283,9 @@ Removes useless (forward and backward) states from the automaton.
         while not (len(worklist) == 0):
             state = worklist.pop(0)
 
+            if state in self.startStates:
+                result.startStates.append(state)
+
             for trans in self.preTrans(state):
                 # go over all transitions _to_ state
                 srcState = Automaton.getSrcState(trans)
@@ -292,7 +307,7 @@ Removes useless (forward and backward) states from the automaton.
 Transforms an automaton into a transducer encoding the identity relation.
 '''
         result = Automaton()
-        result.startState = self.startState
+        result.startStates = self.startStates[:]
         result.acceptStates = self.acceptStates[:]
         result.transitions = list(map(lambda trans:
             (
@@ -313,10 +328,35 @@ Transforms an automaton into a transducer encoding the identity relation.
 Filters transitions of automaton with respect to the predicate pred.
 '''
         result = Automaton()
-        result.startState = self.startState
+        result.startStates = self.startStates[:]
         result.acceptStates = self.acceptStates[:]
         result.transitions = list(filter(pred, self.transitions))
         return result
+
+
+    ###########################################
+    def union(self, rhs):
+        '''union(self, rhs) -> Automaton
+
+Unites the automaton with automaton rhs.
+'''
+        result = Automaton()
+
+        print('union: check whether the automata are disjoint first!')
+        result.startStates = self.startStates + rhs.startStates
+        result.acceptStates = self.acceptStates + rhs.acceptStates
+        result.transitions = self.transitions + rhs.transitions
+
+        return result
+
+
+    ###########################################
+    def autUnion(lhs, rhs):
+        '''autUnion(lhs, rhs) -> Automaton
+
+Unites the automaton lhs with rhs.
+'''
+        return lhs.union(rhs)
 
 
     ###########################################
@@ -328,7 +368,9 @@ Export the automaton to the dot format.
         result = ""
         result += "digraph {\n"
         result += "\"__init\" [shape=point];\n"
-        result += "\"__init\" -> \"" + self.startState + "\";\n"
+
+        for stState in self.startStates:
+            result += "\"__init\" -> \"" + stState + "\";\n"
 
         for accState in self.acceptStates:
             result += "\"" + accState + "\" [shape=doublecircle];\n"
@@ -360,10 +402,16 @@ Export the automaton to the dot format.
 Transforms automaton into a string.
 '''
         output = ""
-        output += "init: " + self.startState + ";\n"
+        output += "init: "
+        first = True
+        for state in self.startStates:
+            if not first:
+                output += ", "
 
-        for trans in self.epsTransitions:
-            output += trans + "\n"
+            output += state
+            first = False
+
+        output += ";\n"
 
         for trans in self.transitions:
             if len(trans) == 3:

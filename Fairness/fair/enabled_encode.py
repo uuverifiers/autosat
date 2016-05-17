@@ -78,8 +78,9 @@ Player 1 nondeterministically chooses one enabled transition (if such exists).
     oneChosenTransTransd2 = enabledTransd.renameStates(rename2)
 
     oneChosenTransTransd1 = oneChosenTransTransd1.clearAcceptStates()
+    oneChosenTransTransd2 = oneChosenTransTransd2.clearStartStates()
 
-    oneChosenTransTransdMerged = oneChosenTransTransd1.appendAut(oneChosenTransTransd2)
+    oneChosenTransTransdMerged = Automaton.autUnion(oneChosenTransTransd1, oneChosenTransTransd2)
 
     for trans in enabledTransd.transitions:
         fstSymb = Automaton.getSymbol1(trans)
@@ -92,8 +93,7 @@ Player 1 nondeterministically chooses one enabled transition (if such exists).
                 SYMBOL_CHOSEN,
                 rename2(Automaton.getTgtState(trans)))
 
-    result = Automaton()
-    result = oneChosenTransTransdMerged
+    result = Automaton.autUnion(oneChosenTransTransdMerged, noEnabledTransTransd)
 
     return result
 

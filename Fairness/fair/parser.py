@@ -10,7 +10,7 @@ from problem import Problem
 ##############################################################################
 
 # regex for matching start states
-reStartState = re.compile(r'^init:\ *(?P<state>[a-zA-Z0-9_]+);$')
+reStartStates = re.compile(r'^init:\ *(?P<states>.+);$')
 
 # regex for matching accepting states
 reAcceptStates = re.compile(r'^accepting:\ *(?P<states>.+);$')
@@ -38,16 +38,17 @@ class Parser:
     '''The parser of input files'''
 
     ###########################################
-    def parseStartState(aut, line):
-        '''parseStartState(line)
+    def parseStartStates(aut, line):
+        '''parseStartStates(line)
 
-Parses a line with the starting state of an automaton.
+Parses a line with starting states of an automaton.
 '''
-        match = reStartState.match(line)
+        match = reStartStates.match(line)
         assert match is not None
-        if aut.startState is not None:
-            raise Exception("Defining starting state multiple times: " + line)
-        aut.startState = match.group('state')
+        strStates = match.group('states')
+        strStatesNoWs = strStates.replace(" ", "")
+        states = strStatesNoWs.split(',')
+        aut.startStates.extend(states)
 
 
     ###########################################
@@ -70,8 +71,13 @@ Parses a line with accepting states of an automaton.  Modifies aut.
 
 Parses an epsilon transition on line.  Modifies aut.
 '''
-        assert reEpsTrans.match(line)
-        aut.epsTransitions.append(line)
+        match = reEpsTrans.match(line)
+        assert match is not None
+        aut.transitions.append(
+            (
+                match.group('src'),
+                match.group('tgt'),
+            ))
 
     ###########################################
     def parseTrans(problem, aut, line):
@@ -123,8 +129,8 @@ Automaton class.  Modifies problem, it.
                 pass
             elif (line == ""): # empty string
                 pass
-            elif (reStartState.match(line)): # start states
-                Parser.parseStartState(aut, line)
+            elif (reStartStates.match(line)): # start states
+                Parser.parseStartStates(aut, line)
             elif (reAcceptStates.match(line)): # accepting states
                 Parser.parseAcceptStates(aut, line)
             elif (reEpsTrans.match(line)): # epsilon transition
