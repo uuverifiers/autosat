@@ -15,6 +15,7 @@ SYMBOL_ENABLED = 'enabled'
 SYMBOL_DISABLED = 'disabled'
 SYMBOL_CHOSEN = 'chosen'
 
+PLAYER1_START_STATE = 'XXXXsinitXXXX'
 
 def parseOptions():
     '''parseOptions() -> options
@@ -50,6 +51,7 @@ Encodes enabledness (given by autEnabled) into an automaton aut.  This is done b
 
     result = Automaton.generalIntersection(aut, autEnabled,
         funDelimMatchEnDis, funTakeRhs)
+
     return result
 
 
@@ -93,6 +95,12 @@ Player 1 nondeterministically chooses one enabled transition (if such exists).
                 rename2(Automaton.getTgtState(trans)))
 
     result = Automaton.autUnion(oneChosenTransTransdMerged, noEnabledTransTransd)
+    startingStates = result.startStates[:]
+    result.clearStartStates()
+    result.startStates = [PLAYER1_START_STATE]
+
+    for state in startingStates:
+        result.addTrans(transition = (PLAYER1_START_STATE, state))
 
     return result
 
@@ -159,51 +167,36 @@ if __name__ == '__main__':
     # print(problem.autPlay2)
 
     enabledInit = encodeEnablednessAut(problem.autInit, problem.autEnabled)
-    print("EnabledInit: {")
-    print(enabledInit)
-    print("}")
-
     enabledFinal = encodeEnablednessAut(problem.autFinal, problem.autEnabled)
-    print("EnabledFinal: {")
-    print(enabledFinal)
-    print("}")
-
     enabledPlay1 = createPlayer1(problem.autEnabled)
-    print("EnabledP1: {")
-    print(enabledPlay1)
-    print("}\n")
-
     enabledPlay2 = createPlayer2(problem.autPlay2, problem.autEnabled)
-    print("EnabledP2: {")
-    print(enabledPlay2)
-    print("}\n")
 
     dot = enabledPlay2.exportToDot()
     with open("aut.dot", "w") as text_file:
         text_file.write(dot)
 
-#    problem.fairInit = autInitToFair(problem.autInit)
-#    problem.fairFinal = autFinalToFair(problem, problem.autFinal)
-#    problem.fairPlay1 = autPlay1ToFair(problem.autPlay1)
-#    problem.fairPlay2 = autPlay2ToFair(problem.autPlay2)
-
-    # outlines.append("I0 {\n")
-    # outlines.append(str(problem.fairInit))
-    # outlines.append("}\n\n")
+    # output Init
+    outlines = []
+    outlines.append("I0 {\n")
+    outlines.append(str(enabledInit))
+    outlines.append("}\n\n")
 
     CLOSED_UNDER_TRANSITIONS = "closedUnderTransitions"
     if CLOSED_UNDER_TRANSITIONS in problem.options:
-        print(CLOSED_UNDER_TRANSITIONS + ";\n")
+        outlines.append(CLOSED_UNDER_TRANSITIONS + ";\n")
         problem.options.remove(CLOSED_UNDER_TRANSITIONS)
 
     # output all other automata
-    # for (name, aut) in [
-    #   ("F", problem.fairFinal),
-    #   ("P1", problem.fairPlay1),
-    #   ("P2", problem.fairPlay2)]:
-    #     outlines.append(name + " {\n")
-    #     outlines.append(str(aut))
-    #     outlines.append("}\n\n")
+    for (name, aut) in [
+      ("F", enabledFinal),
+      ("P1", enabledPlay1),
+      ("P2", enabledPlay2)]:
+        outlines.append(name + " {\n")
+        outlines.append(str(aut))
+        outlines.append("}\n\n")
 
     for option in problem.options:
-        print(option + ";\n")
+        outlines.append(option + ";\n")
+
+    for line in outlines:
+        print(line, end="")

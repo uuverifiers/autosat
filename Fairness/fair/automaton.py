@@ -2,6 +2,7 @@
 
 # the Cartesian product
 from itertools import product
+import sys
 
 ##############################################################################
 class Automaton:
@@ -167,7 +168,7 @@ Append aut to the automaton. That is, keep the original starting state and add a
 Flatten names of states of a product automaton.
 '''
         def flattenProdState(prodState):
-            return prodState[0] + "_" + prodState[1]
+            return prodState[0] + "X" + prodState[1]
 
         # result = Automaton()
         # result.startStates = list(map(flattenProdState, self.startStates))
@@ -193,11 +194,11 @@ matched using the funSymMatch predicate.  The symbol of a new transition is then
 determined using funDetSymb.  Generates only reachable transitions and states.
 '''
 
-        print('generalIntersection: warning: ignoring epsilon transitions')
+        print('generalIntersection: warning: ignoring epsilon transitions', file=sys.stderr)
 
         result = Automaton()
         newStartStates = list(product(autLhs.startStates, autRhs.startStates))
-        result.startState = newStartStates
+        result.startStates = newStartStates[:]
         result.acceptStates = []
         allAcceptStates = list(product(autLhs.acceptStates, autRhs.acceptStates))
 
@@ -400,11 +401,8 @@ funDet2 are used to determine the symbol in the result.
                     (_, symbLhs1, symbLhs2, tgtStateLhs) = lhsTrans
 
                     for (_, symbAut1, tgtState1) in aut1.postTrans(st1):
-                        print('Checking 1 whether ', symbLhs1, ' and ', symbAut1, ' match')
                         if (funMatch1(symbLhs1, symbAut1)):
-                            print('true')
                             for (_, symbAut2, tgtState2) in aut2.postTrans(st2):
-                                print('Checking 2 whether ', symbLhs2, ' and ', symbAut2, ' match')
                                 if (funMatch2(symbLhs2, symbAut2)):
                                     # go over all matching transitions from
                                     # lhs, st1, and st2
@@ -431,11 +429,10 @@ funDet2 are used to determine the symbol in the result.
         ################################################################
         def stateSodomizer(stTuple):                                   #
             assert len(stTuple) == 3                                   #
-            return stTuple[0] + "_" + stTuple[1] + "_" + stTuple[2]    #
+            return stTuple[0] + "X" + stTuple[1] + "X" + stTuple[2]    #
         ################################################################
 
         result = result.renameStates(stateSodomizer)
-        print(result)
 
         return result
 
@@ -448,7 +445,7 @@ Unites the automaton with automaton rhs.
 '''
         result = Automaton()
 
-        print('union: check whether the automata are disjoint first!')
+        print('union: check whether the automata are disjoint first!', file=sys.stderr)
         result.startStates = self.startStates + rhs.startStates
         result.acceptStates = self.acceptStates + rhs.acceptStates
         result.transitions = self.transitions + rhs.transitions
