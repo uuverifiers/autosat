@@ -51,7 +51,9 @@ Clear starting states of an automaton.
 
 Retrieve the target state of a transition.
 '''
-        if len(trans) == 3:
+        if len(trans) == 2:
+            return trans[1]
+        elif len(trans) == 3:
             return trans[2]
         elif len(trans) == 4:
             return trans[3]
@@ -85,6 +87,15 @@ Get the second symbol in a transducer transition.
 '''
         assert len(trans) == 4
         return trans[2]
+
+
+    ###########################################
+    def isEpsilonTrans(trans):
+        '''isEpsilonTrans(trans) -> Bool
+
+Determine an epsilon transition.
+    '''
+        return len(trans) == 2
 
 
     ###########################################
@@ -158,17 +169,18 @@ Flatten names of states of a product automaton.
         def flattenProdState(prodState):
             return prodState[0] + "_" + prodState[1]
 
-        result = Automaton()
-        result.startStates = list(map(flattenProdState, self.startStates))
-        result.acceptStates = list(map(flattenProdState, self.acceptStates))
+        # result = Automaton()
+        # result.startStates = list(map(flattenProdState, self.startStates))
+        # result.acceptStates = list(map(flattenProdState, self.acceptStates))
+        #
+        # # hey, without list(..), I get only an ierator
+        # result.transitions = list(map(lambda trans: (
+        #         flattenProdState(trans[0]), # src state
+        #         trans[1],                   # symbol
+        #         flattenProdState(trans[2])  # tgt state
+        #     ), self.transitions))
 
-        # hey, without list(..), I get only an ierator
-        result.transitions = list(map(lambda trans: (
-                flattenProdState(trans[0]), # src state
-                trans[1],                   # symbol
-                flattenProdState(trans[2])  # tgt state
-            ), self.transitions))
-
+        result = self.renameStates(flattenProdState)
         return result
 
 
@@ -189,7 +201,7 @@ determined using funDetSymb.  Generates only reachable transitions and states.
         result.acceptStates = []
         allAcceptStates = list(product(autLhs.acceptStates, autRhs.acceptStates))
 
-        worklist = newStartStates
+        worklist = newStartStates[:]
         processed = set(newStartStates)
 
         while not (len(worklist) == 0):
@@ -226,6 +238,11 @@ Rename states of the automaton using funcRem.
 
         ##############################################
         def sodomizeTrans(trans):                    #
+            if len(trans) == 2:                      #
+                return (                             #
+                    funcRem(trans[0]),               #
+                    funcRem(trans[1])                #
+                )                                    #
             if len(trans) == 3:                      #
                 return (                             #
                     funcRem(trans[0]),               #
@@ -333,6 +350,95 @@ Filters transitions of automaton with respect to the predicate pred.
         result.transitions = list(filter(pred, self.transitions))
         return result
 
+    ###########################################
+    def transdAutAutProd(transd, aut1, funMatch1, funDet1, aut2, funMatch2, funDet2):
+        '''transdAutAutProd(transd, aut1, funMatch1, funDet1, aut2, funMatch2, funDet2) -> Automaton
+
+Peform a ternarny product of a transducer transd with automata aut1 and aut2,
+such that aut1 matches to the first tape of trands and aut2 matches on the
+second tape of transd.  funMatch1 and funMatch2 are used to determine whether
+the symbols of transd and aut1 and aut2 respectively match.  funDet1 and
+funDet2 are used to determine the symbol in the result.
+'''
+        result = Automaton()
+
+        result.startStates = list(product(
+            transd.startStates,
+            aut1.startStates,
+            aut2.startStates))
+
+        result.acceptStates = []
+        allAcceptStates = list(product(
+            transd.acceptStates,
+            aut1.acceptStates,
+            aut2.acceptStates))
+
+        worklist = result.startStates[:]
+        processed = set(result.startStates)
+
+        while not (len(worklist) == 0):
+            (lhs, st1, st2) = worklist.pop(0)
+
+            for lhsTrans in transd.postTrans(lhs):
+                if Automaton.isEpsilonTrans(lhsTrans):
+                    # for epsilon transitions
+                    newState = (Automaton.getTgtState(lhsTrans), st1, st2)
+                    if newState not in processed:
+                        worklist.append(newState)
+                        processed.add(newState)
+                        if newState in allAcceptStates:
+                            result.acceptStates.append(newState)
+
+                    # insert an epsilon transition
+                    newTrans = (
+                            (lhs, st1, st2),
+                            newState
+                        )
+                    result.addTrans(transition = newTrans)
+                else:
+                    # for ordinary transitions
+                    (_, symbLhs1, symbLhs2, tgtStateLhs) = lhsTrans
+
+                    for (_, symbAut1, tgtState1) in aut1.postTrans(st1):
+                        print('Checking 1 whether ', symbLhs1, ' and ', symbAut1, ' match')
+                        if (funMatch1(symbLhs1, symbAut1)):
+                            print('true')
+                            for (_, symbAut2, tgtState2) in aut2.postTrans(st2):
+                                print('Checking 2 whether ', symbLhs2, ' and ', symbAut2, ' match')
+                                if (funMatch2(symbLhs2, symbAut2)):
+                                    # go over all matching transitions from
+                                    # lhs, st1, and st2
+
+                                    # target product state
+                                    newState = (tgtStateLhs, tgtState1, tgtState2)
+
+                                    if newState not in processed:
+                                        worklist.append(newState)
+                                        processed.add(newState)
+                                        if newState in allAcceptStates:
+                                            result.acceptStates.append(newState)
+
+                                    # insert an ordinary transition
+                                    newTrans = (
+                                            (lhs, st1, st2),
+                                            funDet1(symbLhs1, symbAut1),
+                                            funDet2(symbLhs2, symbAut2),
+                                            newState
+                                        )
+                                    result.addTrans(transition = newTrans)
+
+
+        ################################################################
+        def stateSodomizer(stTuple):                                   #
+            assert len(stTuple) == 3                                   #
+            return stTuple[0] + "_" + stTuple[1] + "_" + stTuple[2]    #
+        ################################################################
+
+        result = result.renameStates(stateSodomizer)
+        print(result)
+
+        return result
+
 
     ###########################################
     def union(self, rhs):
@@ -380,7 +486,9 @@ Export the automaton to the dot format.
             result += "\" -> \"" + Automaton.getTgtState(trans)
             result += "\" [label=\""
 
-            if len(trans) == 3:
+            if len(trans) == 2:
+                result += 'epsilon'
+            elif len(trans) == 3:
                 result += Automaton.getSymbol(trans)
             elif len(trans) == 4:
                 result += Automaton.getSymbol1(trans)
@@ -414,7 +522,9 @@ Transforms automaton into a string.
         output += ";\n"
 
         for trans in self.transitions:
-            if len(trans) == 3:
+            if len(trans) == 2:
+                output += trans[0] + " -> " + trans[1] + ";\n"
+            elif len(trans) == 3:
                 output += trans[0] + " -> " + trans[2] + " " + trans[1] + ";\n"
             elif len(trans) == 4:
                 output += trans[0] + " -> " + trans[3] + " " + trans[1] + "/" + trans[2] + ";\n"

@@ -60,7 +60,6 @@ def createPlayer1(autEnabled):
 Synthesises a transducer for Player 1 from the Enabled automaton autEnabled.
 Player 1 nondeterministically chooses one enabled transition (if such exists).
 '''
-
     enabledTransd = autEnabled.toTransducer()
 
     # the transducer for "no transition enabled"
@@ -94,6 +93,48 @@ Player 1 nondeterministically chooses one enabled transition (if such exists).
                 rename2(Automaton.getTgtState(trans)))
 
     result = Automaton.autUnion(oneChosenTransTransdMerged, noEnabledTransTransd)
+
+    return result
+
+
+###########################################
+def createPlayer2(autPlay2, autEnabled):
+    '''createPlayer2(autPlay2, autEnabled) -> Automaton
+
+Encode enabledness into the transducer autPlay2 for transitions of Player 2
+using autEnabled defining enabledness.
+'''
+    #############################################################################
+    def matchDelimChosenToEnDis(lhs, rhs):                                      #
+        if lhs == SYMBOL_DELIM and rhs in {SYMBOL_ENABLED, SYMBOL_DISABLED}:    #
+            return True                                                         #
+        elif lhs == SYMBOL_CHOSEN and rhs == SYMBOL_ENABLED:                    #
+            return True                                                         #
+        else:                                                                   #
+            return lhs == rhs                                                   #
+    #############################################################################
+
+    #############################################################################
+    def matchDelimEnDis(lhs, rhs):                                              #
+        if lhs == SYMBOL_DELIM and rhs in {SYMBOL_ENABLED, SYMBOL_DISABLED}:    #
+            return True                                                         #
+        else:                                                                   #
+            return lhs == rhs                                                   #
+    #############################################################################
+
+    #####################################
+    def pickChosenOrRight(lhs, rhs):    #
+        if lhs == SYMBOL_CHOSEN:        #
+            return lhs                  #
+        else:                           #
+            return rhs                  #
+    #####################################
+
+    result = Automaton.transdAutAutProd(
+            autPlay2,
+            autEnabled, matchDelimChosenToEnDis, pickChosenOrRight,
+            autEnabled, matchDelimEnDis, lambda x, y: y
+        )
 
     return result
 
@@ -132,9 +173,12 @@ if __name__ == '__main__':
     print(enabledPlay1)
     print("}\n")
 
-    dot = enabledPlay1.exportToDot()
-    print(dot)
+    enabledPlay2 = createPlayer2(problem.autPlay2, problem.autEnabled)
+    print("EnabledP2: {")
+    print(enabledPlay2)
+    print("}\n")
 
+    dot = enabledPlay2.exportToDot()
     with open("aut.dot", "w") as text_file:
         text_file.write(dot)
 

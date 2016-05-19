@@ -105,9 +105,9 @@ Parses automaton transition from line.  Modifies problem, aut.
             aut.transitions.append(
                 (
                     match.group('src'),
-                    match.group('tgt'),
                     match.group('fst_symbol'),
                     match.group('snd_symbol'),
+                    match.group('tgt'),
                 ))
         else:
             raise Exception("Invalid transition syntax: " + line)
