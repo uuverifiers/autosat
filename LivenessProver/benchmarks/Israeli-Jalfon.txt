@@ -1,3 +1,16 @@
+// Israeli-Jalfon self-stabilising protocol (see IJ'90 in our CAV'16 paper for
+// more detail)
+// 
+// In a nutshell, this is a routing protocol in a ring-shaped topology, where
+// a process may hold a token. When a process holding a token is chosen by the 
+// scheduler, it will toss a coin and pass the token to the left/right each with
+// probability 1/2. When two tokens are held by the same process, they will be
+// merged. The initial configurations are configurations holding at least one
+// token. The final configurations (a.k.a. *stable* configurations) are those
+// where precisely one process is holding a token. The liveness property to
+// prove, hence, is that the probability of reaching a stable configuration
+// from any initial configuration is 1.
+
 I0 {
 
   init : s0;

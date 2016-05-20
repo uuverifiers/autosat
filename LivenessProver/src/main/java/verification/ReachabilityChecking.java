@@ -332,11 +332,18 @@ public class ReachabilityChecking {
                             for (Map.Entry<String, Integer> entry : labelToIndex.entrySet())
                                 indexToLabel.put(entry.getValue(), entry.getKey());
         
-                            System.out.println("VERDICT: Player 2 can win from every initial configuration");
+                            System.out.println
+                                ("VERDICT: Player 2 can win from every " +
+                                 (closeUnderTransitions ?
+                                  "reachable" :
+                                  "initial") +
+                                 " configuration");
                             System.out.println();
 
-                            System.out.println("// Configurations visited in the game");
-                            System.out.println(automatonB.prettyPrint("B", indexToLabel));
+                            System.out.println
+                                ("// Configurations visited in the game");
+                            System.out.println
+                                (automatonB.prettyPrint("B", indexToLabel));
 
                             if (rankingFunction != null) {
                                 System.out.println("// Ranking function");

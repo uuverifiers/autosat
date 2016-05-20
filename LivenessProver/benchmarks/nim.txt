@@ -1,6 +1,25 @@
 // nim.txt
+//
+// This is the standard nim game. There are three piles of chips containing 
+// x1, x2, and x3 chips respectively. Two players take turns moving. 
+// Each move consists of selecting one of the piles and removing chips from it. 
+// You may not remove chips from more than one pile in one turn, but from the 
+// pile you selected you may remove as many chips as desired, from one chip to 
+// the whole pile. The winner is the player who removes the last chip.
+//
+// For more info on the game, please check the online book Combinatorial Game 
+// Theory by Thomas S. Ferguson. 
+//
+// The property that we prove for nim games in this model is that, starting from
+// configurations (i.e. triple (x1,x2,x3)) whose *nim-sum* is 0, Player 2 
+// has a winning strategy.
+//
+// In our encoding as parameterised reachability game:
 // Numbers are encoded in binary - most significant digit first
 
+
+// Notice that for nim-sum to be 0, then every binary position the three
+// number must sum up to 0.
 I0 {
     init: si;
 
