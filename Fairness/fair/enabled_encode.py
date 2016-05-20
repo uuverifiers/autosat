@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 
 
@@ -30,7 +31,9 @@ attributes:
 def encodeEnablednessAut(aut, autEnabled):
     '''encodeEnablednessAut(aut, autEnabled) -> Automaton
 
-Encodes enabledness (given by autEnabled) into an automaton aut.  This is done by performing a product of aut and autEnabled, while treating 'delim' as {'enabled', 'disabled'}.
+Encodes enabledness (given by autEnabled) into an automaton aut.  This is done
+by performing a product of aut and autEnabled, while treating 'delim' as
+{'enabled', 'disabled'}.
 '''
 
     def funDelimMatchEnDis(lhs, rhs):
@@ -155,14 +158,34 @@ if __name__ == '__main__':
     # print(problem.autEnabled)
     # print(problem.autPlay2)
 
+    with open(os.path.join(OUTPUT_DIR, "init.dot"), "w") as text_file:
+        text_file.write(problem.autInit.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "final.dot"), "w") as text_file:
+        text_file.write(problem.autFinal.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "enabled.dot"), "w") as text_file:
+        text_file.write(problem.autEnabled.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "play2.dot"), "w") as text_file:
+        text_file.write(problem.autPlay2.exportToDot())
+
     enabledInit = encodeEnablednessAut(problem.autInit, problem.autEnabled)
     enabledFinal = encodeEnablednessAut(problem.autFinal, problem.autEnabled)
     enabledPlay1 = createPlayer1(problem.autEnabled)
     enabledPlay2 = createPlayer2(problem.autPlay2, problem.autEnabled)
 
-    # dot = enabledPlay2.exportToDot()
-    # with open("aut.dot", "w") as text_file:
-    #     text_file.write(dot)
+    with open(os.path.join(OUTPUT_DIR, "enabled_init.dot"), "w") as text_file:
+        text_file.write(enabledInit.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "enabled_final.dot"), "w") as text_file:
+        text_file.write(enabledFinal.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "enabled_play1.dot"), "w") as text_file:
+        text_file.write(enabledPlay1.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "enabled_play2.dot"), "w") as text_file:
+        text_file.write(enabledPlay2.exportToDot())
 
     # output Init
     outlines = []

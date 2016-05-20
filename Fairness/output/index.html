@@ -3,53 +3,85 @@
 	<head>
 	<meta charset="UTF-8">
 	<title>Liveness</title>
+		<style>
+			body {
+			}
+
+			h1 {
+			}
+
+			img {
+				max-width: 380px
+			}
+		</style>
 	</head>
 
 	<body>
-		<h1>I0</h1>
-		<a href="./automatonI0.svg">
-		<img src="./automatonI0.svg"/>
-		</a>
-		<br/>
-		<hr/>
+    <center><h1>Source problem</h1></center>
+    <table border=1>
+      <tr>
+        <th>I0</th>
+        <th>Final</th>
+        <th>Enabled</th>
+        <th>Player2</th>
+      </tr>
+      <tr>
+        <td><a href="./init.svg"><img src="./init.svg"/></a></td>
+        <td><a href="./final.svg"><img src="./final.svg"/></a></td>
+        <td><a href="./enabled.svg"><img src="./enabled.svg"/></a></td>
+        <td><a href="./play2.svg"><img src="./play2.svg"/></a></td>
+      </tr>
+    </table>
+    <hr/>
 
-		<h1>F</h1>
-		<a href="./automatonF.svg">
-		<img src="./automatonF.svg"/>
-		</a>
-		<br/>
-		<hr/>
+    <center><h1>Enabledness Encoded</h1></center>
+    <table border=1>
+      <tr>
+        <th>I0</th>
+        <th>Final</th>
+        <th>Player1</th>
+        <th>Player2</th>
+      </tr>
+      <tr>
+        <td><a href="./enabled_init.svg"><img src="./enabled_init.svg"/></a></td>
+        <td><a href="./enabled_final.svg"><img src="./enabled_final.svg"/></a></td>
+        <td><a href="./enabled_play1.svg"><img src="./enabled_play1.svg"/></a></td>
+        <td><a href="./enabled_play2.svg"><img src="./enabled_play2.svg"/></a></td>
+      </tr>
+    </table>
+    <hr/>
 
-		<h1>P1</h1>
-		<a href="./transducerP1.svg">
-		<img src="./transducerP1.svg"/>
-		</a>
-		<br/>
-		<hr/>
+    <center><h1>Fairness Encoded</h1></center>
+    <table border=1>
+      <tr>
+        <th>I0</th>
+        <th>Final</th>
+        <th>Player1</th>
+        <th>Player2</th>
+      </tr>
+      <tr>
+        <td><a href="./fair_init.svg"><img src="./fair_init.svg"/></a></td>
+        <td><a href="./fair_final.svg"><img src="./fair_final.svg"/></a></td>
+        <td><a href="./fair_play1.svg"><img src="./fair_play1.svg"/></a></td>
+        <td><a href="./fair_play2.svg"><img src="./fair_play2.svg"/></a></td>
+      </tr>
+    </table>
+    <hr/>
 
-		<h1>P2</h1>
-		<a href="./transducerP2.svg">
-		<img src="./transducerP2.svg"/>
-		</a>
-		<br/>
-		<hr/>
 
-		<h1>autB</h1>
-		<a href="./automatonB.svg">
-		<img src="./automatonB.svg"/> <br/>
-		</a>
-		<br/>
-		<hr/>
 
-		<h1>order</h1>
-		<a href="./transducerOrder.svg">
-		<img src="./transducerOrder.svg"/> <br/>
-		</a>
-		<br/>
-		<hr/>
+
+		<h2>autB</h2><a href="./automatonB.svg"><img src="./automatonB.svg"/> <br/></a><br/><hr/>
+		<h2>order</h2><a href="./transducerOrder.svg"><img src="./transducerOrder.svg"/><br/></a><br/><hr/>
 
 		Source:
 		<a href="./source.txt" type="text/plain">source.txt</a>
+		<br/>
+		After encoding enabledness:
+		<a href="./enabled_encoded.txt" type="text/plain">enabled_encoded.txt</a>
+		<br/>
+		After encoding fairness:
+		<a href="./fair_encoded.txt" type="text/plain">fair_encoded.txt</a>
 		<br/>
 		Log:
 		<a href="./output.log" type="text/plain">output.log</a>

@@ -15,6 +15,9 @@ ENCODING_ALPHABET = {
     }
 
 
+OUTPUT_DIR = "./output"
+
+
 ###############################################################################
 if __name__ == '__main__':
     print("Library module")

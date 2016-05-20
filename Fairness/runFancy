@@ -22,8 +22,11 @@ LIVENESSBASE="`dirname $($pathCmd $0)`/../LivenessProver/"
 # set the base directory for the main script
 export BASEDIR="${LIVENESSBASE}"
 
+# run in case the core verifier will not terminate
+cd ${OUTPUT_DIR} && ./alltosvg && cd ..
+
 # run the main script
 . ../LivenessProver/autosat
 
-cp ${SRC} "${OUTPUT_DIR}/source.txt"
-cd ${OUTPUT_DIR} && ./alltosvg
+cp ${SRC} "${OUTPUT_DIR}/autosat_input.txt"
+cd ${OUTPUT_DIR} && ./alltosvg && cd ..

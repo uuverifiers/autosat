@@ -1,13 +1,10 @@
 #!/bin/bash
 
 FILES=" \
-	automatonB.svg \
-	automatonF.svg \
-	automatonI0.svg \
-	transducerOrder.svg \
-	transducerP1.svg \
-	transducerP2.svg \
+	*.svg \
 	source.txt \
+	enabled_encoded.txt \
+	fair_encoded.txt \
 	index.html \
 	output.log \
 	"

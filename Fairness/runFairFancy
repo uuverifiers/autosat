@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check the number of command-line arguments
 if [ \( "$#" -eq 0 \) ] ; then
@@ -8,18 +8,35 @@ fi
 
 # source file
 FILE=$1
-# get rid of first argument
+# get rid of the first argument
 shift
 
+
+# name of the file with encoded enabledness
+ENABLED_ENC_FILE=`mktemp /tmp/fair.XXXXXXXXXXX`
 # name of the file with encoded fairness
-# ENC_FILE=$(mktemp)
-ENC_FILE=`mktemp /tmp/fair.XXXXXXXXXXX`
+FAIR_ENC_FILE=`mktemp /tmp/fair.XXXXXXXXXXX`
 
-# encoder
-ENCODER="fair/fair_encode.py"
 
+# enabledness encoder
+ENABLED_ENCODER="fair/enabled_encode.py"
+# fairness encoder
+FAIR_ENCODER="fair/fair_encode.py"
+
+
+OUTPUT_DIR="./output"
+
+cd ${OUTPUT_DIR} && ./clean_dir && cd ..
+
+# encode enablednes
+${ENABLED_ENCODER} ${FILE} > ${ENABLED_ENC_FILE}
 # encode fairness
-${ENCODER} ${FILE} > ${ENC_FILE}
+${FAIR_ENCODER} ${ENABLED_ENC_FILE} > ${FAIR_ENC_FILE}
+
+# copy the outputs of the scripts
+cp ${FILE} "${OUTPUT_DIR}/source.txt"
+cp ${ENABLED_ENC_FILE} "${OUTPUT_DIR}/enabled_encoded.txt"
+cp ${FAIR_ENC_FILE} "${OUTPUT_DIR}/fair_encoded.txt"
 
 # run the usual stuff
-./runFancy ${ENC_FILE} $@
+./runFancy ${FAIR_ENC_FILE} $@

@@ -2,6 +2,7 @@
 
 import argparse
 import re
+import os
 import sys
 
 from problem import Problem
@@ -237,9 +238,18 @@ if __name__ == '__main__':
     fairPlay1 = autPlay1ToFair(problem.autPlay1)
     fairPlay2 = autPlay2ToFair(problem.autPlay2)
 
-    dot = fairPlay2.exportToDot()
-    with open("aut.dot", "w") as text_file:
-        text_file.write(dot)
+    with open(os.path.join(OUTPUT_DIR, "fair_init.dot"), "w") as text_file:
+        text_file.write(fairInit.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "fair_final.dot"), "w") as text_file:
+        text_file.write(fairFinal.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "fair_play1.dot"), "w") as text_file:
+        text_file.write(fairPlay1.exportToDot())
+
+    with open(os.path.join(OUTPUT_DIR, "fair_play2.dot"), "w") as text_file:
+        text_file.write(fairPlay2.exportToDot())
+
 
     outlines = []
 
