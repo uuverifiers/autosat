@@ -4,165 +4,27 @@ import argparse
 import re
 import sys
 
-from enum import Enum
-
-##############################################################################
-class Problem:
-    '''Represents a liveness problem'''
-    def __init__(self):
-        self.alphabet = set()
-        self.options = []
-
-
-# global instance of a problem
-problem = Problem()
-
-
-##############################################################################
-class Automaton:
-    '''Represents an automaton'''
-
-    def __init__(self):
-        '''__init__(self)
-
-Constructor.
-'''
-        self.startState = None
-        self.acceptStates = None
-        self.transitions = []
-        self.epsTransitions = []
-
-
-    ###########################################
-    def processStartState(self, line):
-        '''processStartState(line)
-
-Parses a line with the starting state of an automaton.
-'''
-        match = reStartState.match(line)
-        assert match is not None
-        if self.startState is not None:
-            raise Exception("Defining starting state multiple times: " + line)
-        self.startState = match.group('state')
-
-
-    ###########################################
-    def processAcceptStates(self, line):
-        '''processAcceptStates(line)
-
-Parses a line with accepting states of an automaton.
-'''
-        match = reAcceptStates.match(line)
-        assert match is not None
-        if self.acceptStates is not None:
-            raise Exception("Defining accepting states multiple times: " + line)
-        self.acceptStates = match.group('states')
-
-
-    ###########################################
-    def processEpsTrans(self, line):
-        '''processEpsTrans(line)
-
-Processes an epsilon transition on line.
-'''
-        assert reEpsTrans.match(line)
-        self.epsTransitions.append(line)
-
-    ###########################################
-    def processTrans(self, line):
-        '''processTrans(line)
-
-Processes automaton transition from line.
-'''
-        if reAutTrans.match(line):
-            match = reAutTrans.match(line)
-
-            problem.alphabet.add(match.group('symbol'))
-
-            self.transitions.append(
-                (
-                    match.group('src'),
-                    match.group('tgt'),
-                    match.group('symbol')
-                ))
-        elif reTransdTrans.match(line):
-            match = reTransdTrans.match(line)
-
-            problem.alphabet.add(match.group('fst_symbol'))
-            problem.alphabet.add(match.group('snd_symbol'))
-
-            self.transitions.append(
-                (
-                    match.group('src'),
-                    match.group('tgt'),
-                    match.group('fst_symbol'),
-                    match.group('snd_symbol')
-                ))
-        else:
-            raise Exception("Invalid transition syntax: " + line)
-
-
-    def __str__(self):
-        '''__str__(self)
-
-Transforms automaton into a string.
-'''
-        output = ""
-        output += "init: " + self.startState + ";\n"
-
-        for trans in self.epsTransitions:
-            output += trans + "\n"
-
-        for trans in self.transitions:
-            if len(trans) == 3:
-                output += trans[0] + " -> " + trans[1] + " " + trans[2] + ";\n"
-            elif len(trans) == 4:
-                output += trans[0] + " -> " + trans[1] + " " + trans[2] + "/" + trans[3] + ";\n"
-            else:
-                raise Exception("Internal error")
-
-        output += "accepting: " + self.acceptStates + ";\n"
-
-        return output
-
-
-##############################################################################
-
-# regex for matching start states
-reStartState = re.compile(r'^init:\ *(?P<state>[a-zA-Z0-9_]+);$')
-
-# regex for matching accepting states
-reAcceptStates = re.compile(r'^accepting:\ *(?P<states>.+);$')
-
-# regex for matching automaton transitions
-reAutTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<symbol>[a-zA-Z_]+)\ *;$');
-
-# regex for matching transducer transitions
-reTransdTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<fst_symbol>[a-zA-Z_]+)/(?P<snd_symbol>[a-zA-Z_]+)\ *;$');
-
-# regex for matching epsilon transitions
-reEpsTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ *;$');
-
-# regex for start of automaton definition
-reAutDefStart = re.compile(r'^(?P<autname>[a-zA-Z0-9]+)\ +\{$')
-
-# regex for an option without a parameter
-reOptionNoParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+)\ *;$')
-
-# regex for an option with a parameter
-reOptionWithParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+:.+)\ *;$')
+from problem import Problem
+from automaton import Automaton
+from parser import Parser
+from constants import *
 
 # symbols for encoding counters
-ZERO = '0'
-ONE = '1'
+SYMBOL_ZERO = '0'
+SYMBOL_ONE = '1'
+SYMBOL_ENABLED_TIMEOUT = "enabled_timeout"
+
+FAIR_ENCODING_ALPHABET = ENCODING_ALPHABET | {
+        SYMBOL_ZERO,
+        SYMBOL_ONE,
+        SYMBOL_ENABLED_TIMEOUT
+    }
 
 # special states
-FINAL_NEW_PRE_INIT = "XX'pre_init"
-FINAL_NEW_INIT = "XX'init"
-FINAL_NEW_ZERO = "XX'zero"
-FINAL_NEW_ACCEPT = "XX'accept"
+FINAL_START_STATE = "XXXinit"
 
 
+###############################################################################
 def parseOptions():
     '''parseOptions() -> options
 
@@ -171,82 +33,97 @@ attributes:
 
   filename - the name of the input file as a String
 '''
-    parser = argparse.ArgumentParser(description="Encodes (weak) fairness"
-        " into a two-player transition system")
+    parser = argparse.ArgumentParser(description="Encodes (TODO: which?) fairness"
+        " into a two-player transition system (with enabledness encoded beforehand)")
     parser.add_argument("filename", metavar="file")
     args = parser.parse_args()
     return args
 
+###########################################
+def encodeCounter(aut):
+    '''encodeCounter(aut) -> Automaton
 
+Encode counters into aut, yielding a new automaton.
+'''
+    result = Automaton()
+    result.startStates = aut.startStates[:]
+    result.acceptStates = aut.acceptStates[:]
+
+    for trans in aut.transitions:
+        (src, symb, tgt) = trans
+        if symb in {SYMBOL_ENABLED, SYMBOL_DISABLED}:
+            # for end-of-subword transitions
+            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
+            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
+            symbState = tgt + "_" + symb
+            result.addTrans(transition = (src, oneState))
+            result.addTrans(oneState, SYMBOL_ONE, oneState)
+            result.addTrans(oneState, SYMBOL_ONE, zeroState)
+            result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
+            result.addTrans(zeroState, SYMBOL_ZERO, symbState)
+            result.addTrans(symbState, symb, tgt)
+        else:
+            # for ordinary transitions
+            result.addTrans(transition = trans)
+
+    result.transitions = list(set(result.transitions)) # kill duplicates
+
+    return result
+
+
+###############################################################################
 def autInitToFair(aut):
     '''autInitToFair(aut) -> Automaton
 
 Encodes fairness into an automaton representing initial configurations of
 a system.
 '''
-    output = Automaton()
-    output.startState = aut.startState
-    output.acceptStates = aut.acceptStates
-    output.epsTransitions = aut.epsTransitions
-
-    for trans in aut.transitions:
-        assert len(trans) == 3
-        src = trans[0]
-        tgt = trans[1]
-        symbol = trans[2]
-        oneState = tgt + "'one"
-        zeroState = tgt + "'zero"
-
-        output.transitions.append((src, oneState, symbol))
-        output.transitions.append((oneState, oneState, ONE))
-        output.transitions.append((oneState, zeroState, ONE))
-        output.transitions.append((zeroState, zeroState, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO))
-
-    output.transitions = list(set(output.transitions)) # kill duplicates
-    return output
+    return encodeCounter(aut)
 
 
 ###############################################################################
-def autFinalToFair(aut):
-    '''autFinalToFair(aut) -> Automaton
+def autFinalToFair(aut, autEnabled):
+    '''autFinalToFair(aut, autEnabled) -> Automaton
 
 Encodes fairness into an automaton representing final configurations of
-a system.
+a system, w.r.t. enabled transitions given by autEnabled.  The final states are
+states given by aut with fairness encoded, or states corresponding to one
+enabled process's counter reaching zero.
 '''
-    output = Automaton()
-    output.startState = FINAL_NEW_PRE_INIT
-    output.acceptStates = aut.acceptStates + ", " + FINAL_NEW_ACCEPT
-    output.epsTransitions = aut.epsTransitions
-    output.epsTransitions.append(FINAL_NEW_PRE_INIT + " -> " + aut.startState + ";")
-    output.epsTransitions.append(FINAL_NEW_PRE_INIT + " -> " + FINAL_NEW_INIT + ";")
+    aut1 = autEnabled.renameStates(lambda x: x + "Y1")
+    aut1 = aut1.clearAcceptStates()
 
-    for trans in aut.transitions:
-        assert len(trans) == 3
-        src = trans[0]
-        tgt = trans[1]
-        symbol = trans[2]
-        oneState = tgt + "'one"
-        zeroState = tgt + "'zero"
+    aut2 = autEnabled.renameStates(lambda x: x + "Y2")
+    aut2 = aut2.clearStartStates()
 
-        output.transitions.append((src, oneState, symbol))
-        output.transitions.append((oneState, oneState, ONE))
-        output.transitions.append((oneState, zeroState, ONE))
-        output.transitions.append((zeroState, zeroState, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO))
+    aut3 = Automaton.autUnion(aut1, aut2)
+    for (src, symb, tgt) in autEnabled.transitions:
+        if symb == SYMBOL_ENABLED:
+            aut3.addTrans(src + "Y1", SYMBOL_ENABLED_TIMEOUT, tgt + "Y2")
 
-    # transitions in FINAL_NEW_INIT
-    for symb in problem.alphabet | {ZERO, ONE}:
-        output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_INIT, symb))
-    for symb in problem.alphabet:
-        output.transitions.append((FINAL_NEW_INIT, FINAL_NEW_ZERO, symb))
+    aut4 = encodeCounter(aut3)
 
-    # transitions in FINAL_NEW_ZERO
-    output.transitions.append((FINAL_NEW_ZERO, FINAL_NEW_ACCEPT, ZERO))
+    aut5 = Automaton()
+    aut5.startStates = aut4.startStates[:]
+    aut5.acceptStates = aut4.acceptStates[:]
 
-    # transitions in FINAL_NEW_ACCEPT
-    for symb in problem.alphabet | {ZERO, ONE}:
-        output.transitions.append((FINAL_NEW_ACCEPT, FINAL_NEW_ACCEPT, symb))
+    for trans in aut4.transitions:
+        if (not Automaton.isEpsilonTrans(trans) and
+            Automaton.getSymbol(trans) == SYMBOL_ENABLED_TIMEOUT):
+            (src, _, tgt) = trans
+            # for the special timeout symbol
+            zeroState = tgt + "Y0"
+            aut5.addTrans(transition = (src, zeroState))
+            aut5.addTrans(zeroState, SYMBOL_ZERO, zeroState)
+            aut5.addTrans(zeroState, SYMBOL_ENABLED, tgt)
+        else:
+            # for other symbols
+            aut5.addTrans(transition = trans)
+
+    autB = encodeCounter(aut)
+
+    output = Automaton.autUnion(aut5, autB)
+    output = output.singleStartState(FINAL_START_STATE)
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
@@ -259,43 +136,19 @@ def autPlay1ToFair(aut):
 Encodes fairness into aut for Player 1.
 '''
     output = Automaton()
-    output.startState = aut.startState
-    output.acceptStates = aut.acceptStates
-    output.epsTransitions = aut.epsTransitions
+    output.startStates = aut.startStates[:]
+    output.acceptStates = aut.acceptStates[:]
 
     for trans in aut.transitions:
-        assert len(trans) == 4
-        src = trans[0]
-        tgt = trans[1]
-        fstSymbol = trans[2]
-        sndSymbol = trans[3]
-        copyState = tgt + "'copy"
-        oneState = tgt + "'one"
-        zeroState = tgt + "'zero"
-
-        if (fstSymbol == sndSymbol): # no rewrite
-            output.transitions.append((src, copyState, fstSymbol, sndSymbol))
-            output.transitions.append((copyState, copyState, ONE, ONE))
-            output.transitions.append((copyState, copyState, ZERO, ZERO))
-            output.transitions.append((copyState, tgt, ZERO, ZERO))
-        else: # Player 1 selects a process
-            assert fstSymbol != sndSymbol
-            output.transitions.append((src, oneState, fstSymbol, sndSymbol))
-
-            # create 1's
-            output.transitions.append((oneState, oneState, ZERO, ONE))
-            output.transitions.append((oneState, oneState, ONE, ONE))
-            output.transitions.append((oneState, tgt, ZERO, ZERO))
-            ## the following lines were changed to reduce the state space
-            # output.transitions.append((oneState, zeroState, ZERO, ONE))
-            # output.transitions.append((oneState, zeroState, ONE, ONE))
-
-            # create 0's
-            ## the following block was removed to reduce the state space
-            # output.transitions.append((zeroState, zeroState, ZERO, ZERO))
-            # output.transitions.append((zeroState, zeroState, ONE, ZERO))
-            # output.transitions.append((zeroState, tgt, ZERO, ZERO))
-            # output.transitions.append((zeroState, tgt, ONE, ZERO))
+        if Automaton.isEpsilonTrans(trans):
+            output.addTrans(transition = trans)
+        else:
+            (src, symb1, symb2, tgt) = trans
+            cntState = tgt + "_" + symb1 + "_" + symb2
+            output.addTrans(transition = (src, cntState))
+            output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState)
+            output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
+            output.addTransTransd(cntState, symb1, symb2, tgt)
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
@@ -308,114 +161,92 @@ def autPlay2ToFair(aut):
 Encodes fairness into aut for Player 2.
 '''
     output = Automaton()
-    output.startState = aut.startState
-    output.acceptStates = aut.acceptStates
-    output.epsTransitions = aut.epsTransitions
+    output.startStates  = aut.startStates[:]
+    output.acceptStates  = aut.acceptStates[:]
 
     for trans in aut.transitions:
-        assert len(trans) == 4
-        src = trans[0]
-        tgt = trans[1]
-        fstSymbol = trans[2]
-        sndSymbol = trans[3]
-        oneState = tgt + "'one"
-        zeroState = tgt + "'zero"
+        if Automaton.isEpsilonTrans(trans):
+            output.addTrans(transition = trans)
+        else:
+            (src, symb1, symb2, tgt) = trans
 
-        output.transitions.append((src, oneState, fstSymbol, sndSymbol))
+            if (symb1, symb2) == (SYMBOL_DISABLED, SYMBOL_DISABLED):
+                disState = tgt + "_disXdis"
+                output.addTrans(transition = (src, disState))
+                output.addTransTransd(disState, SYMBOL_ZERO, SYMBOL_ZERO, disState)
+                output.addTransTransd(disState, SYMBOL_ONE, SYMBOL_ONE, disState)
+                output.addTransTransd(disState, SYMBOL_DISABLED, SYMBOL_DISABLED, tgt)
+            elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                oneState = tgt + "_enXenX1"
+                zeroState = tgt + "_enXenX0"
+                output.addTrans(transition = (src, oneState))
+                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
+                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState)
+                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState)
+                output.addTransTransd(zeroState, SYMBOL_ENABLED, SYMBOL_ENABLED, tgt)
+            elif (symb1, symb2) == (SYMBOL_DISABLED, SYMBOL_ENABLED):
+                # NOTE: this case determines the particular notion of fairness, right?
+                oneState = tgt + "_starXenX1"
+                disEnState = tgt + "_disXen"
+                output.addTrans(transition = (src, oneState))
+                output.addTransTransd(oneState, SYMBOL_ZERO, SYMBOL_ONE, oneState)
+                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
+                output.addTransTransd(oneState, SYMBOL_ZERO, SYMBOL_ZERO, disEnState)
+                output.addTransTransd(disEnState, SYMBOL_DISABLED, SYMBOL_ENABLED, tgt)
+            elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_DISABLED):
+                chDisState = tgt + "_chXdis"
+                output.addTrans(transition = (src, chDisState))
+                output.addTransTransd(chDisState, SYMBOL_ZERO, SYMBOL_ZERO, chDisState)
+                output.addTransTransd(chDisState, SYMBOL_ONE, SYMBOL_ONE, chDisState)
+                output.addTransTransd(chDisState, SYMBOL_CHOSEN, SYMBOL_DISABLED, tgt)
+            elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
+                chEnOneState = tgt + "_chXenX1"
+                chEnState = tgt + "_chXen"
+                output.addTrans(transition = (src, chEnOneState))
+                output.addTransTransd(chEnOneState, SYMBOL_ZERO, SYMBOL_ONE, chEnOneState)
+                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState)
+                output.addTransTransd(chEnOneState, SYMBOL_ZERO, SYMBOL_ZERO, chEnState)
+                output.addTransTransd(chEnState, SYMBOL_CHOSEN, SYMBOL_ENABLED, tgt)
+            else:
+                assert symb1 not in FAIR_ENCODING_ALPHABET
+                assert symb2 not in FAIR_ENCODING_ALPHABET
 
-        # decrement!
-        output.transitions.append((oneState, oneState, ONE, ONE))
-        output.transitions.append((oneState, zeroState, ONE, ZERO))
-        output.transitions.append((zeroState, zeroState, ZERO, ZERO))
-        output.transitions.append((zeroState, tgt, ZERO, ZERO))
+                output.addTrans(transition = trans)
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
 
 
 ###############################################################################
-def parseAut(it):
-    '''parseAut(it) -> Automaton
-
-Parses an automaton (resp. transducer) representation into an instance of the
-Automaton class.  Modifies it.
-'''
-    # initialize
-    output = Automaton()
-
-    for line in it:
-        if (line == "}"): # end of automaton
-            return output
-        elif (line[0:2] == "//"): # comments
-            pass
-        elif (line == ""): # empty string
-            pass
-        elif (reStartState.match(line)): # start states
-            output.processStartState(line)
-        elif (reAcceptStates.match(line)): # accepting states
-            output.processAcceptStates(line)
-        elif (reEpsTrans.match(line)): # epsilon transition
-            output.processEpsTrans(line)
-        elif (reAutTrans.match(line)) or (reTransdTrans.match(line)):
-            output.processTrans(line)
-        else:
-            raise Exception("Syntax error: " + line)
-
-
-def processTopFile(it):
-    '''processTopFile(it)
-
-Processes top file structures in a file.  Modifies it.
-'''
-    for line in it:
-        if (line[0:2] == "//"): # comments
-            pass
-        elif (line == ""): # empty string
-            pass
-        elif (reOptionNoParam.match(line)): # option
-            match = reOptionNoParam.match(line)
-            assert match is not None
-            problem.options.append(match.group('option'))
-        elif (reOptionWithParam.match(line)): # option with parameter
-            match = reOptionWithParam.match(line)
-            assert match is not None
-            problem.options.append(match.group('option'))
-        elif (reAutDefStart.match(line)): # beginning of an automaton
-            name = reAutDefStart.match(line).group('autname')
-            if name == "I0": # aut for initial configurations
-                problem.autInit = parseAut(it)
-            elif name == "F": # aut for final configurations
-                problem.autFinal = parseAut(it)
-            elif name == "P1": # aut for Player 1
-                problem.autPlay1 = parseAut(it)
-            elif name == "P2": # aut for Player 2
-                problem.autPlay2 = parseAut(it)
-            else:
-                raise Exception("Invalid automaton name: " + name)
-        else:
-            raise Exception("Syntax error: " + line)
-
-
-###############################################################################
-def processLines(inlines):
-    '''processLines([inline]) -> [outline]
-
-Process input lines into output lines, adding fairness into the system
-'''
-    outlines = []
+if __name__ == '__main__':
+    options = parseOptions()
+    # input
+    inlines = [line.strip() for line in open(options.filename)]
     it = iter(inlines)
 
-    # we need to load the whole file first to collect all symbols in the
-    # alphabet!
-    processTopFile(it)
+    # parse the verification problem
+    problem = Parser.parseProblem(it)
+    assert hasattr(problem, 'autInit')
+    assert hasattr(problem, 'autFinal')
+    assert hasattr(problem, 'autPlay1')
+    assert hasattr(problem, 'autPlay2')
+    assert hasattr(problem, 'autEnabled')
 
-    problem.fairInit = autInitToFair(problem.autInit)
-    problem.fairFinal = autFinalToFair(problem.autFinal)
-    problem.fairPlay1 = autPlay1ToFair(problem.autPlay1)
-    problem.fairPlay2 = autPlay2ToFair(problem.autPlay2)
+    fairInit = autInitToFair(problem.autInit)
+    fairFinal = autFinalToFair(problem.autFinal, problem.autEnabled)
+    fairPlay1 = autPlay1ToFair(problem.autPlay1)
+    fairPlay2 = autPlay2ToFair(problem.autPlay2)
 
+    dot = fairPlay2.exportToDot()
+    with open("aut.dot", "w") as text_file:
+        text_file.write(dot)
+
+    outlines = []
+
+    # output Init
+    outlines = []
     outlines.append("I0 {\n")
-    outlines.append(str(problem.fairInit))
+    outlines.append(str(fairInit))
     outlines.append("}\n\n")
 
     CLOSED_UNDER_TRANSITIONS = "closedUnderTransitions"
@@ -425,26 +256,13 @@ Process input lines into output lines, adding fairness into the system
 
     # output all other automata
     for (name, aut) in [
-      ("F", problem.fairFinal),
-      ("P1", problem.fairPlay1),
-      ("P2", problem.fairPlay2)]:
+            ("F", fairFinal),
+            ("P1", fairPlay1),
+            ("P2", fairPlay2),
+        ]:
         outlines.append(name + " {\n")
         outlines.append(str(aut))
         outlines.append("}\n\n")
-
-    for option in problem.options:
-        outlines.append(option + ";\n")
-
-    return outlines
-
-
-###############################################################################
-if __name__ == '__main__':
-    options = parseOptions()
-    # input
-    inlines = [line.strip() for line in open(options.filename)]
-    # output
-    outlines = processLines(inlines)
 
     for line in outlines:
         print(line)

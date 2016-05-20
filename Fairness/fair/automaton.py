@@ -70,6 +70,17 @@ Retrieve the source state of a transition.
 '''
         return trans[0]
 
+
+    ###########################################
+    def getSymbol(trans):
+        '''getSymbol(trans) -> Symbol
+
+Get the symbol in an automaton transition.
+'''
+        assert len(trans) == 3
+        return trans[1]
+
+
     ###########################################
     def getSymbol1(trans):
         '''getSymbol1(trans) -> Symbol
@@ -97,6 +108,24 @@ Get the second symbol in a transducer transition.
 Determine an epsilon transition.
     '''
         return len(trans) == 2
+
+
+    ###########################################
+    def singleStartState(self, name):
+        '''singleStartState(self, name) -> Automaton
+
+Make a single start state called name, using epsilon transitions to go to the
+original start states.
+'''
+        result = self
+        startingStates = result.startStates[:]
+
+        result.clearStartStates()
+        result.startStates = [name]
+        for state in startingStates:
+            result.addTrans(transition = (name, state))
+
+        return result
 
 
     ###########################################

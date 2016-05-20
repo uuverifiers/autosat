@@ -3,17 +3,11 @@
 import argparse
 import sys
 
+
 from problem import Problem
 from automaton import Automaton
 from parser import Parser
-
-from enum import Enum
-
-# special symbols
-SYMBOL_DELIM = 'delim'
-SYMBOL_ENABLED = 'enabled'
-SYMBOL_DISABLED = 'disabled'
-SYMBOL_CHOSEN = 'chosen'
+from constants import *
 
 PLAYER1_START_STATE = 'XXXXsinitXXXX'
 
@@ -25,7 +19,7 @@ attributes:
 
   filename - the name of the input file as a String
 '''
-    parser = argparse.ArgumentParser(description="Encodes (weak) fairness"
+    parser = argparse.ArgumentParser(description="Encodes enabledness"
         " into a two-player transition system")
     parser.add_argument("filename", metavar="file")
     args = parser.parse_args()
@@ -95,12 +89,7 @@ Player 1 nondeterministically chooses one enabled transition (if such exists).
                 rename2(Automaton.getTgtState(trans)))
 
     result = Automaton.autUnion(oneChosenTransTransdMerged, noEnabledTransTransd)
-    startingStates = result.startStates[:]
-    result.clearStartStates()
-    result.startStates = [PLAYER1_START_STATE]
-
-    for state in startingStates:
-        result.addTrans(transition = (PLAYER1_START_STATE, state))
+    result = result.singleStartState(PLAYER1_START_STATE)
 
     return result
 
@@ -171,9 +160,9 @@ if __name__ == '__main__':
     enabledPlay1 = createPlayer1(problem.autEnabled)
     enabledPlay2 = createPlayer2(problem.autPlay2, problem.autEnabled)
 
-    dot = enabledPlay2.exportToDot()
-    with open("aut.dot", "w") as text_file:
-        text_file.write(dot)
+    # dot = enabledPlay2.exportToDot()
+    # with open("aut.dot", "w") as text_file:
+    #     text_file.write(dot)
 
     # output Init
     outlines = []
@@ -188,9 +177,11 @@ if __name__ == '__main__':
 
     # output all other automata
     for (name, aut) in [
-      ("F", enabledFinal),
-      ("P1", enabledPlay1),
-      ("P2", enabledPlay2)]:
+          ("F", enabledFinal),
+          ("P1", enabledPlay1),
+          ("P2", enabledPlay2),
+          ("Enabled", problem.autEnabled),
+        ]:
         outlines.append(name + " {\n")
         outlines.append(str(aut))
         outlines.append("}\n\n")
