@@ -26,7 +26,7 @@ export BASEDIR="${LIVENESSBASE}"
 cd ${OUTPUT_DIR} && ./alltosvg && cd ..
 
 # run the main script
-. ../LivenessProver/autosat
+. ../LivenessProver/slrp
 
-cp ${SRC} "${OUTPUT_DIR}/autosat_input.txt"
+cp ${SRC} "${OUTPUT_DIR}/slrp_input.txt"
 cd ${OUTPUT_DIR} && ./alltosvg && cd ..
