@@ -274,5 +274,8 @@ if __name__ == '__main__':
         outlines.append(str(aut))
         outlines.append("}\n\n")
 
+    for option in problem.options:
+        outlines.append(option + ";\n")
+
     for line in outlines:
         print(line)

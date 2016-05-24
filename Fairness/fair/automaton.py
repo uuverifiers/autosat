@@ -222,7 +222,6 @@ Performs a general intersction of autLhs and autRhs, such that symbols are
 matched using the funSymMatch predicate.  The symbol of a new transition is then
 determined using funDetSymb.  Generates only reachable transitions and states.
 '''
-
         print('generalIntersection: warning: ignoring epsilon transitions', file=sys.stderr)
 
         result = Automaton()

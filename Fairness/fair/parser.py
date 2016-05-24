@@ -16,10 +16,10 @@ reStartStates = re.compile(r'^init:\ *(?P<states>.+);$')
 reAcceptStates = re.compile(r'^accepting:\ *(?P<states>.+);$')
 
 # regex for matching automaton transitions
-reAutTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<symbol>[a-zA-Z_]+)\ *;$');
+reAutTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<symbol>[a-zA-Z0-9_]+)\ *;$');
 
 # regex for matching transducer transitions
-reTransdTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<fst_symbol>[a-zA-Z_]+)/(?P<snd_symbol>[a-zA-Z_]+)\ *;$');
+reTransdTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ +(?P<fst_symbol>[a-zA-Z0-9_]+)/(?P<snd_symbol>[a-zA-Z0-9_]+)\ *;$');
 
 # regex for matching epsilon transitions
 reEpsTrans = re.compile(r'^(?P<src>[a-zA-Z0-9_]+)\ *->\ *(?P<tgt>[a-zA-Z0-9_]+)\ *;$');

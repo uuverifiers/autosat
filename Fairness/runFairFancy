@@ -30,8 +30,19 @@ cd ${OUTPUT_DIR} && ./clean_dir && cd ..
 
 # encode enablednes
 ${ENABLED_ENCODER} ${FILE} > ${ENABLED_ENC_FILE}
+rc=$?
+if [[ $rc != 0 ]]; then
+	echo "Error when encoding enabledness into the model"
+	exit $rc
+fi
+
 # encode fairness
 ${FAIR_ENCODER} ${ENABLED_ENC_FILE} > ${FAIR_ENC_FILE}
+rc=$?
+if [[ $rc != 0 ]]; then
+	echo "Error when encoding fairness into the model"
+	exit $rc
+fi
 
 # copy the outputs of the scripts
 cp ${FILE} "${OUTPUT_DIR}/source.txt"
