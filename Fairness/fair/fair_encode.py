@@ -72,6 +72,39 @@ Encode counters into aut, yielding a new automaton.
     return result
 
 
+###########################################
+def encodeCounterWithZero(aut):
+    '''encodeCounter(aut) -> Automaton
+
+Encode counters (with potentially all zeros) into aut, yielding a new
+automaton.
+'''
+    result = Automaton()
+    result.startStates = aut.startStates[:]
+    result.acceptStates = aut.acceptStates[:]
+
+    for trans in aut.transitions:
+        (src, symb, tgt) = trans
+        if symb in {SYMBOL_ENABLED, SYMBOL_DISABLED}:
+            # for end-of-subword transitions
+            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
+            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
+            symbState = tgt + "_" + symb
+            result.addTrans(transition = (src, oneState))
+            result.addTrans(oneState, SYMBOL_ONE, oneState)
+            result.addTrans(transition = (oneState, zeroState))
+            result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
+            result.addTrans(zeroState, SYMBOL_ZERO, symbState)
+            result.addTrans(symbState, symb, tgt)
+        else:
+            # for ordinary transitions
+            result.addTrans(transition = trans)
+
+    result.transitions = list(set(result.transitions)) # kill duplicates
+
+    return result
+
+
 ###############################################################################
 def autInitToFair(aut):
     '''autInitToFair(aut) -> Automaton
@@ -102,7 +135,7 @@ enabled process's counter reaching zero.
         if symb == SYMBOL_ENABLED:
             aut3.addTrans(src + "Y1", SYMBOL_ENABLED_TIMEOUT, tgt + "Y2")
 
-    aut4 = encodeCounter(aut3)
+    aut4 = encodeCounterWithZero(aut3)
 
     aut5 = Automaton()
     aut5.startStates = aut4.startStates[:]
