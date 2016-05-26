@@ -175,14 +175,19 @@ Encodes fairness into aut for Player 1.
 
     for trans in aut.transitions:
         if Automaton.isEpsilonTrans(trans):
+            # epsilon transitions
             output.addTrans(transition = trans)
-        else:
+        elif (Automaton.getSymbol1(trans) in ENCODING_ALPHABET):
+            # delimiters
             (src, symb1, symb2, tgt) = trans
             cntState = tgt + "_" + symb1 + "_" + symb2
             output.addTrans(transition = (src, cntState))
             output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState)
             output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
             output.addTransTransd(cntState, symb1, symb2, tgt)
+        else:
+            # other transitions
+            output.addTrans(transition = trans)
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
