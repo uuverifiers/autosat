@@ -177,6 +177,12 @@ automatonStateGuessing: 0 .. 4;
 // monolithicWitness;
 
 /**
+ * When using disjunctive advice bits, don't precompute inductive
+ * invariants using the L* algorithm (not used here);
+ */
+// noPrecomputedInvariant;
+
+/**
  * Accelerate using symmetries of the game (not used here).
  */
 // symmetries: rotation;
