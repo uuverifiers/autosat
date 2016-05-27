@@ -154,7 +154,7 @@ enabled process's counter reaching zero.
             # for other symbols
             aut5.addTrans(transition = trans)
 
-    autB = encodeCounter(aut)
+    autB = encodeCounterWithZero(aut)
 
     output = Automaton.autUnion(aut5, autB)
     output = output.singleStartState(FINAL_START_STATE)

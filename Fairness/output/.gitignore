@@ -3,3 +3,6 @@
 *.svg
 *.log
 source.txt
+slrp_input.txt
+enabled_encoded.txt
+fair_encoded.txt
