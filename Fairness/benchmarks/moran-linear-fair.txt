@@ -1,0 +1,135 @@
+//
+// Model of Moran processes, with three alleles A, B, C, with fairness.
+//
+
+// initial: words of length >= 1
+I0 {
+  init: s0;
+
+  s0 -> s1p A;
+  s0 -> s1p B;
+  s0 -> s1p C;
+
+  s1p -> s1 delim;
+
+  s1 -> s1p A;
+  s1 -> s1p B;
+  s1 -> s1p C;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+// final: configurations with only A, B, or C alleles
+F {
+  init: s0;
+
+  s0 -> sap A;
+  sa -> sap A;
+
+  sap -> sa delim;
+
+  s0 -> sbp B;
+  sb -> sbp B;
+
+  sbp -> sb delim;
+
+  s0 -> scp C;
+  sc -> scp C;
+
+  scp -> sc delim;
+
+  accepting: sa, sb, sc;
+}
+
+// everything is enabled
+Enabled {
+  init: s0;
+
+  s0 -> s1p A;
+  s0 -> s1p B;
+  s0 -> s1p C;
+
+  s1p -> s1 enabled;
+
+  s1 -> s1p A;
+  s1 -> s1p B;
+  s1 -> s1p C;
+
+  accepting: s1;
+}
+
+// Process: copy type to one of the neighbours
+P2 {
+  init: s0;
+
+  s0 -> s0p A/A;
+  s0 -> s0p B/B;
+  s0 -> s0p C/C;
+
+  s0p -> s0 delim/delim;
+
+  // copy left
+  s0 -> s1ap A/A;
+  s0 -> s1ap B/A;
+  s0 -> s1ap C/A;
+
+  s0 -> s1bp A/B;
+  s0 -> s1bp B/B;
+  s0 -> s1bp C/B;
+
+  s0 -> s1cp A/C;
+  s0 -> s1cp B/C;
+  s0 -> s1cp C/C;
+
+  s1ap -> s1a delim/delim;
+  s1bp -> s1b delim/delim;
+  s1cp -> s1c delim/delim;
+
+  s1a -> s10p A/A;  
+  s1b -> s10p B/B;
+  s1c -> s10p C/C;  
+
+  s10p -> sf chosen/delim;
+
+  // copy right
+  s0 -> s2ap A/A;  
+  s0 -> s2bp B/B;
+  s0 -> s2cp C/C;  
+
+  s2ap -> s2a chosen/delim;
+  s2bp -> s2b chosen/delim;
+  s2cp -> s2c chosen/delim;
+
+  s2a -> sfp A/A;
+  s2a -> sfp B/A;
+  s2a -> sfp C/A;
+
+  s2b -> sfp A/B;
+  s2b -> sfp B/B;
+  s2b -> sfp C/B;
+
+  s2c -> sfp A/C;
+  s2c -> sfp B/C;
+  s2c -> sfp C/C;
+
+  sf -> sfp A/A;
+  sf -> sfp B/B;
+  sf -> sfp C/C;
+
+  sfp -> sf delim/delim;
+
+  accepting: sf;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+//monolithicWitness;
+
+noPrecomputedInvariant;
+useRankingFunctions;
+logLevel: 2;
+
+explicitChecksUntilLength: 10;

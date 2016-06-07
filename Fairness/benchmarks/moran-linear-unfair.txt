@@ -1,0 +1,109 @@
+/**
+ * Model of Moran processes, with three alleles A, B, C
+ */
+
+// initial: words of length >= 1
+I0 {
+  init: s0;
+
+  s0 -> s1 A;
+  s0 -> s1 B;
+  s0 -> s1 C;
+
+  s1 -> s1 A;
+  s1 -> s1 B;
+  s1 -> s1 C;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+// final: configurations with only A, B, or C alleles
+F {
+  init: s0;
+
+  s0 -> sa A;
+  sa -> sa A;
+
+  s0 -> sb B;
+  sb -> sb B;
+
+  s0 -> sc C;
+  sc -> sc C;
+
+  accepting: sa, sb, sc;
+}
+
+// Scheduler: non-deterministically select one letter
+P1 {
+  init: s0;
+
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 C/C;
+
+  s0 -> s1 A/A_;
+  s0 -> s1 B/B_;
+  s0 -> s1 C/C_;
+  
+  s1 -> s1 A/A;
+  s1 -> s1 B/B;
+  s1 -> s1 C/C;
+
+  accepting: s1;
+}
+
+// Process: copy type to one of the neighbours
+P2 {
+  init: s0;
+
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 C/C;
+
+  // copy left
+  s0 -> s1a A/A;
+  s0 -> s1a B/A;
+  s0 -> s1a C/A;
+
+  s0 -> s1b A/B;
+  s0 -> s1b B/B;
+  s0 -> s1b C/B;
+
+  s0 -> s1c A/C;
+  s0 -> s1c B/C;
+  s0 -> s1c C/C;
+
+  s1a -> sf A_/A;  
+  s1b -> sf B_/B;
+  s1c -> sf C_/C;  
+
+  // copy right
+  s0 -> s2a A_/A;  
+  s0 -> s2b B_/B;
+  s0 -> s2c C_/C;  
+
+  s2a -> sf A/A;
+  s2a -> sf B/A;
+  s2a -> sf C/A;
+
+  s2b -> sf A/B;
+  s2b -> sf B/B;
+  s2b -> sf C/B;
+
+  s2c -> sf A/C;
+  s2c -> sf B/C;
+  s2c -> sf C/C;
+
+  sf -> sf A/A;
+  sf -> sf B/B;
+  sf -> sf C/C;
+
+  accepting: sf;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+explicitChecksUntilLength: 6;
