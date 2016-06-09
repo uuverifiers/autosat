@@ -1,0 +1,85 @@
+/**
+ * Model of Moran processes, with three alleles A, B
+ */
+
+// initial: words of length >= 1
+I0 {
+  init: s0;
+
+  s0 -> s1 A;
+  s0 -> s1 B;
+
+  s1 -> s1 A;
+  s1 -> s1 B;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+// final: configurations with only A, B alleles
+F {
+  init: s0;
+
+  s0 -> sa A;
+  sa -> sa A;
+
+  s0 -> sb B;
+  sb -> sb B;
+
+  accepting: sa, sb;
+}
+
+// Scheduler: non-deterministically select one letter
+P1 {
+  init: s0;
+
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+
+  s0 -> s1 A/A_;
+  s0 -> s1 B/B_;
+  
+  s1 -> s1 A/A;
+  s1 -> s1 B/B;
+
+  accepting: s1;
+}
+
+// Process: copy type to one of the neighbours
+P2 {
+  init: s0;
+
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+
+  // copy left
+  s0 -> s1a A/A;
+  s0 -> s1a B/A;
+
+  s0 -> s1b A/B;
+  s0 -> s1b B/B;
+
+  s1a -> sf A_/A;  
+  s1b -> sf B_/B;
+
+  // copy right
+  s0 -> s2a A_/A;  
+  s0 -> s2b B_/B;
+
+  s2a -> sf A/A;
+  s2a -> sf B/A;
+
+  s2b -> sf A/B;
+  s2b -> sf B/B;
+
+  sf -> sf A/A;
+  sf -> sf B/B;
+
+  accepting: sf;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+explicitChecksUntilLength: 6;
