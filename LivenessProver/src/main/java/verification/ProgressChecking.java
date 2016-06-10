@@ -22,6 +22,7 @@ public class ProgressChecking {
 
 	private Automata B;
 	private Automata F;
+	private Automata winningStates;
 	private Automata systemInvariant;
 	private EdgeWeightedDigraph player1;
 	private EdgeWeightedDigraph player2;
@@ -31,6 +32,7 @@ public class ProgressChecking {
 	
 	public ProgressChecking(Automata B,
 				Automata F,
+				Automata winningStates,
 				Automata systemInvariant,
 				EdgeWeightedDigraph player1,
 				EdgeWeightedDigraph player2,
@@ -38,6 +40,7 @@ public class ProgressChecking {
 				int numLetters){
 		this.B = B;
 		this.F = F;
+                this.winningStates = winningStates;
 		this.systemInvariant = systemInvariant;
 		this.player1 = player1;
 		this.player2 = player2;
@@ -52,6 +55,7 @@ public class ProgressChecking {
     public List<List<Integer>> check(){
 	//		EdgeWeightedDigraph left = composeLeftPart();
 	Automata complementF = AutomataConverter.getComplement(F);
+	Automata winningStatesF = AutomataConverter.getComplement(winningStates);
 	Automata invariant =
 	    VerificationUltility.getIntersection(B, systemInvariant);
 	EdgeWeightedDigraph right = composeRightPart();
@@ -78,8 +82,8 @@ public class ProgressChecking {
 	
 	List<int[]> counterExample =
 	    findShortestCounterExample(invariant,
+                                       winningStatesF,
 				       complementF,
-                                       complementF,
 //				       VerificationUltility
 //				       .getUniversalAutomaton(numLetters),
 				       player1,

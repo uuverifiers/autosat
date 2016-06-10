@@ -221,7 +221,7 @@ public class ReachabilityChecking {
 			    contL4 = false;
 
 			    ProgressChecking l4 =
-				new ProgressChecking(automatonB, winningStates,
+				new ProgressChecking(automatonB, F, winningStates,
 						     (systemInvariant != null) ?
 						     systemInvariant :
 						     VerificationUltility
