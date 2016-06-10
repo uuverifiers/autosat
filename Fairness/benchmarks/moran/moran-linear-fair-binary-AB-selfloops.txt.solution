@@ -1,0 +1,616 @@
+17:51:21.181 [main] INFO  verification.IncrementalVerifier - Constructing disjunctive advice bits
+17:51:21.183 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 3 are covered
+17:51:21.184 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 6
+17:51:22.736 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 1 (Bi, Ti) pairs
+17:51:22.737 [main] INFO  verification.IncrementalVerifier - storing 1 progress relations for reuse
+17:51:40.897 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 2 (Bi, Ti) pairs
+17:51:40.897 [main] INFO  verification.IncrementalVerifier - storing 2 progress relations for reuse
+17:52:02.823 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 3 (Bi, Ti) pairs
+17:52:02.823 [main] INFO  verification.IncrementalVerifier - storing 3 progress relations for reuse
+17:52:34.396 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 4 (Bi, Ti) pairs
+17:52:34.396 [main] INFO  verification.IncrementalVerifier - storing 4 progress relations for reuse
+17:52:50.983 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 5 (Bi, Ti) pairs
+17:52:50.983 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+17:52:50.984 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 6 are covered
+17:52:50.985 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 9
+17:53:17.808 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 6 (Bi, Ti) pairs
+17:53:17.808 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+17:53:28.192 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 7 (Bi, Ti) pairs
+17:53:28.192 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+17:53:42.568 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 8 (Bi, Ti) pairs
+17:53:42.568 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:03:27.546 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 9 (Bi, Ti) pairs
+18:03:27.546 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:10:48.206 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 10 (Bi, Ti) pairs
+18:10:48.206 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:11:15.393 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 11 (Bi, Ti) pairs
+18:11:15.393 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:15:46.564 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 12 (Bi, Ti) pairs
+18:15:46.565 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:23:09.564 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 13 (Bi, Ti) pairs
+18:23:09.564 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:28:14.620 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 14 (Bi, Ti) pairs
+18:28:14.620 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:28:26.717 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 15 (Bi, Ti) pairs
+18:37:19.277 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 16 (Bi, Ti) pairs
+18:37:19.277 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+18:37:19.278 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 9 are covered
+18:37:19.278 [main] INFO  verification.IncrementalVerifier - FINISHED
+VERDICT: Player 2 can win from every reachable configuration
+
+// Approximation of reachable states
+A {
+  init: s8;
+  s0 -> s0 A;
+  s0 -> s0 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s0 A;
+  s1 -> s0 B;
+  s1 -> s1 1;
+  s1 -> s2 0;
+  s2 -> s0 A;
+  s2 -> s0 B;
+  s2 -> s3 1;
+  s2 -> s3 0;
+  s3 -> s1 A;
+  s3 -> s7 B;
+  s3 -> s3 1;
+  s3 -> s3 0;
+  s4 -> s0 A;
+  s4 -> s0 B;
+  s4 -> s4 1;
+  s4 -> s5 0;
+  s5 -> s0 A;
+  s5 -> s0 B;
+  s5 -> s6 1;
+  s5 -> s6 0;
+  s6 -> s7 A;
+  s6 -> s4 B;
+  s6 -> s6 1;
+  s6 -> s6 0;
+  s7 -> s0 A;
+  s7 -> s0 B;
+  s7 -> s7 1;
+  s7 -> s17 0;
+  s8 -> s10 A;
+  s8 -> s13 B;
+  s8 -> s0 1;
+  s8 -> s0 0;
+  s9 -> s0 A;
+  s9 -> s0 B;
+  s9 -> s9 1;
+  s9 -> s21 0;
+  s10 -> s0 A;
+  s10 -> s0 B;
+  s10 -> s11 1;
+  s10 -> s22 0;
+  s11 -> s0 A;
+  s11 -> s0 B;
+  s11 -> s12 1;
+  s11 -> s22 0;
+  s12 -> s1 A;
+  s12 -> s7 B;
+  s12 -> s12 1;
+  s12 -> s22 0;
+  s13 -> s0 A;
+  s13 -> s0 B;
+  s13 -> s14 1;
+  s13 -> s24 0;
+  s14 -> s0 A;
+  s14 -> s0 B;
+  s14 -> s15 1;
+  s14 -> s24 0;
+  s15 -> s7 A;
+  s15 -> s4 B;
+  s15 -> s15 1;
+  s15 -> s24 0;
+  s16 -> s0 A;
+  s16 -> s0 B;
+  s16 -> s18 1;
+  s16 -> s25 0;
+  s17 -> s0 A;
+  s17 -> s0 B;
+  s17 -> s19 1;
+  s17 -> s19 0;
+  s18 -> s0 A;
+  s18 -> s0 B;
+  s18 -> s20 1;
+  s18 -> s25 0;
+  s19 -> s7 A;
+  s19 -> s7 B;
+  s19 -> s19 1;
+  s19 -> s19 0;
+  s20 -> s7 A;
+  s20 -> s7 B;
+  s20 -> s20 1;
+  s20 -> s25 0;
+  s21 -> s9 A;
+  s21 -> s9 B;
+  s21 -> s21 1;
+  s21 -> s21 0;
+  s22 -> s9 A;
+  s22 -> s9 B;
+  s22 -> s23 1;
+  s22 -> s23 0;
+  s23 -> s10 A;
+  s23 -> s16 B;
+  s23 -> s23 1;
+  s23 -> s23 0;
+  s24 -> s9 A;
+  s24 -> s9 B;
+  s24 -> s26 1;
+  s24 -> s26 0;
+  s25 -> s9 A;
+  s25 -> s9 B;
+  s25 -> s27 1;
+  s25 -> s27 0;
+  s26 -> s16 A;
+  s26 -> s13 B;
+  s26 -> s26 1;
+  s26 -> s26 0;
+  s27 -> s16 A;
+  s27 -> s16 B;
+  s27 -> s27 1;
+  s27 -> s27 0;
+  accepting: s19, s21, s20, s23, s22, s25, s24, s27, s26;
+}
+
+// States from which player 2 can move and win
+W {
+  init: s0;
+  s0 -> s0 A;
+  s0 -> s0 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  accepting: s0;
+}
+
+// Progress relations
+B0 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s1 B;
+  s1 -> s0 1;
+  s1 -> s1 0;
+  accepting: s0;
+}
+
+T0 {
+  init: s0;
+}
+
+B1 {
+  init: s0;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s2 1;
+  s1 -> s1 0;
+  s2 -> s2 A;
+  s2 -> s1 B;
+  s2 -> s0 1;
+  s2 -> s0 0;
+  accepting: s0, s2;
+}
+
+T1 {
+  init: s0;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 1/0;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s1 B/A;
+  s1 -> s1 A/A;
+  s1 -> s1 A/B;
+  s1 -> s1 B/A;
+  s1 -> s1 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  accepting: s1;
+}
+
+B2 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s2 1;
+  s1 -> s1 0;
+  s2 -> s2 A;
+  s2 -> s0 B;
+  s2 -> s0 1;
+  s2 -> s0 0;
+  accepting: s0, s2;
+}
+
+T2 {
+  init: s0;
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 1/0;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/B;
+  s1 -> s1 A/A;
+  s1 -> s1 A/B;
+  s1 -> s1 B/A;
+  s1 -> s1 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  accepting: s1;
+}
+
+B3 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s1 -> s1 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  accepting: s1;
+}
+
+T3 {
+  init: s0;
+  s0 -> s0 1/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/A;
+  s0 -> s2 B/A;
+  s0 -> s2 0/1;
+  s1 -> s0 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  s1 -> s2 B/A;
+  s2 -> s2 B/A;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s2;
+}
+
+B4 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s0 -> s1 0;
+  s1 -> s0 A;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  accepting: s0, s1;
+}
+
+T4 {
+  init: s0;
+  s0 -> s0 1/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/B;
+  s0 -> s1 0/1;
+  s0 -> s2 B/B;
+  s1 -> s1 A/A;
+  s1 -> s1 A/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  s2 -> s0 A/A;
+  s2 -> s0 A/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s1;
+}
+
+B5 {
+  init: s0;
+  s0 -> s2 A;
+  s0 -> s1 0;
+  s1 -> s2 B;
+  s2 -> s0 A;
+  s2 -> s0 1;
+  s2 -> s2 0;
+  accepting: s0;
+}
+
+T5 {
+  init: s0;
+}
+
+B6 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s0 -> s2 0;
+  s1 -> s2 B;
+  s1 -> s2 1;
+  s1 -> s1 0;
+  s2 -> s1 A;
+  s2 -> s0 B;
+  accepting: s2;
+}
+
+T6 {
+  init: s0;
+}
+
+B7 {
+  init: s0;
+  s0 -> s1 B;
+  s0 -> s2 1;
+  s0 -> s0 0;
+  s1 -> s0 A;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  s2 -> s1 A;
+  s2 -> s0 B;
+  accepting: s2;
+}
+
+T7 {
+  init: s0;
+}
+
+B8 {
+  init: s0;
+  s0 -> s3 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s2 A;
+  s1 -> s3 B;
+  s2 -> s2 A;
+  s2 -> s0 1;
+  s2 -> s1 0;
+  s3 -> s2 A;
+  s3 -> s3 B;
+  s3 -> s2 1;
+  s3 -> s3 0;
+  accepting: s2;
+}
+
+T8 {
+  init: s0;
+}
+
+B9 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s2 0;
+  s1 -> s1 A;
+  s1 -> s0 1;
+  s1 -> s1 0;
+  s2 -> s3 B;
+  s3 -> s1 A;
+  s3 -> s2 B;
+  s3 -> s3 1;
+  s3 -> s3 0;
+  accepting: s0;
+}
+
+T9 {
+  init: s0;
+}
+
+B10 {
+  init: s0;
+  s0 -> s2 B;
+  s0 -> s2 1;
+  s0 -> s0 0;
+  s1 -> s0 A;
+  s1 -> s1 0;
+  s2 -> s2 B;
+  s2 -> s1 1;
+  accepting: s0, s1, s2;
+}
+
+T10 {
+  init: s0;
+}
+
+B11 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s2 1;
+  s0 -> s0 0;
+  s1 -> s0 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  s2 -> s2 A;
+  s2 -> s0 B;
+  s2 -> s1 1;
+  s2 -> s1 0;
+  accepting: s1, s2;
+}
+
+T11 {
+  init: s0;
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 1/0;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s1 B/A;
+  s1 -> s1 A/A;
+  s1 -> s1 B/A;
+  s1 -> s1 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  accepting: s1;
+}
+
+B12 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s0 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s1 A;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  accepting: s0, s1;
+}
+
+T12 {
+  init: s0;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 1/0;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/A;
+  s0 -> s2 A/B;
+  s1 -> s0 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 0/0;
+  s1 -> s2 0/1;
+  s2 -> s2 A/A;
+  s2 -> s2 A/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s2;
+}
+
+B13 {
+  init: s0;
+  s0 -> s0 A;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s1 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  accepting: s1;
+}
+
+T13 {
+  init: s0;
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/B;
+  s0 -> s1 0/1;
+  s0 -> s2 1/0;
+  s1 -> s0 A/A;
+  s1 -> s1 A/B;
+  s1 -> s1 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  s2 -> s0 A/A;
+  s2 -> s1 A/B;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s1;
+}
+
+B14 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s0 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s1 A;
+  s1 -> s2 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  s2 -> s2 B;
+  s2 -> s2 1;
+  s2 -> s2 0;
+  accepting: s0, s1, s2;
+}
+
+T14 {
+  init: s0;
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/B;
+  s0 -> s1 0/1;
+  s0 -> s2 1/0;
+  s1 -> s0 A/A;
+  s1 -> s1 A/B;
+  s1 -> s1 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  s2 -> s0 A/A;
+  s2 -> s1 A/B;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s1;
+}
+
+B15 {
+  init: s0;
+  s0 -> s0 A;
+  s0 -> s0 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  accepting: s0;
+}
+
+T15 {
+  init: s0;
+  s0 -> s0 A/A;
+  s0 -> s0 1/1;
+  s0 -> s0 1/0;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s2 B/B;
+  s0 -> s3 A/B;
+  s1 -> s1 1/1;
+  s1 -> s1 0/0;
+  s1 -> s2 A/A;
+  s1 -> s2 B/B;
+  s1 -> s3 0/1;
+  s2 -> s1 A/A;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  s2 -> s3 A/B;
+  s3 -> s3 A/A;
+  s3 -> s3 A/B;
+  s3 -> s3 B/B;
+  s3 -> s3 1/1;
+  s3 -> s3 1/0;
+  s3 -> s3 0/1;
+  s3 -> s3 0/0;
+  accepting: s3;
+}
+
+
+// Assumptions made (but not checked):
+// * players move in alternation
+// * from every reachable non-terminal configuration, exactly one
+//   of the players can make a move
+
