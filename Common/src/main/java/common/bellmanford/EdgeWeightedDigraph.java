@@ -206,7 +206,9 @@ public class EdgeWeightedDigraph {
                 s.append(";" + NEWLINE);
             }
 
-        if (!acceptingStates.isEmpty()) {
+        if (acceptingStates.isEmpty()) {
+            s.append("  // no accepting states" + NEWLINE);
+        } else {
             s.append("  accepting: ");
             String sep = "";
             for (int state : acceptingStates) {
