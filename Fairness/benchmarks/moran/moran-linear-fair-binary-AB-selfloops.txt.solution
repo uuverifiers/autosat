@@ -1,41 +1,39 @@
-17:51:21.181 [main] INFO  verification.IncrementalVerifier - Constructing disjunctive advice bits
-17:51:21.183 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 3 are covered
-17:51:21.184 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 6
-17:51:22.736 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 1 (Bi, Ti) pairs
-17:51:22.737 [main] INFO  verification.IncrementalVerifier - storing 1 progress relations for reuse
-17:51:40.897 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 2 (Bi, Ti) pairs
-17:51:40.897 [main] INFO  verification.IncrementalVerifier - storing 2 progress relations for reuse
-17:52:02.823 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 3 (Bi, Ti) pairs
-17:52:02.823 [main] INFO  verification.IncrementalVerifier - storing 3 progress relations for reuse
-17:52:34.396 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 4 (Bi, Ti) pairs
-17:52:34.396 [main] INFO  verification.IncrementalVerifier - storing 4 progress relations for reuse
-17:52:50.983 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 5 (Bi, Ti) pairs
-17:52:50.983 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-17:52:50.984 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 6 are covered
-17:52:50.985 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 9
-17:53:17.808 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 6 (Bi, Ti) pairs
-17:53:17.808 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-17:53:28.192 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 7 (Bi, Ti) pairs
-17:53:28.192 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-17:53:42.568 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 8 (Bi, Ti) pairs
-17:53:42.568 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:03:27.546 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 9 (Bi, Ti) pairs
-18:03:27.546 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:10:48.206 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 10 (Bi, Ti) pairs
-18:10:48.206 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:11:15.393 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 11 (Bi, Ti) pairs
-18:11:15.393 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:15:46.564 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 12 (Bi, Ti) pairs
-18:15:46.565 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:23:09.564 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 13 (Bi, Ti) pairs
-18:23:09.564 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:28:14.620 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 14 (Bi, Ti) pairs
-18:28:14.620 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:28:26.717 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 15 (Bi, Ti) pairs
-18:37:19.277 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 16 (Bi, Ti) pairs
-18:37:19.277 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
-18:37:19.278 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 9 are covered
-18:37:19.278 [main] INFO  verification.IncrementalVerifier - FINISHED
+11:20:04.030 [main] INFO  verification.IncrementalVerifier - Constructing disjunctive advice bits
+11:20:04.032 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 3 are covered
+11:20:04.033 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 6
+11:20:06.604 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 1 (Bi, Ti) pairs
+11:20:06.604 [main] INFO  verification.IncrementalVerifier - storing 1 progress relations for reuse
+11:20:24.214 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 2 (Bi, Ti) pairs
+11:20:24.215 [main] INFO  verification.IncrementalVerifier - storing 2 progress relations for reuse
+11:20:36.665 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 3 (Bi, Ti) pairs
+11:20:36.665 [main] INFO  verification.IncrementalVerifier - storing 3 progress relations for reuse
+11:21:10.165 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 4 (Bi, Ti) pairs
+11:21:10.165 [main] INFO  verification.IncrementalVerifier - storing 4 progress relations for reuse
+11:21:21.876 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 5 (Bi, Ti) pairs
+11:21:21.877 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:21:21.877 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 6 are covered
+11:21:21.878 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 9
+11:21:38.036 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 6 (Bi, Ti) pairs
+11:21:38.037 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:21:45.911 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 7 (Bi, Ti) pairs
+11:21:45.911 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:36:44.428 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 8 (Bi, Ti) pairs
+11:36:44.429 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:46:15.554 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 9 (Bi, Ti) pairs
+11:46:15.554 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:46:43.327 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 10 (Bi, Ti) pairs
+11:46:43.328 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:46:43.328 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 9 are covered
+11:46:43.329 [main] INFO  verification.IncrementalVerifier - now checking configurations up to length 10
+11:47:53.530 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 11 (Bi, Ti) pairs
+11:48:07.661 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 12 (Bi, Ti) pairs
+11:48:07.661 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+11:49:32.896 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 13 (Bi, Ti) pairs
+11:54:15.743 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 14 (Bi, Ti) pairs
+12:02:52.666 [main] INFO  verification.IncrementalVerifier - extending winning set, now have 15 (Bi, Ti) pairs
+12:02:52.666 [main] INFO  verification.IncrementalVerifier - storing 5 progress relations for reuse
+12:02:52.675 [main] INFO  verification.IncrementalVerifier - all reachable configurations up to length 10 are covered
+12:02:52.675 [main] INFO  verification.IncrementalVerifier - FINISHED
 VERDICT: Player 2 can win from every reachable configuration
 
 // Approximation of reachable states
@@ -178,6 +176,7 @@ B0 {
 
 T0 {
   init: s0;
+  // no accepting states
 }
 
 B1 {
@@ -215,16 +214,17 @@ T1 {
 
 B2 {
   init: s0;
-  s0 -> s1 A;
+  s0 -> s2 A;
   s0 -> s0 1;
   s0 -> s0 0;
-  s1 -> s2 1;
-  s1 -> s1 0;
+  s1 -> s2 A;
+  s1 -> s2 B;
+  s1 -> s0 1;
+  s1 -> s0 0;
   s2 -> s2 A;
-  s2 -> s0 B;
-  s2 -> s0 1;
-  s2 -> s0 0;
-  accepting: s0, s2;
+  s2 -> s1 1;
+  s2 -> s2 0;
+  accepting: s0, s1, s2;
 }
 
 T2 {
@@ -251,48 +251,15 @@ B3 {
   init: s0;
   s0 -> s1 A;
   s0 -> s1 B;
-  s0 -> s0 1;
-  s1 -> s1 B;
-  s1 -> s1 1;
-  s1 -> s1 0;
-  accepting: s1;
-}
-
-T3 {
-  init: s0;
-  s0 -> s0 1/1;
-  s0 -> s0 0/0;
-  s0 -> s1 A/A;
-  s0 -> s2 B/A;
-  s0 -> s2 0/1;
-  s1 -> s0 B/B;
-  s1 -> s1 1/1;
-  s1 -> s1 1/0;
-  s1 -> s1 0/1;
-  s1 -> s1 0/0;
-  s1 -> s2 B/A;
-  s2 -> s2 B/A;
-  s2 -> s2 B/B;
-  s2 -> s2 1/1;
-  s2 -> s2 1/0;
-  s2 -> s2 0/1;
-  s2 -> s2 0/0;
-  accepting: s2;
-}
-
-B4 {
-  init: s0;
-  s0 -> s1 A;
-  s0 -> s1 B;
-  s0 -> s0 1;
-  s0 -> s1 0;
-  s1 -> s0 A;
+  s0 -> s1 1;
+  s0 -> s0 0;
+  s1 -> s1 A;
   s1 -> s1 1;
   s1 -> s1 0;
   accepting: s0, s1;
 }
 
-T4 {
+T3 {
   init: s0;
   s0 -> s0 1/1;
   s0 -> s0 0/0;
@@ -307,6 +274,7 @@ T4 {
   s1 -> s1 0/0;
   s2 -> s0 A/A;
   s2 -> s0 A/B;
+  s2 -> s0 B/B;
   s2 -> s2 1/1;
   s2 -> s2 1/0;
   s2 -> s2 0/1;
@@ -314,173 +282,283 @@ T4 {
   accepting: s1;
 }
 
+B4 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s1 -> s0 A;
+  s1 -> s1 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  accepting: s1;
+}
+
+T4 {
+  init: s0;
+  s0 -> s0 1/1;
+  s0 -> s0 0/0;
+  s0 -> s1 A/A;
+  s0 -> s2 B/A;
+  s0 -> s2 0/1;
+  s1 -> s0 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
+  s1 -> s1 0/0;
+  s2 -> s2 B/A;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s2;
+}
+
 B5 {
   init: s0;
-  s0 -> s2 A;
-  s0 -> s1 0;
-  s1 -> s2 B;
-  s2 -> s0 A;
-  s2 -> s0 1;
-  s2 -> s2 0;
+  s0 -> s1 B;
+  s0 -> s2 0;
+  s1 -> s0 1;
+  s1 -> s1 0;
+  s2 -> s1 A;
   accepting: s0;
 }
 
 T5 {
   init: s0;
+  // no accepting states
 }
 
 B6 {
   init: s0;
   s0 -> s1 A;
   s0 -> s1 B;
-  s0 -> s0 1;
   s0 -> s2 0;
-  s1 -> s2 B;
-  s1 -> s2 1;
+  s1 -> s0 1;
   s1 -> s1 0;
-  s2 -> s1 A;
-  s2 -> s0 B;
-  accepting: s2;
+  s2 -> s1 B;
+  accepting: s0;
 }
 
 T6 {
   init: s0;
+  // no accepting states
 }
 
 B7 {
   init: s0;
   s0 -> s1 B;
   s0 -> s2 1;
-  s0 -> s0 0;
-  s1 -> s0 A;
-  s1 -> s1 1;
-  s1 -> s1 0;
+  s0 -> s2 0;
+  s1 -> s1 A;
+  s1 -> s2 B;
+  s1 -> s0 1;
+  s1 -> s0 0;
   s2 -> s1 A;
-  s2 -> s0 B;
-  accepting: s2;
+  s2 -> s1 B;
+  accepting: s1, s2;
 }
 
 T7 {
   init: s0;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s1 1/0;
+  s0 -> s2 B/A;
+  s1 -> s0 1/1;
+  s1 -> s0 1/0;
+  s1 -> s0 0/1;
+  s1 -> s0 0/0;
+  s1 -> s1 B/B;
+  s1 -> s2 A/A;
+  s1 -> s2 B/A;
+  s2 -> s2 A/A;
+  s2 -> s2 A/B;
+  s2 -> s2 B/A;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s2;
 }
 
 B8 {
   init: s0;
-  s0 -> s3 B;
+  s0 -> s1 A;
+  s0 -> s1 B;
   s0 -> s0 1;
-  s0 -> s0 0;
-  s1 -> s2 A;
-  s1 -> s3 B;
-  s2 -> s2 A;
-  s2 -> s0 1;
-  s2 -> s1 0;
-  s3 -> s2 A;
-  s3 -> s3 B;
-  s3 -> s2 1;
-  s3 -> s3 0;
-  accepting: s2;
+  s0 -> s2 0;
+  s1 -> s0 A;
+  s1 -> s1 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  s2 -> s2 1;
+  s2 -> s2 0;
+  accepting: s0, s1, s2;
 }
 
 T8 {
   init: s0;
-}
-
-B9 {
-  init: s0;
-  s0 -> s1 A;
-  s0 -> s2 0;
-  s1 -> s1 A;
-  s1 -> s0 1;
-  s1 -> s1 0;
-  s2 -> s3 B;
-  s3 -> s1 A;
-  s3 -> s2 B;
-  s3 -> s3 1;
-  s3 -> s3 0;
-  accepting: s0;
-}
-
-T9 {
-  init: s0;
-}
-
-B10 {
-  init: s0;
-  s0 -> s2 B;
-  s0 -> s2 1;
-  s0 -> s0 0;
-  s1 -> s0 A;
-  s1 -> s1 0;
-  s2 -> s2 B;
-  s2 -> s1 1;
-  accepting: s0, s1, s2;
-}
-
-T10 {
-  init: s0;
-}
-
-B11 {
-  init: s0;
-  s0 -> s1 A;
-  s0 -> s2 1;
-  s0 -> s0 0;
-  s1 -> s0 B;
-  s1 -> s1 1;
-  s1 -> s1 0;
-  s2 -> s2 A;
-  s2 -> s0 B;
-  s2 -> s1 1;
-  s2 -> s1 0;
-  accepting: s1, s2;
-}
-
-T11 {
-  init: s0;
   s0 -> s0 A/A;
-  s0 -> s0 B/B;
   s0 -> s0 1/1;
   s0 -> s0 1/0;
   s0 -> s0 0/1;
   s0 -> s0 0/0;
-  s0 -> s1 B/A;
+  s0 -> s1 B/B;
+  s0 -> s2 B/A;
+  s1 -> s0 1/0;
   s1 -> s1 A/A;
+  s1 -> s1 B/B;
+  s1 -> s1 1/1;
+  s1 -> s1 0/0;
+  s1 -> s2 B/A;
+  s1 -> s2 0/1;
+  s2 -> s1 B/B;
+  s2 -> s2 A/A;
+  s2 -> s2 B/A;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s2;
+}
+
+B9 {
+  init: s0;
+  s0 -> s0 A;
+  s0 -> s1 B;
+  s0 -> s0 1;
+  s0 -> s0 0;
+  s1 -> s1 B;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  accepting: s0, s1;
+}
+
+T9 {
+  init: s0;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 0/0;
+  s0 -> s1 B/A;
+  s0 -> s1 0/1;
+  s0 -> s2 A/A;
   s1 -> s1 B/A;
   s1 -> s1 B/B;
   s1 -> s1 1/1;
   s1 -> s1 1/0;
   s1 -> s1 0/1;
   s1 -> s1 0/0;
+  s2 -> s0 B/B;
+  s2 -> s1 B/A;
+  s2 -> s2 A/A;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
   accepting: s1;
+}
+
+B10 {
+  init: s0;
+  s0 -> s1 A;
+  s0 -> s2 B;
+  s0 -> s1 1;
+  s0 -> s0 0;
+  s1 -> s0 A;
+  s1 -> s0 B;
+  s2 -> s2 1;
+  s2 -> s1 0;
+  accepting: s1;
+}
+
+T10 {
+  init: s0;
+  s0 -> s0 B/B;
+  s0 -> s0 1/1;
+  s0 -> s0 0/1;
+  s0 -> s0 0/0;
+  s0 -> s1 1/0;
+  s0 -> s2 B/A;
+  s1 -> s0 1/1;
+  s1 -> s0 1/0;
+  s1 -> s0 0/1;
+  s1 -> s0 0/0;
+  s1 -> s1 B/B;
+  s1 -> s2 A/A;
+  s1 -> s2 B/A;
+  s2 -> s2 A/A;
+  s2 -> s2 A/B;
+  s2 -> s2 B/A;
+  s2 -> s2 B/B;
+  s2 -> s2 1/1;
+  s2 -> s2 1/0;
+  s2 -> s2 0/1;
+  s2 -> s2 0/0;
+  accepting: s2;
+}
+
+B11 {
+  init: s0;
+  s0 -> s2 A;
+  s0 -> s1 B;
+  s0 -> s2 1;
+  s0 -> s0 0;
+  s1 -> s0 A;
+  s1 -> s1 1;
+  s1 -> s1 0;
+  s2 -> s0 A;
+  s2 -> s0 B;
+  accepting: s0, s1, s2;
+}
+
+T11 {
+  init: s0;
+  // no accepting states
 }
 
 B12 {
   init: s0;
-  s0 -> s1 A;
-  s0 -> s0 B;
-  s0 -> s0 1;
-  s0 -> s0 0;
-  s1 -> s1 A;
+  s0 -> s0 A;
+  s0 -> s3 B;
+  s0 -> s2 1;
+  s0 -> s2 0;
+  s1 -> s1 B;
   s1 -> s1 1;
   s1 -> s1 0;
-  accepting: s0, s1;
+  s2 -> s1 A;
+  s2 -> s1 B;
+  s2 -> s1 0;
+  s3 -> s1 A;
+  s3 -> s3 B;
+  s3 -> s0 1;
+  s3 -> s0 0;
+  accepting: s0, s1, s2;
 }
 
 T12 {
   init: s0;
   s0 -> s0 B/B;
   s0 -> s0 1/1;
-  s0 -> s0 1/0;
   s0 -> s0 0/1;
   s0 -> s0 0/0;
-  s0 -> s1 A/A;
-  s0 -> s2 A/B;
-  s1 -> s0 B/B;
-  s1 -> s1 1/1;
-  s1 -> s1 0/0;
-  s1 -> s2 0/1;
+  s0 -> s1 1/0;
+  s0 -> s2 B/A;
+  s1 -> s0 1/1;
+  s1 -> s0 1/0;
+  s1 -> s0 0/1;
+  s1 -> s0 0/0;
+  s1 -> s1 B/B;
+  s1 -> s2 A/A;
+  s1 -> s2 B/A;
   s2 -> s2 A/A;
   s2 -> s2 A/B;
+  s2 -> s2 B/A;
+  s2 -> s2 B/B;
   s2 -> s2 1/1;
   s2 -> s2 1/0;
   s2 -> s2 0/1;
@@ -490,85 +568,51 @@ T12 {
 
 B13 {
   init: s0;
-  s0 -> s0 A;
-  s0 -> s1 B;
-  s0 -> s0 1;
-  s0 -> s0 0;
-  s1 -> s1 B;
-  s1 -> s1 1;
-  s1 -> s1 0;
-  accepting: s1;
-}
-
-T13 {
-  init: s0;
-  s0 -> s0 A/A;
-  s0 -> s0 B/B;
-  s0 -> s0 1/1;
-  s0 -> s0 0/0;
-  s0 -> s1 A/B;
-  s0 -> s1 0/1;
-  s0 -> s2 1/0;
-  s1 -> s0 A/A;
-  s1 -> s1 A/B;
-  s1 -> s1 B/B;
-  s1 -> s1 1/1;
-  s1 -> s1 1/0;
-  s1 -> s1 0/1;
-  s1 -> s1 0/0;
-  s2 -> s0 A/A;
-  s2 -> s1 A/B;
-  s2 -> s2 B/B;
-  s2 -> s2 1/1;
-  s2 -> s2 1/0;
-  s2 -> s2 0/1;
-  s2 -> s2 0/0;
-  accepting: s1;
-}
-
-B14 {
-  init: s0;
-  s0 -> s1 A;
-  s0 -> s0 B;
+  s0 -> s2 B;
   s0 -> s0 1;
   s0 -> s0 0;
   s1 -> s1 A;
   s1 -> s2 B;
-  s1 -> s1 1;
-  s1 -> s1 0;
-  s2 -> s2 B;
-  s2 -> s2 1;
+  s1 -> s0 1;
+  s1 -> s0 0;
+  s2 -> s0 A;
+  s2 -> s1 B;
+  s2 -> s3 1;
   s2 -> s2 0;
-  accepting: s0, s1, s2;
+  s3 -> s1 A;
+  s3 -> s2 B;
+  s3 -> s0 1;
+  s3 -> s1 0;
+  accepting: s0, s1, s2, s3;
 }
 
-T14 {
+T13 {
   init: s0;
-  s0 -> s0 A/A;
   s0 -> s0 B/B;
   s0 -> s0 1/1;
+  s0 -> s0 0/1;
   s0 -> s0 0/0;
-  s0 -> s1 A/B;
-  s0 -> s1 0/1;
-  s0 -> s2 1/0;
-  s1 -> s0 A/A;
-  s1 -> s1 A/B;
+  s0 -> s1 1/0;
+  s0 -> s2 B/A;
+  s1 -> s0 1/1;
+  s1 -> s0 1/0;
+  s1 -> s0 0/1;
+  s1 -> s0 0/0;
   s1 -> s1 B/B;
-  s1 -> s1 1/1;
-  s1 -> s1 1/0;
-  s1 -> s1 0/1;
-  s1 -> s1 0/0;
-  s2 -> s0 A/A;
-  s2 -> s1 A/B;
+  s1 -> s2 A/A;
+  s1 -> s2 B/A;
+  s2 -> s2 A/A;
+  s2 -> s2 A/B;
+  s2 -> s2 B/A;
   s2 -> s2 B/B;
   s2 -> s2 1/1;
   s2 -> s2 1/0;
   s2 -> s2 0/1;
   s2 -> s2 0/0;
-  accepting: s1;
+  accepting: s2;
 }
 
-B15 {
+B14 {
   init: s0;
   s0 -> s0 A;
   s0 -> s0 B;
@@ -577,22 +621,23 @@ B15 {
   accepting: s0;
 }
 
-T15 {
+T14 {
   init: s0;
-  s0 -> s0 A/A;
   s0 -> s0 1/1;
-  s0 -> s0 1/0;
-  s0 -> s0 0/1;
   s0 -> s0 0/0;
-  s0 -> s2 B/B;
+  s0 -> s1 B/B;
+  s0 -> s2 A/A;
   s0 -> s3 A/B;
+  s0 -> s3 0/1;
+  s1 -> s0 A/A;
+  s1 -> s1 B/B;
   s1 -> s1 1/1;
+  s1 -> s1 1/0;
+  s1 -> s1 0/1;
   s1 -> s1 0/0;
-  s1 -> s2 A/A;
-  s1 -> s2 B/B;
-  s1 -> s3 0/1;
-  s2 -> s1 A/A;
-  s2 -> s2 B/B;
+  s1 -> s3 A/B;
+  s2 -> s1 B/B;
+  s2 -> s2 A/A;
   s2 -> s2 1/1;
   s2 -> s2 1/0;
   s2 -> s2 0/1;
@@ -613,4 +658,3 @@ T15 {
 // * players move in alternation
 // * from every reachable non-terminal configuration, exactly one
 //   of the players can make a move
-
