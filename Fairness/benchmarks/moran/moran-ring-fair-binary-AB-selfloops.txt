@@ -1,5 +1,5 @@
 /**
- * Model of Moran processes, with two alleles A, B
+ * Model of Moran processes, with two alleles A, B and ring topology
  */
 
 // initial: words of length >= 1
@@ -140,8 +140,14 @@ P1 {
 
 // Process: copy type to one of the neighbours
 P2 {
-  init: s0;
+  init: si;
 
+  si -> s0;
+  si -> s20;
+  si -> s30;
+
+  //////////////////////////////////////////
+  // non-wrap case
   s0 -> s0 A/A;
   s0 -> s0 B/B;
   s0 -> s0 0/0;
@@ -150,14 +156,14 @@ P2 {
   // copy left
   s0 -> s1a A/A;
   s0 -> s1a B/A;
-  s0 -> s1a B/B; // self loop
+  s0 -> s1a B/B; // self loop, no modification
+
   s1a -> s1a 0/0;
   s1a -> s1a 1/1;
 
   s0 -> s1b A/B;
   s0 -> s1b B/B;
-
-  s0 -> s1b A/A; // self loop
+  s0 -> s1b A/A; // self loop, no modification
 
   s1b -> s1b 0/0;
   s1b -> s1b 1/1;
@@ -186,10 +192,8 @@ P2 {
 
   s3a -> s12 A/A;
   s3a -> s12 B/A;
-  s3a -> s12 B/B; // self loop
 
   s3b -> s12 A/B;
-  s3b -> s12 A/A; // self loop
   s3b -> s12 B/B;
 
   // suffix
@@ -198,7 +202,63 @@ P2 {
   s12 -> s12 0/0;
   s12 -> s12 1/1;
 
-  accepting: s11, s12;
+  //////////////////////////////////////////
+  // wrap-around case: copy first to last
+  s20 -> s21a A/A;
+  s20 -> s21b B/B;
+
+  s21a -> s21a 1/1;
+  s21b -> s21b 1/1;
+
+  // decrement counter
+  s21a -> s22a 1/0;
+  s21b -> s22b 1/0;
+
+  s22a -> s23a A/A;
+  s22b -> s23b B/B;
+  
+  s23a -> s23a A/A;
+  s23a -> s23a B/B;
+  s23a -> s23a 0/0;
+  s23a -> s23a 1/1;
+
+  s23b -> s23b A/A;
+  s23b -> s23b B/B;
+  s23b -> s23b 0/0;
+  s23b -> s23b 1/1;
+
+  s23a -> s24 A/A;
+  s23a -> s24 B/A;
+
+  s23b -> s24 A/B;
+  s23b -> s24 B/B;
+
+  // suffix
+  s24 -> s24 0/0;
+  s24 -> s24 1/1;
+
+  //////////////////////////////////////////
+  // wrap-around case: copy last to first
+  s30 -> s31a A/A;
+  s30 -> s31a B/A;
+
+  s30 -> s31b A/B;
+  s30 -> s31b B/B;
+
+  s31a -> s31a A/A;
+  s31a -> s31a B/B;
+  s31a -> s31a 0/0;
+  s31a -> s31a 1/1;
+
+  s31a -> s32 A/A;
+  s31b -> s32 B/B;
+
+  s32 -> s32 1/1;
+
+  // decrement counter
+  s32 -> s33 1/0;
+
+  accepting: s11, s12, s24, s33;
 }
 
 transducerStateGuessing: 1 .. 4;
@@ -207,4 +267,4 @@ automatonStateGuessing: 0 .. 5;
 logLevel: 1;
 parallel: 1;
 
-//explicitChecksUntilLength: 10;
+explicitChecksUntilLength: 10;
