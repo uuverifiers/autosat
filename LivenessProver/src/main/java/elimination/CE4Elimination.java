@@ -96,8 +96,8 @@ public class CE4Elimination {
 	    // is the z language small?
 
             List<List<Integer>> zWords =
-                AutomataConverter.getWords(zLanguage, wordLen, 3);
-            if (zWords == null) {
+                AutomataConverter.getWords(zLanguage, wordLen, 4);
+            if (zWords.size() > 3) {
 //		LOGGER.debug("big language");
 		encodeFull(Bx);
             } else {

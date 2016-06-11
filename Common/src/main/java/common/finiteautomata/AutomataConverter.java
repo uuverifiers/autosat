@@ -481,11 +481,19 @@ public class AutomataConverter {
 	return minimalAut;
     }
 
-    public static List<List<Integer>> getWords(Automata lang,
-					       int wordLength) {
+    /**
+     * Compute all words of length <code>wordLength</code> accepted by the
+     * given automaton.
+     */
+    public static List<List<Integer>> getWords(Automata lang, int wordLength) {
         return getWords(lang, wordLength, Integer.MAX_VALUE);
     }
 
+    /**
+     * Compute at most <code>maxWords</code> words of length
+     * <code>wordLength</code> accepted by the
+     * given automaton.
+     */
     public static List<List<Integer>> getWords(Automata lang,
 					       int wordLength,
                                                int maxWords) {
@@ -496,10 +504,8 @@ public class AutomataConverter {
                          new ArrayList<Integer>(),
                          res,
                          maxWords);
-            return res;
-        } catch (TooManyWordsException e) {
-            return null;
-        }
+        } catch (TooManyWordsException e) {}
+        return res;
     }
 
     private static class TooManyWordsException extends RuntimeException {};
@@ -515,7 +521,7 @@ public class AutomataConverter {
 		List<Integer> finalWord = new ArrayList<Integer>();
 		finalWord.addAll(currentWord);
 		result.add(finalWord);
-                if (result.size() > maxWords)
+                if (result.size() >= maxWords)
                     throw new TooManyWordsException();
 	    }
 	} else {
@@ -531,6 +537,46 @@ public class AutomataConverter {
 		currentWord.remove(currentWord.size() - 1);
 	    }
 	}
+    }
+
+    /**
+     * Compute a word accepted by the given automaton; or
+     * <code>null</code> if the accepted language is empty
+     */
+    public static List<Integer> getSomeWord(Automata lang) {
+        final List<Integer> res = new ArrayList<Integer> ();
+
+        if (findWord(lang.getStates()[lang.getInitState()],
+                     lang,
+                     res,
+                     new boolean[lang.getStates().length]))
+            return res;
+        return null;
+    }
+
+    private static boolean findWord(State state,
+                                    Automata lang,
+                                    List<Integer> currentWord,
+                                    boolean[] seenStates) {
+        if (lang.getAcceptingStates().contains(state.getId()))
+            return true;
+
+        for (int l : state.getOutgoingLabels()) {
+            currentWord.add(l);
+            for (int id : state.getDest(l)) {
+                if (!seenStates[id]) {
+                    seenStates[id] = true;
+                    if (findWord(lang.getStates()[id],
+                                 lang,
+                                 currentWord,
+                                 seenStates))
+                        return true;
+                }
+            }
+            currentWord.remove(currentWord.size() - 1);
+        }
+        
+        return false;
     }
 
     public static Automata getWordAutomaton(Automata aut,

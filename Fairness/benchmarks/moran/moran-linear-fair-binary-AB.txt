@@ -203,4 +203,4 @@ automatonStateGuessing: 0 .. 10;
 
 logLevel: 1;
 
-explicitChecksUntilLength: 10;
+explicitChecksUntilLength: 20;

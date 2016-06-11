@@ -54,7 +54,7 @@ public class LStarInvariantSynth {
 	lstar.solve();
 
 	LOGGER.info("FOUND SOLUTION!");
-	LOGGER.info(lstar.getSolution());
+	LOGGER.debug(lstar.getSolution());
 
 	return lstar.getSolution();
     }   

@@ -147,7 +147,7 @@ public class FiniteStateSets {
 		// check whether any new configurations exist
 		List<List<Integer>> words =
 		    AutomataConverter.getWords(newConfigurations, wordLen, 1);
-		if (words != null && words.isEmpty())
+		if (words.isEmpty())
 		    break;
 
 		for (int i = 0; i < 2; ++i) {
@@ -182,6 +182,7 @@ public class FiniteStateSets {
 	return getReachableStateAutomaton(word.size()).accepts(word);
     }
 
+/*
     private Automata getImage(Automata from,
 			      Automata complementF,
 			      EdgeWeightedDigraph function) {
@@ -223,6 +224,7 @@ public class FiniteStateSets {
 	
 	return result;
     }
+*/
 
     public List<List<List<Integer>>> getLevelSets(int wordLen) {
         return getLevelSets(wordLen, AutomataConverter.getWords(F, wordLen));
@@ -316,6 +318,160 @@ public class FiniteStateSets {
 	return res;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+
+    public List<Automata> getLevelAutomata(int wordLen) {
+	final List<Automata> res = new ArrayList<Automata>();
+        
+        final Automata complementF = AutomataConverter.getComplement(F);
+        final Automata reachable = getReachableStateAutomaton(wordLen);
+
+        final Automata p1Configs =
+            VerificationUltility.computeDomain(player1, numLetters);
+        final Automata p2Configs =
+            VerificationUltility.computeDomain(player2, numLetters);
+
+        {
+            // Check that at most one player can move from each
+            // reachable configuration
+
+            final Automata p1p2Configs =
+                VerificationUltility.getIntersectionLazily
+                   (p1Configs, p2Configs, false);
+
+            final List<Integer> cex =
+                AutomataConverter.getSomeWord(p1p2Configs);
+            if (cex != null)
+                throw new RuntimeException(
+                  "There is a reachable configuration from " +
+                  "which both players can make a move: " +
+                  makeReadable(cex));
+        }
+
+        {
+            // Check that at least one player can move from each
+            // reachable configuration
+
+            final Automata p1p2UnionConfigs =
+                AutomataConverter.toDFA(
+                VerificationUltility.getUnion(
+                VerificationUltility.getUnion(p1Configs, p2Configs), F));
+            final Automata cexAut =
+                VerificationUltility.getIntersectionLazily
+                   (reachable, p1p2UnionConfigs, true);
+
+            final List<Integer> cex =
+                AutomataConverter.getSomeWord(cexAut);
+            if (cex != null)
+                throw new RuntimeException(
+                  "There is a non-final reachable configuration from " +
+		  "which neither player can make a move: " +
+                  makeReadable(cex));
+        }
+
+        // Check that players move in alternation
+        final Automata p1Range =
+            VerificationUltility.computeRange(player1, numLetters);
+        final Automata p2Range =
+            VerificationUltility.computeRange(player2, numLetters);
+
+        {
+            final Automata p1RangeReachable =
+                VerificationUltility.getIntersectionLazily
+                (VerificationUltility.getIntersectionLazily
+                 (p1Range, reachable, false), F, true);
+
+            final List<Integer> cex =
+                AutomataConverter.getSomeWord
+                (VerificationUltility.getIntersectionLazily
+                 (p1RangeReachable, p2Configs, true));
+            if (cex != null)
+                throw new RuntimeException
+                    ("Player 1 can move to a configuration that does not " +
+                     "belong to player 2: " + makeReadable(cex));
+        }
+
+        {
+            final Automata p2RangeReachable =
+                VerificationUltility.getIntersectionLazily
+                (VerificationUltility.getIntersectionLazily
+                 (p2Range, reachable, false), F, true);
+
+            final List<Integer> cex =
+                AutomataConverter.getSomeWord
+                (VerificationUltility.getIntersectionLazily
+                 (p2RangeReachable, p1Configs, true));
+            if (cex != null)
+                throw new RuntimeException
+                    ("Player 2 can move to a configuration that does not " +
+                     "belong to player 1: " + makeReadable(cex));
+        }
+
+        Automata winningStates = AutomataConverter.getWordAutomaton(F, wordLen);
+	res.add(winningStates);
+
+	boolean changed = true;
+	while (changed) {
+	    changed = false;
+
+            Automata nextLevel =
+                AutomataConverter.minimiseAcyclic(
+                  VerificationUltility.getIntersectionLazily(
+                  VerificationUltility.getIntersectionLazily(
+                       VerificationUltility.getPreImage
+                          (player2, res.get(res.size() - 1)),
+                       winningStates, true), reachable, false));
+            res.add(nextLevel);
+            
+	    LOGGER.debug("nextLevel (1): " + nextLevel.getStates().length);
+
+            if (AutomataConverter.getWords(nextLevel, wordLen, 1).isEmpty()) {
+                // finished, but add also an automaton for player 2
+                res.add(nextLevel);
+            } else {
+                winningStates =
+                    AutomataConverter.minimiseAcyclic(
+                       VerificationUltility.getUnion(winningStates, nextLevel));
+             
+                // compute states from which all player 1 moves lead to
+                // winningStates
+                final Automata notWinning =
+                    AutomataConverter.getComplement(winningStates);
+                final Automata pre =
+                    VerificationUltility.getPreImage(player1, notWinning);
+                final Automata notPre =
+                    AutomataConverter.getComplement(pre);
+
+                // restrict to p1-states
+                final Automata notPreP1 =
+                    VerificationUltility.getIntersectionLazily
+                    (notPre, p1Configs, false);
+
+                nextLevel =
+                    AutomataConverter.minimiseAcyclic(
+                      VerificationUltility.getIntersectionLazily(
+                         VerificationUltility.getIntersectionLazily(
+                            notPreP1, winningStates, true), reachable, false));
+                res.add(nextLevel);
+
+                LOGGER.debug("nextLevel (2): " + nextLevel.getStates().length);
+
+                if (!AutomataConverter.getWords(nextLevel, wordLen, 1)
+                                      .isEmpty()) {
+                    changed = true;
+
+                    winningStates =
+                        AutomataConverter.minimiseAcyclic(
+                           VerificationUltility.getUnion(winningStates, nextLevel));
+                }
+            }
+        }
+        
+        return res;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
     public void verifyInstance(int wordLen,
 			       boolean closeUnderTransitions) {
 	final List<List<List<Integer>>> levels = getLevelSets(wordLen);
@@ -335,6 +491,39 @@ public class FiniteStateSets {
 		if (!winningStates.contains(w))
 		    cex = w;
 	}
+	if (cex != null)
+	    throw new RuntimeException
+		("There is a reachable configuration from " +
+		 "which player 2 cannot win: " +
+                 makeReadable(cex));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    public void verifyInstanceSymbolically(int wordLen,
+                                           boolean closeUnderTransitions) {
+	final List<Automata> levels = getLevelAutomata(wordLen);
+
+        Automata winningStates = null;
+	for (Automata level : levels)
+            if (winningStates == null)
+                winningStates = level;
+            else
+                winningStates =
+                    AutomataConverter.minimiseAcyclic
+                    (VerificationUltility.getUnion(winningStates, level));
+
+	List<Integer> cex = null;
+	if (closeUnderTransitions)
+            cex = AutomataConverter.getSomeWord
+                (VerificationUltility.getIntersectionLazily
+                 (getReachableStateAutomaton(wordLen), winningStates, true));
+	else
+            cex = AutomataConverter.getSomeWord
+                (VerificationUltility.getIntersectionLazily
+                 (AutomataConverter.getWordAutomaton(I0, wordLen),
+                  winningStates, true));
+
 	if (cex != null)
 	    throw new RuntimeException
 		("There is a reachable configuration from " +

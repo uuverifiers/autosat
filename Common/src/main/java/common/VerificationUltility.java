@@ -631,6 +631,38 @@ public class VerificationUltility {
 	return result;
     }
 
+    public static Automata getPreImage(EdgeWeightedDigraph function,
+                                       Automata to) {
+	final int numTo = to.getStates().length;
+	final int numFunction = function.V();
+	final int numLetters = to.getNumLabels();
+
+	Automata result =
+	    new Automata(VerificationUltility.hash(to.getInitState(),
+						   function.getInitState(),
+						   numTo),
+			 numTo * numFunction,
+			 numLetters);
+
+	Set<Integer> acceptings = new HashSet<Integer>();
+	for (int acc1 : to.getAcceptingStates())
+	    for (int acc3 : function.getAcceptingStates())
+		acceptings.add(VerificationUltility.hash(acc1, acc3, numTo));
+	result.setAcceptingStates(acceptings);
+
+	for (DirectedEdge edge : function.edges()) {
+	    DirectedEdgeWithInputOutput ioEdge = (DirectedEdgeWithInputOutput) edge;
+	    for (int from1 = 0; from1 < numTo; ++from1)
+		for (int to1 : to.getStates()[from1].getDest(ioEdge.getOutput()))
+		    result.addTrans(VerificationUltility.hash(from1, ioEdge.from(),
+							      numTo),
+				    ioEdge.getInput(),
+				    VerificationUltility.hash(to1, ioEdge.to(), numTo));
+	}
+
+	return result;
+    }
+
 
 	public static List<DirectedEdgeWithInputOutput> getEdges(Automata automata){
 		List<DirectedEdgeWithInputOutput> result = new ArrayList<DirectedEdgeWithInputOutput>();
@@ -671,6 +703,49 @@ public class VerificationUltility {
 
 		return result;
 	}
+
+    /**
+     * Compute the set of all words x such that (x, y) \in fun for some y
+     */
+    public static Automata computeDomain(EdgeWeightedDigraph fun,
+                                         int numLabels) {
+	Automata result = new Automata(fun.getInitState(),
+				       fun.V(),
+				       numLabels);
+
+	for (int s = 0; s < fun.V(); ++s)
+	    for (DirectedEdge edge : fun.adj(s)) {
+		DirectedEdgeWithInputOutput ioEdge =
+		    (DirectedEdgeWithInputOutput) edge;
+		result.addTrans(ioEdge.from(), ioEdge.getInput(), ioEdge.to());
+	    }
+
+	result.setAcceptingStates(fun.getAcceptingStates());
+
+	return AutomataConverter.minimise(result);
+    }
+
+    /**
+     * Compute the set of all words y such that (x, y) \in fun for some x
+     */
+    public static Automata computeRange(EdgeWeightedDigraph fun,
+                                        int numLabels) {
+	Automata result = new Automata(fun.getInitState(),
+				       fun.V(),
+				       numLabels);
+
+	for (int s = 0; s < fun.V(); ++s)
+	    for (DirectedEdge edge : fun.adj(s)) {
+		DirectedEdgeWithInputOutput ioEdge =
+		    (DirectedEdgeWithInputOutput) edge;
+		result.addTrans(ioEdge.from(), ioEdge.getOutput(), ioEdge.to());
+	    }
+
+	result.setAcceptingStates(fun.getAcceptingStates());
+
+	return AutomataConverter.minimise(result);
+    }
+
 }
 
 // vim: ts=4

@@ -151,7 +151,8 @@ public class Main {
 				problem.getLabelToIndex());
 	for (int s = 0; s <= sizeBound; ++s) {
 	    System.out.println("Verifying system instance for length " + s + " ... ");
-	    finiteStates.verifyInstance(s, problem.getCloseInitStates());
+//	    finiteStates.verifyInstance(s, problem.getCloseInitStates());
+	    finiteStates.verifyInstanceSymbolically(s, problem.getCloseInitStates());
 	}
     }
 	public static void writeInputProblem(SymmetryProb problem) {

@@ -108,32 +108,12 @@ public class IncrementalVerifier {
         }
     }
 
-    /**
-     * Compute the regular language of configurations from which
-     * player 1 can make a move
-     */
-    private Automata computeP1Configurations() {
- 	EdgeWeightedDigraph p1 = problem.getPlayer1();
-	Automata result = new Automata(p1.getInitState(),
-				       p1.V(),
-				       problem.getNumberOfLetters());
-
-	for (int s = 0; s < p1.V(); ++s)
-	    for (DirectedEdge edge : p1.adj(s)) {
-		DirectedEdgeWithInputOutput ioEdge =
-		    (DirectedEdgeWithInputOutput) edge;
-		result.addTrans(ioEdge.from(), ioEdge.getInput(), ioEdge.to());
-	    }
-
-	result.setAcceptingStates(p1.getAcceptingStates());
-
-	return AutomataConverter.minimise(result);
-    }
-
     ////////////////////////////////////////////////////////////////////////////
 
     public void setup() {
-        player1Configs = computeP1Configurations();
+        player1Configs =
+            VerificationUltility.computeDomain(problem.getPlayer1(),
+                                               problem.getNumberOfLetters());
 	winningStates = problem.getF();
 
 	sosBound =
@@ -622,6 +602,10 @@ public class IncrementalVerifier {
         chosenBs.add(B);
         chosenTs.add(transducer);
 
+        LOGGER.info("found (Bi, Ti) pair: # transducer states: " +
+                    transducer.V() +
+                    ", # automaton states: " +
+                    B.getStates().length);
         LOGGER.info("extending winning set, now have " +
                     chosenBs.size() + " (Bi, Ti) pairs");
 
