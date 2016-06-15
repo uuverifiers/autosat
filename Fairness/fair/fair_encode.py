@@ -256,6 +256,18 @@ Encodes fairness into aut for Player 2.
     return output
 
 
+###########################################
+def enabledToFair(autEnabled):
+    '''enabledToFair(autEnabled) -> Automaton
+
+Encodes fairness into the Enabled automaton, thus obtaining the language of all
+possible configurations with enabledness encoded.
+'''
+    result = Automaton()
+
+    return result
+
+
 ###############################################################################
 if __name__ == '__main__':
     options = parseOptions()
@@ -275,6 +287,7 @@ if __name__ == '__main__':
     fairFinal = autFinalToFair(problem.autFinal, problem.autEnabled)
     fairPlay1 = autPlay1ToFair(problem.autPlay1)
     fairPlay2 = autPlay2ToFair(problem.autPlay2)
+    fairEnabled = enabledToFair(problem.autEnabled)
 
     with open(os.path.join(OUTPUT_DIR, "fair_init.dot"), "w") as text_file:
         text_file.write(fairInit.exportToDot())
@@ -288,6 +301,8 @@ if __name__ == '__main__':
     with open(os.path.join(OUTPUT_DIR, "fair_play2.dot"), "w") as text_file:
         text_file.write(fairPlay2.exportToDot())
 
+    with open(os.path.join(OUTPUT_DIR, "fair_enabled.dot"), "w") as text_file:
+        text_file.write(fairEnabled.exportToDot())
 
     outlines = []
 
@@ -307,6 +322,8 @@ if __name__ == '__main__':
             ("F", fairFinal),
             ("P1", fairPlay1),
             ("P2", fairPlay2),
+            # SLRD needs to be modified to allow this input
+            # ("FairEnabled", fairEnabled),
         ]:
         outlines.append(name + " {\n")
         outlines.append(str(aut))
