@@ -94,7 +94,7 @@ automaton.
             result.addTrans(oneState, SYMBOL_ONE, oneState)
             result.addTrans(transition = (oneState, zeroState))
             result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, symbState)
+            result.addTrans(transition = (zeroState, symbState))
             result.addTrans(symbState, symb, tgt)
         else:
             # for ordinary transitions
@@ -112,7 +112,28 @@ def autInitToFair(aut):
 Encodes fairness into an automaton representing initial configurations of
 a system.
 '''
-    return encodeCounter(aut)
+    result = Automaton()
+    result.startStates = aut.startStates[:]
+    result.acceptStates = aut.acceptStates[:]
+
+    for trans in aut.transitions:
+        (src, symb, tgt) = trans
+        if symb in {SYMBOL_ENABLED, SYMBOL_DISABLED}:
+            # for end-of-subword transitions
+            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
+            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
+            symbState = tgt + "_" + symb
+            result.addTrans(transition = (src, oneState))
+            result.addTrans(oneState, SYMBOL_ONE, oneState)
+            result.addTrans(oneState, SYMBOL_ONE, symbState)
+            result.addTrans(symbState, symb, tgt)
+        else:
+            # for ordinary transitions
+            result.addTrans(transition = trans)
+
+    result.transitions = list(set(result.transitions)) # kill duplicates
+
+    return result
 
 
 ###############################################################################
@@ -230,7 +251,7 @@ Encodes fairness into aut for Player 2.
                 output.addTrans(transition = (src, oneState))
                 output.addTransTransd(oneState, SYMBOL_ZERO, SYMBOL_ONE, oneState)
                 output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
-                output.addTransTransd(oneState, SYMBOL_ZERO, SYMBOL_ZERO, disEnState)
+                output.addTrans(transition = (oneState, disEnState))
                 output.addTransTransd(disEnState, SYMBOL_DISABLED, SYMBOL_ENABLED, tgt)
             elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_DISABLED):
                 chDisState = tgt + "_chXdis"
@@ -244,7 +265,7 @@ Encodes fairness into aut for Player 2.
                 output.addTrans(transition = (src, chEnOneState))
                 output.addTransTransd(chEnOneState, SYMBOL_ZERO, SYMBOL_ONE, chEnOneState)
                 output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState)
-                output.addTransTransd(chEnOneState, SYMBOL_ZERO, SYMBOL_ZERO, chEnState)
+                output.addTrans(transition = (chEnOneState, chEnState))
                 output.addTransTransd(chEnState, SYMBOL_CHOSEN, SYMBOL_ENABLED, tgt)
             else:
                 assert symb1 not in FAIR_ENCODING_ALPHABET

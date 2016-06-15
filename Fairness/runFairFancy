@@ -50,4 +50,4 @@ cp ${ENABLED_ENC_FILE} "${OUTPUT_DIR}/enabled_encoded.txt"
 cp ${FAIR_ENC_FILE} "${OUTPUT_DIR}/fair_encoded.txt"
 
 # run the usual stuff
-./runFancy ${FAIR_ENC_FILE} $@
+./runFancy ${FAIR_ENC_FILE} $@ | tee ${OUTPUT_DIR}/output.log
