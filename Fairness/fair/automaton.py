@@ -2,7 +2,9 @@
 
 # the Cartesian product
 from itertools import product
+
 import sys
+import copy
 
 ##############################################################################
 class Automaton:
@@ -342,6 +344,39 @@ Removes useless (forward and backward) states from the automaton.
                     bwdProcessed.add(srcState)
 
                 result.addTrans(transition = trans)
+
+        return result
+
+
+    ###########################################
+    def removeEpsilon(self):
+        '''removeEpsilon(self) -> Automaton
+
+Removes epsilon transitions from the automaton.
+'''
+        result = copy.deepcopy(self)
+
+        eClosure = {}
+        eTransitions = list(filter(lambda trans: Automaton.isEpsilonTrans(trans),
+            result.transitions))
+
+        while len(eTransitions) > 0:
+            trans = eTransitions.pop()
+            result.transitions.remove(trans)
+            (src, tgt) = (Automaton.getSrcState(trans), Automaton.getTgtState(trans))
+
+            if tgt in result.acceptStates:
+                result.acceptStates.append(src)
+
+            for nextTrans in result.postTrans(tgt):
+                if Automaton.isEpsilonTrans(nextTrans):
+                    newTrans = (src, Automaton.getTgtState(nextTrans))
+                    result.addTrans(transition = newTrans)
+                    eTransitions.append(newTrans)
+                else:
+                    newTrans = (src, Automaton.getSymbol(nextTrans),
+                        Automaton.getTgtState(nextTrans))
+                    result.addTrans(transition = newTrans)
 
         return result
 
