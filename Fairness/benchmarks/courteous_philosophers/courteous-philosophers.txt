@@ -1,0 +1,565 @@
+// Lehmann-Rabin's courteous philosophers algorithm
+// 
+// We follow the presentation from Gadi Taubenfeld: Synchronization Algorithms
+// and Concurrent Programming, chapter 7.7.2.  A similar presentation is also
+// at http://www.prismmodelchecker.org/tutorial/phil.php
+//
+// We use the following letters to denote the states of the local processes:
+// 1. H --- hungry
+// 2. Wl --- waiting for left fork
+// 3. Wr --- waiting for right fork
+// 4. Sl --- left fork selected, waiting for right fork
+// 5. Sr --- right fork selected, waiting for left fork
+// 6. E --- eat
+//
+// Our encoding also contains the {left,right}-last signals for every
+// fork, i.e. a sub-word for a philosopher looks like this:
+//
+//   x_P_y
+//
+// where:
+//        x - is the *-last signal for the fork left of the philosopher,
+//            x \in {l, n, r}
+//        P - is the state of the philosopher, P \in {H, Wl, Wr, Sl, Sr, E}
+//        y - is the *-last signal for the fork right of the philosopher,
+//            y \in {l, n, r}
+//
+// Note that x and y of a philosopher need to be synchronized with y and x of
+// the philosopher left and right respectively.
+//
+// We now briefly describe the protocol below. Notice that when there are
+// more than one processes with enabled actions, the choice of which process
+// gets to move is nondeterministically determined by the scheduler.
+//
+// Each hungry philosopher tosses a coin to determine whether to wait for 
+// left/right fork:
+// x_H_y -> x_Wl_y
+// x_H_y -> x_Wr_y
+//
+// When the fork is available and a neighbour is not going to eat, it can be
+// picked up:
+// x_H_y y_Wl_z -> x_H_y y_Sl_z
+// x_Wr_y y_H_z -> x_Sr_y y_H_z
+//
+// When a fork is available and a neighbour is going to eat, we need to take
+// into account who ate the last:
+//
+// x_A_y y_Wl_z -> x_A_y y_Sl_z     (A in {Wl, Wr, Sl} and y in {n, l})
+// x_Wr_y y_A_z -> x_Sr_y y_A_z     (A in {Wl, Wr, Sr} and y in {n, r})
+//
+// If the chosen philosopher ate the last, he yields to the neighbour in a
+// self-loop:
+//
+// x_A_r r_Wl_z -> x_A_r r_Wl_z     (A in {Wl, Wr, Sl})
+// x_Wr_l l_A_z -> x_Wr_l l_A_z     (A in {Wl, Wr, Sr})
+//
+// When a fork has been picked up but the second one is being used by a
+// neighbour, the first fork will be dropped and the philosopher may go back
+// to the waiting state (and chooses between left and right again):
+//
+// x_Sl_y y_A_z -> x_Wl_y y_A_z     (A in {Sr, E}
+// x_Sl_y y_A_z -> x_Wr_y y_A_z
+// x_A_y y_Sr_z -> x_A_y y_Wl_z     (A in {Sl, E}
+// x_A_y y_Sr_z -> x_A_y y_Wr_z
+//
+// When the second fork is available, pick it up and eat.
+//
+// x_Sl_y y_A_z -> x_E_y y_A_z     (A in {H, Wl, Wr, Sr})
+// x_A_y y_Sr_z -> x_A_y y_E_z     (A in {H, Wl, Wr, Sl})
+//
+// After finished eating, a philosopher may put down both forks and set their
+// *-last flag:
+//
+// x_A_y y_E_z z_B_w -> x_A_r r_H_l l_B_w     (A in {H, Wl, Wr, Sl}) and
+//                                             B in {H, Wl, Wr, Sl})
+// 
+// The property to prove is that any philosopher that is hungry will eventually
+// eat (freedom from individual starvation).  This is implemented by
+// nondeterministically marking a hungry philosopher in the initial
+// configuration and checking that he eats in the final configuration.
+
+I0 {
+
+  init: sinit;
+
+  sinit -> s0a;
+  sinit -> s0b;
+  sinit -> s0d;
+
+  // marking the first philosopher
+  s0a -> s1a n_Hm_n;
+  s1a -> s2a n_H_n;
+  s2a -> s3a n_H_n;
+  s3a -> s3a n_H_n;
+
+  // marking the second philosopher
+  s0b -> s1b n_H_n;
+  s1b -> s2b n_Hm_n;
+  s2b -> s3b n_H_n;
+  s3b -> s3b n_H_n;
+  
+  // marking any other philosopher
+  s0d -> s1d n_H_n;
+  s1d -> s2d n_H_n;
+  s2d -> s2d n_H_n;
+  s2d -> s3d n_Hm_n;
+  s3d -> s3d n_H_n;
+
+  accepting: s3a, s3b, s3d;
+}
+
+closedUnderTransitions;
+
+F {
+  init: s0;
+
+  // H
+  s0 -> s0 n_H_n;
+  s0 -> s0 n_H_l;
+  s0 -> s0 n_H_r;
+  s0 -> s0 l_H_n;
+  s0 -> s0 l_H_l;
+  s0 -> s0 l_H_r;
+  s0 -> s0 r_H_n;
+  s0 -> s0 r_H_l;
+  s0 -> s0 r_H_r;
+
+  // Wl
+  s0 -> s0 n_Wl_n;
+  s0 -> s0 n_Wl_l;
+  s0 -> s0 n_Wl_r;
+  s0 -> s0 l_Wl_n;
+  s0 -> s0 l_Wl_l;
+  s0 -> s0 l_Wl_r;
+  s0 -> s0 r_Wl_n;
+  s0 -> s0 r_Wl_l;
+  s0 -> s0 r_Wl_r;
+
+  // Wr
+  s0 -> s0 n_Wr_n;
+  s0 -> s0 n_Wr_l;
+  s0 -> s0 n_Wr_r;
+  s0 -> s0 l_Wr_n;
+  s0 -> s0 l_Wr_l;
+  s0 -> s0 l_Wr_r;
+  s0 -> s0 r_Wr_n;
+  s0 -> s0 r_Wr_l;
+  s0 -> s0 r_Wr_r;
+
+  // Sl
+  s0 -> s0 n_Sl_n;
+  s0 -> s0 n_Sl_l;
+  s0 -> s0 n_Sl_r;
+  s0 -> s0 l_Sl_n;
+  s0 -> s0 l_Sl_l;
+  s0 -> s0 l_Sl_r;
+  s0 -> s0 r_Sl_n;
+  s0 -> s0 r_Sl_l;
+  s0 -> s0 r_Sl_r;
+
+  // Sr
+  s0 -> s0 n_Sr_n;
+  s0 -> s0 n_Sr_l;
+  s0 -> s0 n_Sr_r;
+  s0 -> s0 l_Sr_n;
+  s0 -> s0 l_Sr_l;
+  s0 -> s0 l_Sr_r;
+  s0 -> s0 r_Sr_n;
+  s0 -> s0 r_Sr_l;
+  s0 -> s0 r_Sr_r;
+
+  // E
+  s0 -> s0 n_E_n;
+  s0 -> s0 n_E_l;
+  s0 -> s0 n_E_r;
+  s0 -> s0 l_E_n;
+  s0 -> s0 l_E_l;
+  s0 -> s0 l_E_r;
+  s0 -> s0 r_E_n;
+  s0 -> s0 r_E_l;
+  s0 -> s0 r_E_r;
+
+  // the marked guy
+  // Em
+  s0 -> s1 n_Em_n;
+  s0 -> s1 n_Em_l;
+  s0 -> s1 n_Em_r;
+  s0 -> s1 l_Em_n;
+  s0 -> s1 l_Em_l;
+  s0 -> s1 l_Em_r;
+  s0 -> s1 r_Em_n;
+  s0 -> s1 r_Em_l;
+  s0 -> s1 r_Em_r;
+
+  // after the marked guy
+
+  // H
+  s1 -> s1 n_H_n;
+  s1 -> s1 n_H_l;
+  s1 -> s1 n_H_r;
+  s1 -> s1 l_H_n;
+  s1 -> s1 l_H_l;
+  s1 -> s1 l_H_r;
+  s1 -> s1 r_H_n;
+  s1 -> s1 r_H_l;
+  s1 -> s1 r_H_r;
+
+  // Wl
+  s1 -> s1 n_Wl_n;
+  s1 -> s1 n_Wl_l;
+  s1 -> s1 n_Wl_r;
+  s1 -> s1 l_Wl_n;
+  s1 -> s1 l_Wl_l;
+  s1 -> s1 l_Wl_r;
+  s1 -> s1 r_Wl_n;
+  s1 -> s1 r_Wl_l;
+  s1 -> s1 r_Wl_r;
+
+  // Wr
+  s1 -> s1 n_Wr_n;
+  s1 -> s1 n_Wr_l;
+  s1 -> s1 n_Wr_r;
+  s1 -> s1 l_Wr_n;
+  s1 -> s1 l_Wr_l;
+  s1 -> s1 l_Wr_r;
+  s1 -> s1 r_Wr_n;
+  s1 -> s1 r_Wr_l;
+  s1 -> s1 r_Wr_r;
+
+  // Sl
+  s1 -> s1 n_Sl_n;
+  s1 -> s1 n_Sl_l;
+  s1 -> s1 n_Sl_r;
+  s1 -> s1 l_Sl_n;
+  s1 -> s1 l_Sl_l;
+  s1 -> s1 l_Sl_r;
+  s1 -> s1 r_Sl_n;
+  s1 -> s1 r_Sl_l;
+  s1 -> s1 r_Sl_r;
+
+  // Sr
+  s1 -> s1 n_Sr_n;
+  s1 -> s1 n_Sr_l;
+  s1 -> s1 n_Sr_r;
+  s1 -> s1 l_Sr_n;
+  s1 -> s1 l_Sr_l;
+  s1 -> s1 l_Sr_r;
+  s1 -> s1 r_Sr_n;
+  s1 -> s1 r_Sr_l;
+  s1 -> s1 r_Sr_r;
+
+  // E
+  s1 -> s1 n_E_n;
+  s1 -> s1 n_E_l;
+  s1 -> s1 n_E_r;
+  s1 -> s1 l_E_n;
+  s1 -> s1 l_E_l;
+  s1 -> s1 l_E_r;
+  s1 -> s1 r_E_n;
+  s1 -> s1 r_E_l;
+  s1 -> s1 r_E_r;
+
+  accepting: s1;
+}
+
+
+// THIS IS WRONG! (copied from regular dining philosophers)
+Enabled {
+  init: s0;
+
+  s0 -> s1 n_H_n;
+  s0 -> s1 n_H_l;
+  s0 -> s1 n_H_r;
+  s0 -> s1 l_H_n;
+  s0 -> s1 l_H_l;
+  s0 -> s1 l_H_r;
+  s0 -> s1 r_H_n;
+  s0 -> s1 r_H_l;
+  s0 -> s1 r_H_r;
+
+  // Wl
+  s0 -> s1 n_Wl_n;
+  s0 -> s1 n_Wl_l;
+  s0 -> s1 n_Wl_r;
+  s0 -> s1 l_Wl_n;
+  s0 -> s1 l_Wl_l;
+  s0 -> s1 l_Wl_r;
+  s0 -> s1 r_Wl_n;
+  s0 -> s1 r_Wl_l;
+  s0 -> s1 r_Wl_r;
+
+  // Wr
+  s0 -> s1 n_Wr_n;
+  s0 -> s1 n_Wr_l;
+  s0 -> s1 n_Wr_r;
+  s0 -> s1 l_Wr_n;
+  s0 -> s1 l_Wr_l;
+  s0 -> s1 l_Wr_r;
+  s0 -> s1 r_Wr_n;
+  s0 -> s1 r_Wr_l;
+  s0 -> s1 r_Wr_r;
+
+  // Sl
+  s0 -> s1 n_Sl_n;
+  s0 -> s1 n_Sl_l;
+  s0 -> s1 n_Sl_r;
+  s0 -> s1 l_Sl_n;
+  s0 -> s1 l_Sl_l;
+  s0 -> s1 l_Sl_r;
+  s0 -> s1 r_Sl_n;
+  s0 -> s1 r_Sl_l;
+  s0 -> s1 r_Sl_r;
+
+  // Sr
+  s0 -> s1 n_Sr_n;
+  s0 -> s1 n_Sr_l;
+  s0 -> s1 n_Sr_r;
+  s0 -> s1 l_Sr_n;
+  s0 -> s1 l_Sr_l;
+  s0 -> s1 l_Sr_r;
+  s0 -> s1 r_Sr_n;
+  s0 -> s1 r_Sr_l;
+  s0 -> s1 r_Sr_r;
+
+  // E
+  s0 -> s1 n_E_n;
+  s0 -> s1 n_E_l;
+  s0 -> s1 n_E_r;
+  s0 -> s1 l_E_n;
+  s0 -> s1 l_E_l;
+  s0 -> s1 l_E_r;
+  s0 -> s1 r_E_n;
+  s0 -> s1 r_E_l;
+  s0 -> s1 r_E_r;
+
+  s1 -> s0 enabled;
+
+  accepting: s0;
+}
+
+
+// THIS IS WRONG! (copied from regular dining philosophers)
+P1 {
+
+  init: s0;
+
+  /////////////
+
+  s0 -> s1;
+
+  s1 -> s1 H/H;
+  s1 -> s1 Wl/Wl;
+  s1 -> s1 Wr/Wr;
+  s1 -> s1 Sl/Sl;
+  s1 -> s1 Sr/Sr;
+
+  s1 -> s2 H/H_;
+  s1 -> s2 Sl/Sl_;
+  s1 -> s2 Sr/Sr_;
+
+  s2 -> s2 H/H;
+  s2 -> s2 Wl/Wl;
+  s2 -> s2 Wr/Wr;
+  s2 -> s2 Sl/Sl;
+  s2 -> s2 Sr/Sr;
+
+  /////////////
+
+  s1 -> s6 H/H;
+  s1 -> s6 Wl/Wl;
+  s1 -> s6 Wr/Wr;
+  s1 -> s6 Sl/Sl;
+
+  s6 -> s2 Wl/Wl_;
+
+  /////////////
+
+  s1 -> s7 Wr/Wr_;
+
+  s7 -> s2 H/H;
+  s7 -> s2 Wl/Wl;
+  s7 -> s2 Wr/Wr;
+  s7 -> s2 Sr/Sr;
+
+  /////////////
+
+  // wrap-around case 1
+
+  s0 -> s3;
+
+  s3 -> s10 Wl/Wl_;
+
+  s10 -> s10 H/H;
+  s10 -> s10 Wl/Wl;
+  s10 -> s10 Wr/Wr;
+  s10 -> s10 Sl/Sl;
+  s10 -> s10 Sr/Sr;
+
+  s10 -> s11 H/H;
+  s10 -> s11 Wl/Wl;
+  s10 -> s11 Wr/Wr;
+  s10 -> s11 Sl/Sl;
+
+  /////////////
+
+  // wrap-around case 2
+
+  s0 -> s20;
+
+  s20 -> s21 H/H;
+  s20 -> s21 Wl/Wl;
+  s20 -> s21 Wr/Wr;
+  s20 -> s21 Sr/Sr;
+
+  s21 -> s21 H/H;
+  s21 -> s21 Wl/Wl;
+  s21 -> s21 Wr/Wr;
+  s21 -> s21 Sl/Sl;
+  s21 -> s21 Sr/Sr;
+
+  s21 -> s22 Wr/Wr_;
+
+  /////////////
+
+  accepting: s2, s11, s22;
+
+}
+
+// THIS IS WRONG! (copied from regular dining philosophers)
+P2 {
+
+  init: s0;
+
+  /////////////
+
+  s0 -> s1;
+
+  s1 -> s1 H/H;
+  s1 -> s1 Wl/Wl;
+  s1 -> s1 Wr/Wr;
+  s1 -> s1 Sl/Sl;
+  s1 -> s1 Sr/Sr;
+
+  s1 -> s2 H_/Wl;
+  s1 -> s2 H_/Wr;
+  s1 -> s2 Wl_/Sl;
+  s1 -> s2 Wr_/Sr;
+
+  s2 -> s2 H/H;
+  s2 -> s2 Wl/Wl;
+  s2 -> s2 Wr/Wr;
+  s2 -> s2 Sl/Sl;
+  s2 -> s2 Sr/Sr;
+
+  /////////////
+
+  s1 -> s6 H/H;
+  s1 -> s6 Wl/Wl;
+  s1 -> s6 Wr/Wr;
+  s1 -> s6 Sl/Sl;
+
+  s6 -> s2 Sr_/E;
+
+  /////////////
+
+  s1 -> s7 Sr/Sr;
+
+  s7 -> s2 Sr_/H;
+
+  /////////////
+
+  s1 -> s8 Sl_/E;
+
+  s8 -> s2 H/H;
+  s8 -> s2 Wl/Wl;
+  s8 -> s2 Wr/Wr;
+  s8 -> s2 Sr/Sr;
+
+  /////////////
+
+  s1 -> s9 Sl_/H;
+
+  s9 -> s2 Sl/Sl;
+
+  /////////////
+
+  // wrap-around case 1a
+
+  s0 -> s10;
+
+  s10 -> s11 Sr_/E;
+
+  s11 -> s11 H/H;
+  s11 -> s11 Wl/Wl;
+  s11 -> s11 Wr/Wr;
+  s11 -> s11 Sl/Sl;
+  s11 -> s11 Sr/Sr;
+
+  s11 -> s12 H/H;
+  s11 -> s12 Wl/Wl;
+  s11 -> s12 Wr/Wr;
+  s11 -> s12 Sl/Sl;
+
+  /////////////
+
+  // wrap-around case 1b
+
+  s0 -> s15;
+
+  s15 -> s16 Sr_/H;
+
+  s16 -> s16 H/H;
+  s16 -> s16 Wl/Wl;
+  s16 -> s16 Wr/Wr;
+  s16 -> s16 Sl/Sl;
+  s16 -> s16 Sr/Sr;
+
+  s16 -> s17 Sr/Sr;
+  
+  /////////////
+
+  // wrap-around case 2a
+
+  s0 -> s20;
+
+  s20 -> s21 H/H;
+  s20 -> s21 Wl/Wl;
+  s20 -> s21 Wr/Wr;
+  s20 -> s21 Sr/Sr;
+
+  s21 -> s21 H/H;
+  s21 -> s21 Wl/Wl;
+  s21 -> s21 Wr/Wr;
+  s21 -> s21 Sl/Sl;
+  s21 -> s21 Sr/Sr;
+
+  s21 -> s22 Sl_/E;
+
+  /////////////
+
+  // wrap-around case 2b
+
+  s0 -> s25;
+
+  s25 -> s26 Sl/Sl;
+
+  s26 -> s26 H/H;
+  s26 -> s26 Wl/Wl;
+  s26 -> s26 Wr/Wr;
+  s26 -> s26 Sl/Sl;
+  s26 -> s26 Sr/Sr;
+
+  s26 -> s27 Sl_/H;
+
+  /////////////
+
+  accepting: s2, s12, s17, s22, s27;
+
+}
+
+transducerStateGuessing: 1 .. 3;
+automatonStateGuessing: 1 .. 5;
+
+symmetries: rotation;
+
+logLevel: 1;
