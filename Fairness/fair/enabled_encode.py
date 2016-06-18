@@ -46,7 +46,8 @@ by performing a product of aut and autEnabled, while treating 'delim' as
     def funTakeRhs(lhs, rhs):
         return rhs
 
-    result = Automaton.generalIntersection(aut, autEnabled,
+    aut2 = aut.removeEpsilon()
+    result = Automaton.generalIntersection(aut2, autEnabled,
         funDelimMatchEnDis, funTakeRhs)
 
     return result
