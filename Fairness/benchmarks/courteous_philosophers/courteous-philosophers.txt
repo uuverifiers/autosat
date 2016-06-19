@@ -290,6 +290,16 @@ Enabled {
   s0 -> s1 r_H_l;
   s0 -> s1 r_H_r;
 
+  s0 -> s1 n_Hm_n;
+  s0 -> s1 n_Hm_l;
+  s0 -> s1 n_Hm_r;
+  s0 -> s1 l_Hm_n;
+  s0 -> s1 l_Hm_l;
+  s0 -> s1 l_Hm_r;
+  s0 -> s1 r_Hm_n;
+  s0 -> s1 r_Hm_l;
+  s0 -> s1 r_Hm_r;
+
   // Wl
   s0 -> s1 n_Wl_n;
   s0 -> s1 n_Wl_l;
@@ -300,6 +310,16 @@ Enabled {
   s0 -> s1 r_Wl_n;
   s0 -> s1 r_Wl_l;
   s0 -> s1 r_Wl_r;
+
+  s0 -> s1 n_Wlm_n;
+  s0 -> s1 n_Wlm_l;
+  s0 -> s1 n_Wlm_r;
+  s0 -> s1 l_Wlm_n;
+  s0 -> s1 l_Wlm_l;
+  s0 -> s1 l_Wlm_r;
+  s0 -> s1 r_Wlm_n;
+  s0 -> s1 r_Wlm_l;
+  s0 -> s1 r_Wlm_r;
 
   // Wr
   s0 -> s1 n_Wr_n;
@@ -312,6 +332,16 @@ Enabled {
   s0 -> s1 r_Wr_l;
   s0 -> s1 r_Wr_r;
 
+  s0 -> s1 n_Wrm_n;
+  s0 -> s1 n_Wrm_l;
+  s0 -> s1 n_Wrm_r;
+  s0 -> s1 l_Wrm_n;
+  s0 -> s1 l_Wrm_l;
+  s0 -> s1 l_Wrm_r;
+  s0 -> s1 r_Wrm_n;
+  s0 -> s1 r_Wrm_l;
+  s0 -> s1 r_Wrm_r;
+
   // Sl
   s0 -> s1 n_Sl_n;
   s0 -> s1 n_Sl_l;
@@ -322,6 +352,16 @@ Enabled {
   s0 -> s1 r_Sl_n;
   s0 -> s1 r_Sl_l;
   s0 -> s1 r_Sl_r;
+
+  s0 -> s1 n_Slm_n;
+  s0 -> s1 n_Slm_l;
+  s0 -> s1 n_Slm_r;
+  s0 -> s1 l_Slm_n;
+  s0 -> s1 l_Slm_l;
+  s0 -> s1 l_Slm_r;
+  s0 -> s1 r_Slm_n;
+  s0 -> s1 r_Slm_l;
+  s0 -> s1 r_Slm_r;
 
   // Sr
   s0 -> s1 n_Sr_n;
@@ -334,6 +374,16 @@ Enabled {
   s0 -> s1 r_Sr_l;
   s0 -> s1 r_Sr_r;
 
+  s0 -> s1 n_Srm_n;
+  s0 -> s1 n_Srm_l;
+  s0 -> s1 n_Srm_r;
+  s0 -> s1 l_Srm_n;
+  s0 -> s1 l_Srm_l;
+  s0 -> s1 l_Srm_r;
+  s0 -> s1 r_Srm_n;
+  s0 -> s1 r_Srm_l;
+  s0 -> s1 r_Srm_r;
+
   // E
   s0 -> s1 n_E_n;
   s0 -> s1 n_E_l;
@@ -345,98 +395,21 @@ Enabled {
   s0 -> s1 r_E_l;
   s0 -> s1 r_E_r;
 
+  s0 -> s1 n_Em_n;
+  s0 -> s1 n_Em_l;
+  s0 -> s1 n_Em_r;
+  s0 -> s1 l_Em_n;
+  s0 -> s1 l_Em_l;
+  s0 -> s1 l_Em_r;
+  s0 -> s1 r_Em_n;
+  s0 -> s1 r_Em_l;
+  s0 -> s1 r_Em_r;
+
   s1 -> s0 enabled;
 
   accepting: s0;
 }
 
-
-// THIS IS WRONG! (copied from regular dining philosophers)
-P1 {
-
-  init: s0;
-
-  /////////////
-
-  s0 -> s1;
-
-  s1 -> s1 H/H;
-  s1 -> s1 Wl/Wl;
-  s1 -> s1 Wr/Wr;
-  s1 -> s1 Sl/Sl;
-  s1 -> s1 Sr/Sr;
-
-  s1 -> s2 H/H_;
-  s1 -> s2 Sl/Sl_;
-  s1 -> s2 Sr/Sr_;
-
-  s2 -> s2 H/H;
-  s2 -> s2 Wl/Wl;
-  s2 -> s2 Wr/Wr;
-  s2 -> s2 Sl/Sl;
-  s2 -> s2 Sr/Sr;
-
-  /////////////
-
-  s1 -> s6 H/H;
-  s1 -> s6 Wl/Wl;
-  s1 -> s6 Wr/Wr;
-  s1 -> s6 Sl/Sl;
-
-  s6 -> s2 Wl/Wl_;
-
-  /////////////
-
-  s1 -> s7 Wr/Wr_;
-
-  s7 -> s2 H/H;
-  s7 -> s2 Wl/Wl;
-  s7 -> s2 Wr/Wr;
-  s7 -> s2 Sr/Sr;
-
-  /////////////
-
-  // wrap-around case 1
-
-  s0 -> s3;
-
-  s3 -> s10 Wl/Wl_;
-
-  s10 -> s10 H/H;
-  s10 -> s10 Wl/Wl;
-  s10 -> s10 Wr/Wr;
-  s10 -> s10 Sl/Sl;
-  s10 -> s10 Sr/Sr;
-
-  s10 -> s11 H/H;
-  s10 -> s11 Wl/Wl;
-  s10 -> s11 Wr/Wr;
-  s10 -> s11 Sl/Sl;
-
-  /////////////
-
-  // wrap-around case 2
-
-  s0 -> s20;
-
-  s20 -> s21 H/H;
-  s20 -> s21 Wl/Wl;
-  s20 -> s21 Wr/Wr;
-  s20 -> s21 Sr/Sr;
-
-  s21 -> s21 H/H;
-  s21 -> s21 Wl/Wl;
-  s21 -> s21 Wr/Wr;
-  s21 -> s21 Sl/Sl;
-  s21 -> s21 Sr/Sr;
-
-  s21 -> s22 Wr/Wr_;
-
-  /////////////
-
-  accepting: s2, s11, s22;
-
-}
 
 // THIS IS WRONG! (copied from regular dining philosophers)
 P2 {
