@@ -1,0 +1,317 @@
+// Currency game on a generic clique with k = 3
+//
+// Taken from Rupak's email:
+//
+// ==========================================================================
+// Agents carry two kinds of currency: Gold or Silver.
+// In each round, pick an agent (scheduler).
+// Now the agent picks k agents at random* and
+// - with probability p switches to the currency of the majority of the k agents
+// - with probability 1 - p switches spontaneously
+//
+// Show: infinitely often there is consensus w.p. 1 (i.e. infinitely often all agents hold
+// Gold or all agents hold Silver). This should hold for all fair schedulers. In fact, infinitely often,
+// all agents hold Gold and infinitely often all agents hold Silver.
+//
+// * I am not fully sure how to model random choice. But certainly we can enumerate all possibilities
+// in the transducer. E.g., for k = 3:
+//
+// G  ...  S[chosen] ... G ... S --> G ... G .... G ... S
+// S ... S[chosen] .... S .... S ---> S ... S ... S ... S
+// etc (where ... indicates Id*)
+// ==========================================================================
+
+I0 {
+
+  init: s0;
+
+  // at least 4 agents
+  //
+  s0 -> s1d G;
+  s0 -> s1d S;
+  s1d -> s1 delim;
+
+  s1 -> s2d G;
+  s1 -> s2d S;
+  s2d -> s2 delim;
+
+  s2 -> s3d G;
+  s2 -> s3d S;
+  s3d -> s3 delim;
+
+  s3 -> s4d G;
+  s3 -> s4d S;
+  s4d -> s4 delim;
+
+  s4 -> s4d G;
+  s4 -> s4d S;
+
+  accepting: s4;
+}
+
+closedUnderTransitions;
+
+F {
+
+  init: s0;
+
+  s0 -> s1;
+  s0 -> s2;
+
+  s1 -> s1d G;
+  s1d -> s1 delim;
+
+  s2 -> s2d S;
+  s2d -> s2 delim;
+
+  accepting: s1, s2;
+}
+
+Enabled {
+
+  init: s0;
+
+  s0 -> s0d G;
+  s0 -> s0d S;
+  s0d ->  s0 enabled;
+
+  accepting: s0;
+}
+
+P2 {
+
+  init: s0;
+
+  s0 -> spont_flip;
+  s0 -> majority_switch;
+
+  // copy
+  spont_flip -> spont_flipd G/G;
+  spont_flip -> spont_flipd S/S;
+  spont_flipd -> spont_flip delim/delim;
+
+  // flip
+  spont_flip -> spont_flip_flippeddnow G/S;
+  spont_flip -> spont_flip_flippeddnow S/G;
+  spont_flip_flippeddnow -> spont_flip_flipped chosen/delim;
+
+  spont_flip_flipped -> spont_flip_flippedd G/G;
+  spont_flip_flipped -> spont_flip_flippedd S/S;
+  spont_flip_flippedd -> spont_flip_flipped delim/delim;
+
+  // Names of states are like this:
+  //
+  // (#G, #S, selected)
+	//    - #G, #S -  number of neigbours (from the k neighbours chosen randomly)
+	//      that are gold and silver respectively
+	//    - selected - the currency of the selected agent: either X (selected
+	//      agent not yet occurred), G (agent selected gold), S (agent selected
+	//      silver)
+
+	majority_switch -> s0_0_X;
+
+	// initial state =====================================================
+	s0_0_X -> s0_0_Xd G/G;
+	s0_0_X -> s0_0_Xd S/S;
+	s0_0_Xd -> s0_0_X delim/dleim;
+	// a G neighbour
+	s0_0_X -> s1_0_Xd G/G;
+	// an S neighbour
+	s0_0_X -> s0_1_Xd S/S;
+	// selected switch to G
+	s0_0_X -> s0_0_Gc G/G;
+	s0_0_X -> s0_0_Gc S/G;
+	// selected switch to S
+	s0_0_X -> s0_0_Sc G/S;
+	s0_0_X -> s0_0_Sc S/S;
+
+	// 1 gold, 0 silver, selected not yet read ===========================
+	s1_0_X -> s1_0_Xd G/G;
+	s1_0_X -> s1_0_Xd S/S;
+	s1_0_Xd -> s1_0_X delim/delim;
+	// a G neighbour
+	s1_0_X -> s2_0_Xd G/G;
+	// an S neighbour
+	s1_0_X -> s1_1_Xd S/S;
+	// selected switch to G
+	s1_0_X -> s1_0_Gc G/G;
+	s1_0_X -> s1_0_Gc S/G;
+	// selected switch to S
+	s1_0_X -> s1_0_Sc G/S;
+	s1_0_X -> s1_0_Sc S/S;
+
+	// 0 gold, 1 silver, selected not yet read ==========================
+	s0_1_X -> s0_1_Xd G/G;
+	s0_1_X -> s0_1_Xd S/S;
+	s0_1_Xd -> s0_1_X delim/delim;
+	// a G neighbour
+	s0_1_X -> s1_1_Xd G/G;
+	// an S neighbour
+	s0_1_X -> s0_2_Xd S/S;
+	// selected switch to G
+	s0_1_X -> s0_1_Gc G/G;
+	s0_1_X -> s0_1_Gc S/G;
+	// selected switch to S
+	s0_1_X -> s0_1_Sc G/S;
+	s0_1_X -> s0_1_Sc S/S;
+
+	// 0 gold, 0 silver, selected is G ==================================
+	s0_0_G -> s0_0_Gd G/G;
+	s0_0_G -> s0_0_Gd S/S;
+	s0_0_Gd -> s0_0_G delim/delim;
+	s0_0_Gc -> s0_0_G chosen/delim;
+	// a G neighbour
+	s0_0_G -> s1_0_Gd G/G;
+	// an S neighbour
+	s0_0_G -> s0_1_Gd S/S;
+
+	// 0 gold, 0 silver, selected is S ==================================
+	s0_0_S -> s0_0_Sd G/G;
+	s0_0_S -> s0_0_Sd S/S;
+	s0_0_Sd -> s0_0_S delim/delim;
+	s0_0_Sc -> s0_0_S chosen/delim;
+	// a G neighbour
+	s0_0_S -> s1_0_Sd G/G;
+	// an S neighbour
+	s0_0_S -> s0_1_Sd S/S;
+
+	// 2 gold, 0 silver, selected not yet read ===========================
+	s2_0_X -> s2_0_Xd G/G;
+	s2_0_X -> s2_0_Xd S/S;
+	s2_0_Xd -> s2_0_X delim/delim;
+	// a G or S neighbour
+	s2_0_X -> s2x_0x_Xd G/G;
+	s2_0_X -> s2x_0x_Xd S/S;
+	// selected switch to G
+	s2_0_X -> s2_0_Gc G/G;
+	s2_0_X -> s2_0_Gc S/G;
+
+	// 1 gold, 1 silver, selected not yet read ===========================
+	s1_1_X -> s1_1_Xd G/G;
+	s1_1_X -> s1_1_Xd S/S;
+	s1_1_Xd -> s1_1_X delim/delim;
+	// a G neighbour
+	s1_1_X -> s2x_0x_Xd G/G;
+	// an S neighbour
+	s1_1_X -> s0x_2x_Xd S/S;
+	// selected switch to G
+	s1_1_X -> s1_1_Gc G/G;
+	s1_1_X -> s1_1_Gc S/G;
+	// selected switch to S
+	s1_1_X -> s1_1_Sc G/S;
+	s1_1_X -> s1_1_Sc S/S;
+
+	// 1 gold, 0 silver, selected is G ==================================
+	s1_0_G -> s1_0_Gd G/G;
+	s1_0_G -> s1_0_Gd S/S;
+	s1_0_Gd -> s1_0_G delim/delim;
+	s1_0_Gc -> s1_0_G chosen/delim;
+	// a G neighbour
+	s1_0_G -> s2_0_Gd G/G;
+	// an S neighbour
+	s1_0_G -> s1_1_Gd S/S;
+
+	// 1 gold, 0 silver, selected is S ==================================
+	s1_0_S -> s1_0_Sd G/G;
+	s1_0_S -> s1_0_Sd S/S;
+	s1_0_Sd -> s1_0_S delim/delim;
+	s1_0_Sc -> s1_0_S chosen/delim;
+	// an S neighbour
+	s1_0_S -> s1_1_Sd S/S;
+
+	// 0 gold, 1 silver, selected is G ==================================
+	s0_1_G -> s0_1_Gd G/G;
+	s0_1_G -> s0_1_Gd S/S;
+	s0_1_Gd -> s0_1_G delim/delim;
+	s0_1_Gc -> s0_1_G chosen/delim;
+	// a G neighbour
+	s0_1_G -> s1_1_Gd G/G;
+
+	// 0 gold, 1 silver, selected is S ==================================
+	s0_1_S -> s0_1_Sd G/G;
+	s0_1_S -> s0_1_Sd S/S;
+	s0_1_Sd -> s0_1_S delim/delim;
+	s0_1_Sc -> s0_1_S chosen/delim;
+	// a G neighbour
+	s0_1_S -> s1_1_Sd G/G;
+	// an S neighbour
+	s0_1_S -> s0_2_Sd S/S;
+
+	// 2+ gold, 0+ silver, selected not yet read ===========================
+	s2x_0_X -> s2x_0_Xd G/G;
+	s2x_0_X -> s2x_0_Xd S/S;
+	s2x_0_Xd -> s2x_0_X delim/delim;
+	// selected switch to G
+	s2x_0_X -> sfinalc G/G;
+	s2x_0_X -> sfinalc S/G;
+
+	// 2 gold, 0 silver, selected is G ==================================
+	s2_0_G -> s2_0_Gd G/G;
+	s2_0_G -> s2_0_Gd S/S;
+	s2_0_Gd -> s2_0_G delim/delim;
+	s2_0_Gc -> s2_0_G chosen/delim;
+	// a G or S neighbour
+	s2_0_G -> sfinald G/G;
+	s2_0_G -> sfinald S/S;
+
+	// 1 gold, 1 silver, selected is S ==================================
+	s1_1_S -> s1_1_Sd G/G;
+	s1_1_S -> s1_1_Sd S/S;
+	s1_1_Sd -> s1_1_S delim/delim;
+	s1_1_Sc -> s1_1_S chosen/delim;
+	// an S neighbour
+	s1_1_S -> s0x_2x_Sd S/S;
+
+	// 1 gold, 1 silver, selected is G ==================================
+	s1_1_G -> s1_1_Gd G/G;
+	s1_1_G -> s1_1_Gd S/S;
+	s1_1_Gd -> s1_1_G delim/delim;
+	s1_1_Gc -> s1_1_G chosen/delim;
+	// a G neighbour
+	s1_1_G -> s2x_0x_Gd G/G;
+
+	// 0 gold, 2 silver, selected not yet read ===========================
+	s0_2_X -> s0_2_Xd G/G;
+	s0_2_X -> s0_2_Xd S/S;
+	s0_2_Xd -> s0_2_X delim/delim;
+	// a G or S neighbour
+	s0_2_X -> s0x_2x_Xd G/G;
+	s0_2_X -> s0x_2x_Xd S/S;
+	// selected switch to S
+	s0_2_X -> s0_2_Sc G/S;
+	s0_2_X -> s0_2_Sc S/S;
+
+	// 0 gold, 2 silver, selected is S ==================================
+	s0_2_S -> s0_2_Sd G/G;
+	s0_2_S -> s0_2_Sd S/S;
+	s0_2_Sd -> s0_2_S delim/delim;
+	s0_2_Sc -> s0_2_S chosen/delim;
+	// a G or S neighbour
+	s0_2_S -> sfinald G/G;
+	s0_2_S -> sfinald S/S;
+
+	// 0+ gold, 2+ silver, selected not yet read ===========================
+	s0x_2x_X -> s0x_2x_Xd G/G;
+	s0x_2x_X -> s0x_2x_Xd S/S;
+	s0x_2x_Xd -> s0x_2x_X delim/delim;
+	// selected switch to S
+	s0x_2x_X -> sfinalc G/S;
+	s0x_2x_X -> sfinalc S/S;
+
+	// final state
+	sfinal -> sfinald G/G;
+	sfinal -> sfinald S/S;
+	sfinald -> sfinal delim/delim;
+	sfinalc -> sfinal chosen/delim;
+
+
+  accepting: spont_flip_flipped, sfinal;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+explicitChecksUntilLength: 6;
+
