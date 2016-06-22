@@ -1,0 +1,207 @@
+// Currency game on a ring with neigbourhood k = 3 (left-leaning: N N S N)
+//
+// Taken from Rupak's email:
+//
+// ==========================================================================
+// Agents carry two kinds of currency: Gold or Silver.
+// In each round, pick an agent (scheduler).
+// Now the agent picks k agents at random* and
+// - with probability p switches to the currency of the majority of the k agents
+// - with probability 1 - p switches spontaneously
+//
+// Show: infinitely often there is consensus w.p. 1 (i.e. infinitely often all agents hold
+// Gold or all agents hold Silver). This should hold for all fair schedulers. In fact, infinitely often,
+// all agents hold Gold and infinitely often all agents hold Silver.
+//
+// * I am not fully sure how to model random choice. But certainly we can enumerate all possibilities
+// in the transducer. E.g., for k = 3:
+//
+// G  ...  S[chosen] ... G ... S --> G ... G .... G ... S
+// S ... S[chosen] .... S .... S ---> S ... S ... S ... S
+// etc (where ... indicates Id*)
+// ==========================================================================
+
+I0 {
+
+  init: s0;
+
+  // at least 4 agents
+  //
+  s0 -> s1d G;
+  s0 -> s1d S;
+  s1d -> s1 delim;
+
+  s1 -> s2d G;
+  s1 -> s2d S;
+  s2d -> s2 delim;
+
+  s2 -> s3d G;
+  s2 -> s3d S;
+  s3d -> s3 delim;
+
+  s3 -> s4d G;
+  s3 -> s4d S;
+  s4d -> s4 delim;
+
+  s4 -> s4d G;
+  s4 -> s4d S;
+
+  accepting: s4;
+}
+
+closedUnderTransitions;
+
+F {
+
+  init: s0;
+
+  s0 -> s1;
+  s0 -> s2;
+
+  s1 -> s1d G;
+  s1d -> s1 delim;
+
+  s2 -> s2d S;
+  s2d -> s2 delim;
+
+  accepting: s1, s2;
+}
+
+Enabled {
+
+  init: s0;
+
+  s0 -> s0d G;
+  s0 -> s0d S;
+  s0d ->  s0 enabled;
+
+  accepting: s0;
+}
+
+P2 {
+
+  init: s0;
+
+  s0 -> spont_flip;
+  s0 -> majority_switch;
+
+  // copy
+  spont_flip -> spont_flipd G/G;
+  spont_flip -> spont_flipd S/S;
+  spont_flipd -> spont_flip delim/delim;
+
+  // flip
+  spont_flip -> spont_flip_flippeddnow G/S;
+  spont_flip -> spont_flip_flippeddnow S/G;
+  spont_flip_flippeddnow -> spont_flip_flipped chosen/delim;
+
+  spont_flip_flipped -> spont_flip_flippedd G/G;
+  spont_flip_flipped -> spont_flip_flippedd S/S;
+  spont_flip_flippedd -> spont_flip_flipped delim/delim;
+
+  // Names of states are like this:
+  //
+  // (wrap, #G, #S, selected)
+  //    - "wrap" is how is the neigbourhood wrapped around:
+  //      no - no wraparound:                            ^ .* N N S N .* $
+	//      w1 - wrap of the one right-most neighbour:     ^ N .* N N S $
+	//      w2 - wrap of two right-most agents             ^ S N .* N N $
+	//      w3 - wrap of the three right-most agents       ^ N S N .* N $
+	//
+	//    - #G, #S -  number of neigbours (from the k neighbours chosen randomly)
+	//      that are gold and silver respectively
+	//    - "selected" - the currency of the selected agent: either X (selected
+	//      agent not yet occurred), G (agent selected gold), S (agent selected
+	//      silver)
+
+	majority_switch -> no_s0_0_X;
+	majority_switch -> w1_s0_0_X;
+	majority_switch -> w2_s0_0_X;
+	majority_switch -> w3_s0_0_X;
+
+	// initial state =====================================================
+	no_s0_0_X -> no_s0_0_Xd G/G;
+	no_s0_0_X -> no_s0_0_Xd S/S;
+	no_s0_0_Xd -> no_s0_0_X delim/delim;
+	// a G neighbour
+	no_s0_0_X -> no_s1_0_Xd G/G;
+	// an S neighbour
+	no_s0_0_X -> no_s0_1_Xd S/S;
+
+	// 1 gold, 0 silver, selected not yet read ===========================
+	no_s1_0_Xd -> no_s1_0_X delim/delim;
+	// a G neighbour
+	no_s1_0_X -> no_s2_0_Xd G/G;
+	// an S neighbour
+	no_s1_0_X -> no_s1_1_Xd S/S;
+
+	// 0 gold, 1 silver, selected not yet read ==========================
+	no_s0_1_Xd -> no_s0_1_X delim/delim;
+	// a G neighbour
+	no_s0_1_X -> no_s1_1_Xd G/G;
+	// an S neighbour
+	no_s0_1_X -> no_s0_2_Xd S/S;
+
+	// 2 gold, 0 silver, selected not yet read ===========================
+	no_s2_0_Xd -> no_s2_0_X delim/delim;
+	// selected switch to G
+	no_s2_0_X -> no_s2_0_Gc G/G;
+	no_s2_0_X -> no_s2_0_Gc S/G;
+
+	// 1 gold, 1 silver, selected not yet read ===========================
+	no_s1_1_Xd -> no_s1_1_X delim/delim;
+	// selected switch to G
+	no_s1_1_X -> no_s1_1_Gc G/G;
+	no_s1_1_X -> no_s1_1_Gc S/G;
+	// selected switch to S
+	no_s1_1_X -> no_s1_1_Sc G/S;
+	no_s1_1_X -> no_s1_1_Sc S/S;
+
+	// 2 gold, 0 silver, selected is G ==================================
+	no_s2_0_Gc -> no_s2_0_G chosen/delim;
+	// a G or S neighbour
+	no_s2_0_G -> no_sfinald G/G;
+	no_s2_0_G -> no_sfinald S/S;
+
+	// 1 gold, 1 silver, selected is S ==================================
+	no_s1_1_Sc -> no_s1_1_S chosen/delim;
+	// an S neighbour
+	no_s1_1_S -> no_sfinald S/S;
+
+	// 1 gold, 1 silver, selected is G ==================================
+	no_s1_1_Gc -> no_s1_1_G chosen/delim;
+	// a G neighbour
+	no_s1_1_G -> no_sfinald G/G;
+
+	// 0 gold, 2 silver, selected not yet read ===========================
+	no_s0_2_Xd -> no_s0_2_X delim/delim;
+	// selected switch to S
+	no_s0_2_X -> no_s0_2_Sc G/S;
+	no_s0_2_X -> no_s0_2_Sc S/S;
+
+	// 0 gold, 2 silver, selected is S ==================================
+	no_s0_2_Sc -> no_s0_2_S chosen/delim;
+	// a G or S neighbour
+	no_s0_2_S -> no_sfinald G/G;
+	no_s0_2_S -> no_sfinald S/S;
+
+	// final state
+	no_sfinal -> no_sfinald G/G;
+	no_sfinal -> no_sfinald S/S;
+	no_sfinald -> no_sfinal delim/delim;
+
+	// TODO: wrong, missing w1, w2, w3
+
+  accepting: spont_flip_flipped, no_sfinal;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+explicitChecksUntilLength: 6;
+
+symmetries: rotation;
+
+logLevel: 1;
