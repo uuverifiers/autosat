@@ -1,4 +1,4 @@
-// Currency game on a generic clique with k = 3
+// Currency game on a clique with k = 3
 //
 // Taken from Rupak's email:
 //
@@ -317,4 +317,4 @@ explicitChecksUntilLength: 6;
 
 symmetries: rotation;
 
-logLevel: 2;
+logLevel: 1;
