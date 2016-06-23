@@ -1,7 +1,10 @@
 #!/bin/bash
 
 for file in *.dot ; do
-	OUTPUT="`dirname ${file}`/`basename ${file} .dot`.svg"
+	if [ ${file} != "*.dot" ]
+	then
+		OUTPUT="`dirname ${file}`/`basename ${file} .dot`.svg"
 
-	dot -Tsvg ${file} -o ${OUTPUT}
+		dot -Tsvg ${file} -o ${OUTPUT}
+	fi
 done
