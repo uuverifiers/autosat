@@ -481,6 +481,40 @@ public class AutomataConverter {
 	return minimalAut;
     }
 
+    public static Automata getPreImage(List<Integer> word,
+                                       EdgeWeightedDigraph function,
+                                       int numLetters) {
+	int wordLen = word.size();
+
+	final int hashStride = wordLen + 1;
+	Automata aut =
+	    new Automata(VerificationUltility.hash(0, function.getInitState(), hashStride),
+			 function.V() * (wordLen + 1),
+			 numLetters);
+
+	for (int pos = 0; pos < wordLen; ++pos) {
+	    int nextChar = word.get(pos);
+	    for(DirectedEdge edge: function.edges()) {
+		DirectedEdgeWithInputOutput edgeFunction = (DirectedEdgeWithInputOutput) edge;
+		if (edgeFunction.getOutput() == nextChar)
+		    aut.addTrans(VerificationUltility.hash(pos, edgeFunction.from(), hashStride),
+				 edgeFunction.getInput(),
+				 VerificationUltility.hash(pos+1, edgeFunction.to(), hashStride));
+	    }
+	}
+
+	Set<Integer> acceptings = new HashSet<Integer>();
+	for (int a : function.getAcceptingStates())
+	    acceptings.add(VerificationUltility.hash(wordLen, a, hashStride));
+	aut.setAcceptingStates(acceptings);
+	
+	Automata prunedAut = AutomataConverter.pruneUnreachableStates(aut);
+	Automata completeAut = AutomataConverter.toCompleteDFA(prunedAut);
+	Automata minimalAut = AutomataConverter.toMinimalDFA(completeAut);
+
+	return minimalAut;
+    }
+
     /**
      * Compute all words of length <code>wordLength</code> accepted by the
      * given automaton.
@@ -577,6 +611,50 @@ public class AutomataConverter {
         }
         
         return false;
+    }
+
+    /**
+     * Compute a word accepted by the given automaton; or
+     * <code>null</code> if the accepted language is empty
+     */
+    public static List<Integer> getSomeShortestWord(Automata lang) {
+        final State[] states = lang.getStates();
+        final int N = states.length;
+        final List<Integer>[] words = new List [N];
+
+        for (int i : lang.getAcceptingStates())
+            words[i] = new ArrayList<Integer> ();
+
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+
+            for (int i = 0; i < N; ++i) {
+                final State state = states[i];
+                List<Integer> shortestSucc = null;
+                int shortestSuccLabel = -1;
+
+                for (int l : state.getOutgoingLabels())
+                    for (int id : state.getDest(l))
+                        if (shortestSucc == null ||
+                            (words[id] != null &&
+                             words[id].size() < shortestSucc.size())) {
+                            shortestSucc = words[id];
+                            shortestSuccLabel = l;
+                        }
+
+                if (shortestSucc != null &&
+                    (words[i] == null ||
+                     words[i].size() > shortestSucc.size() + 1)) {
+                    changed = true;
+                    words[i] = new ArrayList<Integer> ();
+                    words[i].add(shortestSuccLabel);
+                    words[i].addAll(shortestSucc);
+                }
+            }
+        }
+
+        return words[lang.getInitState()];
     }
 
     public static Automata getWordAutomaton(Automata aut,
