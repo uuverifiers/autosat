@@ -40,6 +40,8 @@ ParLevel.                      VerifierOption ::= "parallel" ":" MyInteger;
 terminator VerifierOption ";";
 
 RotationSymmetry.              SymmetryOption ::= "rotation";
+RotationWithSymmetry.          SymmetryOption ::= "rotationStartingWith"
+                                                  "{" [Name] "}";
 
 separator SymmetryOption ",";
 

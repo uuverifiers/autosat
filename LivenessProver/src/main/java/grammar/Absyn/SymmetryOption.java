@@ -4,6 +4,7 @@ public abstract class SymmetryOption implements java.io.Serializable {
   public abstract <R,A> R accept(SymmetryOption.Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {
     public R visit(grammar.Absyn.RotationSymmetry p, A arg);
+    public R visit(grammar.Absyn.RotationWithSymmetry p, A arg);
 
   }
 

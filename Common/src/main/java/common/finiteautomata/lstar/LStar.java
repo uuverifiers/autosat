@@ -144,8 +144,9 @@ public class LStar {
 	classTree.collectLeafWords(accessWords);
 
 	Automata hypAut = extractAutomaton(accessWords);
+        boolean cont = !teacher.isCorrectLanguage(hypAut, posCEX, negCEX);
 
-	while (!teacher.isCorrectLanguage(hypAut, posCEX, negCEX)) {
+	while (cont) {
 	    final List<Integer> cex;
 	    if (!posCEX.isEmpty())
 		cex = posCEX.get(0);
@@ -248,11 +249,17 @@ public class LStar {
 	    }
 
 	    accessWords.clear();
-	    posCEX.clear();
-	    negCEX.clear();
-
 	    classTree.collectLeafWords(accessWords);
+
 	    hypAut = extractAutomaton(accessWords);
+
+            if (posCEX.isEmpty() ? hypAut.accepts(cex) : !hypAut.accepts(cex)) {
+                // the counterexample has not been eliminated yet, try again
+            } else {
+                posCEX.clear();
+                negCEX.clear();
+                cont = !teacher.isCorrectLanguage(hypAut, posCEX, negCEX);
+            }
 	}
 
 	solution = hypAut;

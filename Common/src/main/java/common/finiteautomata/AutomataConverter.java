@@ -707,4 +707,26 @@ public class AutomataConverter {
 	return minimise(result);
     }
 
+    public static Automata closeUnderRotation(Automata aut,
+                                              List<Integer> startLetters) {
+        final Automata closure = closeUnderRotation(aut);
+
+        final Automata prefixAut = new Automata(0, 2, aut.getNumLabels());
+
+        for (int l : startLetters)
+            prefixAut.addTrans(0, l, 1);
+        for (int l = 0; l < aut.getNumLabels(); ++l)
+            prefixAut.addTrans(1, l, 1);
+
+	final Set<Integer> acceptings = new HashSet<Integer>();
+        acceptings.add(1);
+	prefixAut.setAcceptingStates(acceptings);
+
+        final Automata restrictedClosure =
+            VerificationUltility.getIntersectionLazily(closure, prefixAut, false);
+        final Automata result =
+            minimise(VerificationUltility.getUnion(restrictedClosure, aut));
+        return result;
+    }
+
 }

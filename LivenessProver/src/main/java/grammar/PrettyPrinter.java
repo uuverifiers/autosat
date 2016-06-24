@@ -611,6 +611,16 @@ public class PrettyPrinter
        render("rotation");
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof grammar.Absyn.RotationWithSymmetry)
+    {
+       grammar.Absyn.RotationWithSymmetry _rotationwithsymmetry = (grammar.Absyn.RotationWithSymmetry) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("rotationStartingWith");
+       render("{");
+       pp(_rotationwithsymmetry.listname_, 0);
+       render("}");
+       if (_i_ > 0) render(_R_PAREN);
+    }
   }
 
   private static void pp(grammar.Absyn.ListSymmetryOption foo, int _i_)
@@ -958,6 +968,16 @@ public class PrettyPrinter
     {
        grammar.Absyn.RotationSymmetry _rotationsymmetry = (grammar.Absyn.RotationSymmetry) foo;
        render("RotationSymmetry");
+    }
+    if (foo instanceof grammar.Absyn.RotationWithSymmetry)
+    {
+       grammar.Absyn.RotationWithSymmetry _rotationwithsymmetry = (grammar.Absyn.RotationWithSymmetry) foo;
+       render("(");
+       render("RotationWithSymmetry");
+       render("[");
+       sh(_rotationwithsymmetry.listname_);
+       render("]");
+       render(")");
     }
   }
 
