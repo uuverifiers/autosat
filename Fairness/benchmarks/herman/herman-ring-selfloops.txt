@@ -1,4 +1,5 @@
-// herman-ring-delim-enabled.txt
+// Herman's protocol on a ring with enabledness and self-loops
+//
 // This an adaptation of Herman's protocol in a ring.  This version uses a
 // delimiter to distinguish sub-words of individual processes, and the Enabled
 // automaton to denote enabled transitions.
@@ -49,11 +50,9 @@ F {
 Enabled {
     init: s0;
 
-    s0 -> sN N;
-    sN -> s0 disabled;
-
-    s0 -> sT T;
-    sT -> s0 enabled;
+    s0 -> sNT N;
+    s0 -> sNT T;
+    sNT -> s0 enabled;
 
     accepting: s0;
 }
@@ -72,6 +71,8 @@ P2 {
 
     // keep
     s0 -> s1pc T/T;
+    // self-loop
+    s0 -> s1pc N/N;
     s1pc -> s1 chosen/delim;
     // pass to right
     s0 -> s2pc T/N;
@@ -106,3 +107,4 @@ monolithicWitness;
 
 explicitChecksUntilLength: 6;
 
+logLevel: 1;

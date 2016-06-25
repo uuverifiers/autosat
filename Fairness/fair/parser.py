@@ -33,6 +33,7 @@ reOptionNoParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+)\ *;$')
 # regex for an option with a parameter
 reOptionWithParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+:.+)\ *;$')
 
+
 ##############################################################################
 class Parser:
     '''The parser of input files'''
@@ -173,7 +174,8 @@ Parses top file structures of a problem in a file.  Modifies it.
                 elif name == "Enabled": # aut for Enabled
                     problem.autEnabled = Parser.parseAut(problem, it)
                 else:
-                    raise Exception("Invalid automaton name: " + name)
+                    problem.misc[name] = Parser.parseAut(problem, it)
+                    # raise Exception("Invalid automaton name: " + name)
             else:
                 raise Exception("Syntax error: " + line)
 

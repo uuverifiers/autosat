@@ -6,6 +6,7 @@ class Problem:
     def __init__(self):
         self.alphabet = set()
         self.options = []
+        self.misc = dict()
 
 
 ###############################################################################

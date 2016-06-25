@@ -220,7 +220,7 @@ Flatten names of states of a product automaton.
     def generalIntersection(autLhs, autRhs, funSymMatch, funDetSymb):
         '''generalIntersection(autLhs, autRhs, funSymMatch, funDetSymb) -> Automaton
 
-Performs a general intersction of autLhs and autRhs, such that symbols are
+Performs a general intersection of autLhs and autRhs, such that symbols are
 matched using the funSymMatch predicate.  The symbol of a new transition is then
 determined using funDetSymb.  Generates only reachable transitions and states.
 '''
@@ -254,6 +254,17 @@ determined using funDetSymb.  Generates only reachable transitions and states.
                             symbRhs), newState)
 
         return result.flattenProductStateNames()
+
+
+    ###########################################
+    def intersection(autLhs, autRhs):
+        '''intersection(self, autLhs, autRhs) -> Automaton
+
+Performs a standard intersection of two automata using a product construction.
+'''
+        return Automaton.generalIntersection(autLhs, autRhs,
+            lambda x, y: x == y,
+            lambda x, y: x)
 
 
     ###########################################
@@ -387,18 +398,64 @@ Removes epsilon transitions from the automaton.
 
 Transforms an automaton into a transducer encoding the identity relation.
 '''
-        result = Automaton()
-        result.startStates = self.startStates[:]
-        result.acceptStates = self.acceptStates[:]
-        result.transitions = list(map(lambda trans:
+        result = self.mapTrans(lambda trans:
             (
                 trans[0],
                 trans[1],
                 trans[1],
                 trans[2]
-            ),
-            self.transitions))
+            ))
 
+        return result
+
+
+    ###########################################
+    def packTransdToAutomaton(self):
+        '''toAutomaton(self) -> Automaton
+
+Transforms a transducer into an automaton by packing the two symbols inside a
+transition to a pair.
+'''
+        ##############################################
+        def packer(trans):                           #
+            if len(trans) == 2:                      #
+                return trans                         #
+            elif len(trans) == 4:                    #
+                return (                             #
+                    trans[0],                        #
+                    (trans[1], trans[2]),            #
+                    trans[3]                         #
+                )                                    #
+            else:                                    #
+                raise Exception("Internal error")    #
+        ##############################################
+
+        result = self.mapTrans(packer)
+        return result
+
+
+    ###########################################
+    def unpackAutomatonToTransd(self):
+        '''toAutomaton(self) -> Automaton
+
+Transforms an automaton with pairs on edges into a transducer by unpacking the pair.
+'''
+        ##############################################
+        def unpacker(trans):                         #
+            if len(trans) == 2:                      #
+                return trans                         #
+            elif len(trans) == 3:                    #
+                return (                             #
+                    trans[0],                        #
+                    trans[1][0],                     #
+                    trans[1][1],                     #
+                    trans[2]                         #
+                )                                    #
+            else:                                    #
+                raise Exception("Internal error")    #
+        ##############################################
+
+        result = self.mapTrans(unpacker)
         return result
 
 
@@ -413,6 +470,19 @@ Filters transitions of automaton with respect to the predicate pred.
         result.acceptStates = self.acceptStates[:]
         result.transitions = list(filter(pred, self.transitions))
         return result
+
+    ###########################################
+    def mapTrans(self, mapper):
+        '''mapTrans(self, mapper) -> Automaton
+
+Maps transitions w.r.t. mapper.
+'''
+        result = Automaton()
+        result.startStates = self.startStates[:]
+        result.acceptStates = self.acceptStates[:]
+        result.transitions = list(map(mapper, self.transitions))
+        return result
+
 
     ###########################################
     def transdAutAutProd(transd, aut1, funMatch1, funDet1, aut2, funMatch2, funDet2):

@@ -311,10 +311,6 @@ P2 {
 transducerStateGuessing: 1 .. 10;
 automatonStateGuessing: 0 .. 4;
 
-monolithicWitness;
-
 explicitChecksUntilLength: 6;
-
-symmetries: rotation;
 
 logLevel: 1;
