@@ -329,6 +329,15 @@ public class AllVisitorImpl implements AllVisitor<Object, SymmetryProb>{
         return null;
     }
 
+    public Object visit(grammar.Absyn.RotationWithSymmetry p,
+                        SymmetryProb arg) {
+        String rot = "rotation";
+        for (Name n : p.listname_)
+          rot = rot + "_" + getIndex(n, arg, labelToIndex);
+        arg.addSymmetry(rot);
+        return null;
+    }
+
     public Object visit(grammar.Absyn.ExplicitChecks p, SymmetryProb arg) {
         arg.setExplicitChecksUntilLength(Integer.parseInt(p.myinteger_));
         return null;

@@ -66,6 +66,7 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     }
 /* SymmetryOption */
     public R visit(grammar.Absyn.RotationSymmetry p, A arg) { return visitDefault(p, arg); }
+    public R visit(grammar.Absyn.RotationWithSymmetry p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(grammar.Absyn.SymmetryOption p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }

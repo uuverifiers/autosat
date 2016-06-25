@@ -48,9 +48,10 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>noPrecomputedInvariant { return new Symbol(sym._SYMB_21); }
 <YYINITIAL>parallel { return new Symbol(sym._SYMB_22); }
 <YYINITIAL>rotation { return new Symbol(sym._SYMB_23); }
-<YYINITIAL>symmetries { return new Symbol(sym._SYMB_24); }
-<YYINITIAL>transducerStateGuessing { return new Symbol(sym._SYMB_25); }
-<YYINITIAL>useRankingFunctions { return new Symbol(sym._SYMB_26); }
+<YYINITIAL>rotationStartingWith { return new Symbol(sym._SYMB_24); }
+<YYINITIAL>symmetries { return new Symbol(sym._SYMB_25); }
+<YYINITIAL>transducerStateGuessing { return new Symbol(sym._SYMB_26); }
+<YYINITIAL>useRankingFunctions { return new Symbol(sym._SYMB_27); }
 <YYINITIAL>"//"[^\n]*\n { /* BNFC single-line comment */ }
 <YYINITIAL>"/**" { yybegin(COMMENT); }
 <COMMENT>"**/" { yybegin(YYINITIAL); }

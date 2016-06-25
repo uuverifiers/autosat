@@ -166,6 +166,13 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
+    public R visit(grammar.Absyn.RotationWithSymmetry p, A arg) {
+      R r = leaf(arg);
+      for (Name x : p.listname_) {
+        r = combine(x.accept(this,arg), r, arg);
+      }
+      return r;
+    }
 
 /* MaybeClosed */
     public R visit(grammar.Absyn.ClosedInit p, A arg) {

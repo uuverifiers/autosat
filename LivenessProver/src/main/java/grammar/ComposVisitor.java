@@ -213,6 +213,15 @@ public class ComposVisitor<A> implements
 
       return new grammar.Absyn.RotationSymmetry();
     }
+    public SymmetryOption visit(grammar.Absyn.RotationWithSymmetry p, A arg)
+    {
+      ListName listname_ = new ListName();
+      for (Name x : p.listname_) {
+        listname_.add(x.accept(this,arg));
+      }
+
+      return new grammar.Absyn.RotationWithSymmetry(listname_);
+    }
 
 /* MaybeClosed */
     public MaybeClosed visit(grammar.Absyn.ClosedInit p, A arg)

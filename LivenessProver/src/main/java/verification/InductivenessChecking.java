@@ -37,11 +37,39 @@ public class InductivenessChecking {
 	this.numLetters = numLetters;
     }
 	
+    public List<List<Integer>> check() {
+      final Automata lhs =
+          VerificationUltility.getIntersectionLazily(A, knownInv, false);
+      final Automata img =
+          VerificationUltility.getImage(lhs, player);
+      final Automata badImgPoints =
+          VerificationUltility.getIntersectionLazily(img, A, true);
+      final List<Integer> point =
+          AutomataConverter.getSomeShortestWord(badImgPoints);
+
+      if (point == null) {
+          return null;
+      } else {
+          final Automata prePoints =
+              AutomataConverter.getPreImage(point, player, numLetters);
+          final List<Integer> prePoint =
+              AutomataConverter.getSomeWord(
+              VerificationUltility.getIntersectionLazily(prePoints, lhs, false));
+
+          List<List<Integer>> result = new ArrayList<List<Integer>>();
+          result.add(prePoint);
+          result.add(point);
+          
+          return result;
+      }
+    }
+
     /**
      * Return 2 words x, y
      * result[0], result[1]
      */
-    public List<List<Integer>> check() {
+/*
+    public List<List<Integer>> checkX() {
 	Automata complementA = AutomataConverter.getComplement(A);
 
 	int numStatesA = A.getStates().length;
@@ -139,4 +167,5 @@ public class InductivenessChecking {
 	    return result;
 	}
     }
+    */
 }

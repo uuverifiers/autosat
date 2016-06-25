@@ -51,6 +51,7 @@ public class IncrementalVerifier {
 
     private final boolean verifySolutions;
     private final boolean closeUnderRotation;
+    private final List<Integer> rotationStartLetters;
     private final boolean preComputeReachable;
 
     private final SymmetryProb problem;
@@ -93,7 +94,24 @@ public class IncrementalVerifier {
 	this.SOLVER_FACTORY = SOLVER_FACTORY;
 	this.useRankingFunctions = useRankingFunctions;
         this.preComputeReachable = preComputeReachable;
-        this.closeUnderRotation = problem.getSymmetries().contains("rotation");
+        if (problem.getSymmetries().contains("rotation")) {
+            this.closeUnderRotation = true;
+            this.rotationStartLetters = null;
+        } else {
+            List<Integer> startLetters = null;
+
+            for (String s : problem.getSymmetries())
+                if (s.startsWith("rotation_")) {
+                    startLetters = new ArrayList<Integer> ();
+                    final String[] letters = s.split("_");
+                    for (int i = 1; i < letters.length; ++i)
+                        startLetters.add(Integer.parseInt(letters[i]));
+                    break;
+                }
+
+            this.rotationStartLetters = startLetters;
+            this.closeUnderRotation = startLetters != null;
+        }
 	this.verifySolutions = verifySolutions;
 
         if (problem.getParLevel() <= 0) {
@@ -592,12 +610,22 @@ public class IncrementalVerifier {
 				      EdgeWeightedDigraph transducer) {
         // augment the set of winning states and continue
         // with the next configuration
+
+        Automata BClosure;
+        if (closeUnderRotation) {
+            if (rotationStartLetters == null)
+                BClosure =
+                    AutomataConverter.closeUnderRotation(B);
+            else
+                BClosure =
+                    AutomataConverter.closeUnderRotation(B, rotationStartLetters);
+        } else {
+            BClosure = B;
+        }
+
         winningStates =
             AutomataConverter.minimise
-            (VerificationUltility.getUnion
-             (winningStates,
-              closeUnderRotation ?
-              AutomataConverter.closeUnderRotation(B) : B));
+            (VerificationUltility.getUnion(winningStates, BClosure));
 
         chosenBs.add(B);
         chosenTs.add(transducer);
@@ -730,7 +758,9 @@ public class IncrementalVerifier {
 			    for (int j = 0; j < len; ++j) {
 				w2.add(w2.get(0));
 				w2.remove(0);
-				p2winning.add(new ArrayList<Integer> (w2));
+                                if (rotationStartLetters == null ||
+                                    rotationStartLetters.contains(w2.get(0)))
+                                    p2winning.add(new ArrayList<Integer> (w2));
 			    }
 			}
 			changed = true;
