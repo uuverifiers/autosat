@@ -1,4 +1,4 @@
-// Currency game on a ring with neigbourhood k = 3 (left-leaning: N N S N)
+// Currency game on a ring with neigbourhood k = 3 (treating itself: N S N)
 //
 // Taken from Rupak's email:
 //
@@ -25,7 +25,7 @@ I0 {
 
   init: s0;
 
-  // at least 4 agents
+  // at least 3 agents
   //
   s0 -> s1d G;
   s0 -> s1d S;
@@ -39,14 +39,10 @@ I0 {
   s2 -> s3d S;
   s3d -> s3 delim;
 
-  s3 -> s4d G;
-  s3 -> s4d S;
-  s4d -> s4 delim;
+  s3 -> s3d G;
+  s3 -> s3d S;
 
-  s4 -> s4d G;
-  s4 -> s4d S;
-
-  accepting: s4;
+  accepting: s3;
 }
 
 closedUnderTransitions;
@@ -107,10 +103,9 @@ P2 {
   //
   // (wrap, #G, #S, selected)
   //    - "wrap" is how is the neigbourhood wrapped around:
-  //      no - no wraparound:                            ^ .* N N S N .* $
-	//      w1 - wrap of the one right-most neighbour:     ^ N .* N N S $
-	//      w2 - wrap of two right-most agents             ^ S N .* N N $
-	//      w3 - wrap of the three right-most agents       ^ N S N .* N $
+  //      no - no wraparound:                            ^ .* N S N .* $
+	//      w1 - wrap of the one right-most agent:         ^ N .* N S $
+	//      w2 - wrap of two right-most agents             ^ S N .* N $
 	//
 	//    - #G, #S -  number of neigbours (from the k neighbours chosen randomly)
 	//      that are gold and silver respectively
@@ -121,7 +116,6 @@ P2 {
 	majority_switch -> no_s0_0_X;
 	majority_switch -> w1_s0_0_X;
 	majority_switch -> w2_s0_0_X;
-	majority_switch -> w3_s0_0_X;
 
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // ===================================================================
@@ -141,31 +135,18 @@ P2 {
 	// 1 gold, 0 silver, selected not yet read ===========================
 	no_s1_0_Xd -> no_s1_0_X delim/delim;
 	// a G neighbour
-	no_s1_0_X -> no_s2_0_Xd G/G;
+	no_s1_0_X -> no_s2_0_Gc G/G;
 	// an S neighbour
-	no_s1_0_X -> no_s1_1_Xd S/S;
+	no_s1_0_X -> no_s1_1_Gc S/G;
+	no_s1_0_X -> no_s1_1_Sc S/S;
 
 	// 0 gold, 1 silver, selected not yet read ==========================
 	no_s0_1_Xd -> no_s0_1_X delim/delim;
 	// a G neighbour
-	no_s0_1_X -> no_s1_1_Xd G/G;
+	no_s0_1_X -> no_s1_1_Gc G/G;
+	no_s0_1_X -> no_s1_1_Sc G/S;
 	// an S neighbour
-	no_s0_1_X -> no_s0_2_Xd S/S;
-
-	// 2 gold, 0 silver, selected not yet read ===========================
-	no_s2_0_Xd -> no_s2_0_X delim/delim;
-	// selected switch to G
-	no_s2_0_X -> no_s2_0_Gc G/G;
-	no_s2_0_X -> no_s2_0_Gc S/G;
-
-	// 1 gold, 1 silver, selected not yet read ===========================
-	no_s1_1_Xd -> no_s1_1_X delim/delim;
-	// selected switch to G
-	no_s1_1_X -> no_s1_1_Gc G/G;
-	no_s1_1_X -> no_s1_1_Gc S/G;
-	// selected switch to S
-	no_s1_1_X -> no_s1_1_Sc G/S;
-	no_s1_1_X -> no_s1_1_Sc S/S;
+	no_s0_1_X -> no_s0_2_Sc S/S;
 
 	// 2 gold, 0 silver, selected is G ==================================
 	no_s2_0_Gc -> no_s2_0_G chosen/delim;
@@ -183,12 +164,6 @@ P2 {
 	// a G neighbour
 	no_s1_1_G -> no_sfinald G/G;
 
-	// 0 gold, 2 silver, selected not yet read ===========================
-	no_s0_2_Xd -> no_s0_2_X delim/delim;
-	// selected switch to S
-	no_s0_2_X -> no_s0_2_Sc G/S;
-	no_s0_2_X -> no_s0_2_Sc S/S;
-
 	// 0 gold, 2 silver, selected is S ==================================
 	no_s0_2_Sc -> no_s0_2_S chosen/delim;
 	// a G or S neighbour
@@ -200,10 +175,9 @@ P2 {
 	no_sfinal -> no_sfinald S/S;
 	no_sfinald -> no_sfinal delim/delim;
 
-
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // ===================================================================
-  // WRAP 1 RIGHT:   ^ N .* N N S $
+  // WRAP 1 RIGHT:   ^ N .* N S $
   // ===================================================================
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -234,33 +208,21 @@ P2 {
 	// 2 gold, 0 silver, selected not yet read ===========================
 	w1_s2_0_Xd -> w1_s2_0_X delim/delim;
 	// a G or S neighbour
-	w1_s2_0_X -> w1_s2x_0x_Xd G/G;
-	w1_s2_0_X -> w1_s2x_0x_Xd S/S;
+	w1_s2_0_X -> w1_sfinalc G/G;
+	w1_s2_0_X -> w1_sfinalc S/G;
 
 	// 1 gold, 1 silver, selected not yet read ===========================
 	w1_s1_1_Xd -> w1_s1_1_X delim/delim;
 	// a G neighbour
-	w1_s1_1_X -> w1_s2x_0x_Xd G/G;
+	w1_s1_1_X -> w1_sfinalc G/G;
 	// an S neighbour
-	w1_s1_1_X -> w1_s0x_2x_Xd S/S;
-
-	// 2+ gold, 0+ silver, selected not yet read ===========================
-	w1_s2x_0x_Xd -> w1_s2x_0x_X delim/delim;
-	// selected switch to G
-	w1_s2x_0x_X -> w1_sfinalc G/G;
-	w1_s2x_0x_X -> w1_sfinalc S/G;
+	w1_s1_1_X -> w1_sfinalc S/S;
 
 	// 0 gold, 2 silver, selected not yet read ===========================
 	w1_s0_2_Xd -> w1_s0_2_X delim/delim;
 	// a G or S neighbour
-	w1_s0_2_X -> w1_s0x_2x_Xd G/G;
-	w1_s0_2_X -> w1_s0x_2x_Xd S/S;
-
-	// 0+ gold, 2+ silver, selected not yet read ===========================
-	w1_s0x_2x_Xd -> w1_s0x_2x_X delim/delim;
-	// selected switch to S
-	w1_s0x_2x_X -> w1_sfinalc G/S;
-	w1_s0x_2x_X -> w1_sfinalc S/S;
+	w1_s0_2_X -> w1_sfinalc G/S;
+	w1_s0_2_X -> w1_sfinalc S/S;
 
 	// final state
 	w1_sfinalc -> w1_sfinal chosen/delim;
@@ -268,81 +230,67 @@ P2 {
 
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // ===================================================================
-  // WRAP 2 RIGHT:   ^ S N .* N N $
+  // WRAP 2 RIGHT:   ^ S N .* N $
   // ===================================================================
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// initial state =====================================================
 	// selected switch to G
-	w2_s0_0_X -> w2_s0_0_Gc G/G;
-	w2_s0_0_X -> w2_s0_0_Gc S/G;
+	w2_s0_0_X -> w2_s1_0_Gc G/G;
+	w2_s0_0_X -> w2_s0_1_Gc S/G;
 	// selected switch to S
-	w2_s0_0_X -> w2_s0_0_Sc G/S;
-	w2_s0_0_X -> w2_s0_0_Sc S/S;
-
-	// 0 gold, 0 silver, selected is G ==================================
-	w2_s0_0_Gc -> w2_s0_0_G chosen/delim;
-	// a G neighbour
-	w2_s0_0_G -> w2_s1_0_Gd G/G;
-	// an S neighbour
-	w2_s0_0_G -> w2_s0_1_Gd S/S;
-
-	// 0 gold, 0 silver, selected is S ==================================
-	w2_s0_0_Sc -> w2_s0_0_S chosen/delim;
-	// a G neighbour
-	w2_s0_0_S -> w2_s1_0_Sd G/G;
-	// an S neighbour
-	w2_s0_0_S -> w2_s0_1_Sd S/S;
+	w2_s0_0_X -> w2_s1_0_Sc G/S;
+	w2_s0_0_X -> w2_s0_1_Sc S/S;
 
 	// 1 gold, 0 silver, selected is G ==================================
-	w2_s1_0_G -> w2_s1_0_Gd G/G;
-	w2_s1_0_G -> w2_s1_0_Gd S/S;
-	w2_s1_0_Gd -> w2_s1_0_G delim/delim;
+	w2_s1_0_Gc -> w2_s1_0_G chosen/delim;
 	// a G neighbour
 	w2_s1_0_G -> w2_s2_0_Gd G/G;
 	// an S neighbour
 	w2_s1_0_G -> w2_s1_1_Gd S/S;
 
 	// 1 gold, 0 silver, selected is S ==================================
-	w2_s1_0_S -> w2_s1_0_Sd G/G;
-	w2_s1_0_S -> w2_s1_0_Sd S/S;
-	w2_s1_0_Sd -> w2_s1_0_S delim/delim;
+	w2_s1_0_Sc -> w2_s1_0_S chosen/delim;
 	// an S neighbour
 	w2_s1_0_S -> w2_s1_1_Sd S/S;
 
 	// 0 gold, 1 silver, selected is G ==================================
-	w2_s0_1_G -> w2_s0_1_Gd G/G;
-	w2_s0_1_G -> w2_s0_1_Gd S/S;
-	w2_s0_1_Gd -> w2_s0_1_G delim/delim;
+	w2_s0_1_Gc -> w2_s0_1_G chosen/delim;
 	// a G neighbour
 	w2_s0_1_G -> w2_s1_1_Gd G/G;
 
 	// 0 gold, 1 silver, selected is S ==================================
-	w2_s0_1_S -> w2_s0_1_Sd G/G;
-	w2_s0_1_S -> w2_s0_1_Sd S/S;
-	w2_s0_1_Sd -> w2_s0_1_S delim/delim;
+	w2_s0_1_Sc -> w2_s0_1_S chosen/delim;
 	// a G neighbour
 	w2_s0_1_S -> w2_s1_1_Sd G/G;
 	// an S neighbour
 	w2_s0_1_S -> w2_s0_2_Sd S/S;
 
 	// 2 gold, 0 silver, selected is G ==================================
+	w2_s2_0_G -> w2_s2_0_Gd G/G;
+	w2_s2_0_G -> w2_s2_0_Gd S/S;
 	w2_s2_0_Gd -> w2_s2_0_G delim/delim;
 	// a G or S neighbour
 	w2_s2_0_G -> w2_sfinald G/G;
 	w2_s2_0_G -> w2_sfinald S/S;
 
 	// 1 gold, 1 silver, selected is S ==================================
+	w2_s1_1_S -> w2_s1_1_Sd G/G;
+	w2_s1_1_S -> w2_s1_1_Sd S/S;
 	w2_s1_1_Sd -> w2_s1_1_S delim/delim;
 	// an S neighbour
 	w2_s1_1_S -> w2_sfinald S/S;
 
 	// 1 gold, 1 silver, selected is G ==================================
+	w2_s1_1_G -> w2_s1_1_Gd G/G;
+	w2_s1_1_G -> w2_s1_1_Gd S/S;
 	w2_s1_1_Gd -> w2_s1_1_G delim/delim;
 	// a G neighbour
 	w2_s1_1_G -> w2_sfinald G/G;
 
 	// 0 gold, 2 silver, selected is S ==================================
+	w2_s0_2_S -> w2_s0_2_Sd G/G;
+	w2_s0_2_S -> w2_s0_2_Sd S/S;
 	w2_s0_2_Sd -> w2_s0_2_S delim/delim;
 	// a G or S neighbour
 	w2_s0_2_S -> w2_sfinald G/G;
@@ -352,98 +300,11 @@ P2 {
 	w2_sfinald -> w2_sfinal delim/delim;
 
 
-  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  // ===================================================================
-  // WRAP 3 RIGHT:   ^ N S N .* N $
-  // ===================================================================
-  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	// initial state =====================================================
-	// a G neighbour
-	w3_s0_0_X -> w3_s1_0_Xd G/G;
-	// an S neighbour
-	w3_s0_0_X -> w3_s0_1_Xd S/S;
-
-	// 1 gold, 0 silver, selected not yet read ===========================
-	w3_s1_0_Xd -> w3_s1_0_X delim/delim;
-	// selected switch to S
-	w3_s1_0_X -> w3_s1_0_Sc G/S;
-	w3_s1_0_X -> w3_s1_0_Sc S/S;
-	// selected switch to G
-	w3_s1_0_X -> w3_s1_0_Gc G/S;
-	w3_s1_0_X -> w3_s1_0_Gc S/S;
-
-	// 0 gold, 1 silver, selected not yet read ==========================
-	w3_s0_1_Xd -> w3_s0_1_X delim/delim;
-	// selected switch to S
-	w3_s0_1_X -> w3_s0_1_Sc G/S;
-	w3_s0_1_X -> w3_s0_1_Sc S/S;
-	// selected switch to G
-	w3_s0_1_X -> w3_s0_1_Gc G/S;
-	w3_s0_1_X -> w3_s0_1_Gc S/S;
-
-	// 1 gold, 0 silver, selected is G ==================================
-	w3_s1_0_Gc -> w3_s1_0_G chosen/delim;
-	// a G neighbour
-	w3_s1_0_G -> w3_s2_0_Gd G/G;
-	// an S neighbour
-	w3_s1_0_G -> w3_s1_1_Gd S/S;
-
-	// 1 gold, 0 silver, selected is S ==================================
-	w3_s1_0_Sc -> w3_s1_0_S chosen/delim;
-	// an S neighbour
-	w3_s1_0_S -> w3_s1_1_Sd S/S;
-
-	// 0 gold, 1 silver, selected is G ==================================
-	w3_s0_1_Gc -> w3_s0_1_G chosen/delim;
-	// a G neighbour
-	w3_s0_1_G -> w3_s1_1_Gd G/G;
-
-	// 0 gold, 1 silver, selected is S ==================================
-	w3_s0_1_Sc -> w3_s0_1_S chosen/delim;
-	// a G neighbour
-	w3_s0_1_S -> w3_s1_1_Sd G/G;
-	// an S neighbour
-	w3_s0_1_S -> w3_s0_2_Sd S/S;
-
-	// 2 gold, 0 silver, selected is G ==================================
-	w3_s2_0_G -> w3_s2_0_Gd G/G;
-	w3_s2_0_G -> w3_s2_0_Gd S/S;
-	w3_s2_0_Gd -> w3_s2_0_G delim/delim;
-	// a G or S neighbour
-	w3_s2_0_G -> w3_sfinald G/G;
-	w3_s2_0_G -> w3_sfinald S/S;
-
-	// 1 gold, 1 silver, selected is S ==================================
-	w3_s1_1_S -> w3_s1_1_Sd G/G;
-	w3_s1_1_S -> w3_s1_1_Sd S/S;
-	w3_s1_1_Sd -> w3_s1_1_S delim/delim;
-	// an S neighbour
-	w3_s1_1_S -> w3_sfinald S/S;
-
-	// 1 gold, 1 silver, selected is G ==================================
-	w3_s1_1_G -> w3_s1_1_Gd G/G;
-	w3_s1_1_G -> w3_s1_1_Gd S/S;
-	w3_s1_1_Gd -> w3_s1_1_G delim/delim;
-	// a G neighbour
-	w3_s1_1_G -> w3_sfinald G/G;
-
-	// 0 gold, 2 silver, selected is S ==================================
-	w3_s0_2_S -> w3_s0_2_Sd G/G;
-	w3_s0_2_S -> w3_s0_2_Sd S/S;
-	w3_s0_2_Sd -> w3_s0_2_S delim/delim;
-	// a G or S neighbour
-	w3_s0_2_S -> w3_sfinald G/G;
-	w3_s0_2_S -> w3_sfinald S/S;
-
-	// final state
-	w3_sfinald -> w3_sfinal delim/delim;
-
-  accepting: spont_flip_flipped, no_sfinal, w1_sfinal, w2_sfinal, w3_sfinal;
+  accepting: spont_flip_flipped, no_sfinal, w1_sfinal, w2_sfinal;
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 0 .. 4;
+transducerStateGuessing: 1 .. 20;
+automatonStateGuessing: 0 .. 6;
 
 explicitChecksUntilLength: 12;
 

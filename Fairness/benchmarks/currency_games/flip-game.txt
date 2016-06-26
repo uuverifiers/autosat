@@ -1,0 +1,93 @@
+// Flip game: agents can either hold or flip their currency
+//
+// ==========================================================================
+// Agents carry two kinds of currency: Gold or Silver.
+// In each round, pick an agent (scheduler).
+// - with probability p switches to the currency of the majority of the k agents
+// - with probability 1-p holds the current currency
+//
+// Show: infinitely often there is consensus w.p. 1 (i.e. infinitely often all agents hold
+// Gold or all agents hold Silver). This should hold for all fair schedulers. In fact, infinitely often,
+// all agents hold Gold and infinitely often all agents hold Silver.
+
+
+I0 {
+
+  init: s0;
+
+  // at least 1 agent
+  s0 -> s1d G;
+  s0 -> s1d S;
+  s1d -> s1 delim;
+
+  s1 -> s1d G;
+  s1 -> s1d S;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+F {
+
+  init: s0;
+
+  s0 -> s1;
+  s0 -> s2;
+
+  s1 -> s1d G;
+  s1d -> s1 delim;
+
+  s2 -> s2d S;
+  s2d -> s2 delim;
+
+  accepting: s1, s2;
+}
+
+Enabled {
+
+  init: s0;
+
+  s0 -> s0d G;
+  s0 -> s0d S;
+  s0d ->  s0 enabled;
+
+  accepting: s0;
+}
+
+P2 {
+
+  init: s0;
+
+  s0 -> spont_flip;
+
+  // copy
+  spont_flip -> spont_flipd G/G;
+  spont_flip -> spont_flipd S/S;
+  spont_flipd -> spont_flip delim/delim;
+
+  // flip
+  spont_flip -> spont_flip_flippeddnow G/S;
+  spont_flip -> spont_flip_flippeddnow S/G;
+  // hold
+  spont_flip -> spont_flip_flippeddnow G/G;
+  spont_flip -> spont_flip_flippeddnow S/S;
+  spont_flip_flippeddnow -> spont_flip_flipped chosen/delim;
+
+  spont_flip_flipped -> spont_flip_flippedd G/G;
+  spont_flip_flipped -> spont_flip_flippedd S/S;
+  spont_flip_flippedd -> spont_flip_flipped delim/delim;
+
+  accepting: spont_flip_flipped;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+explicitChecksUntilLength: 12;
+
+//noPrecomputedInvariant;
+
+monolithicWitness;
+
+logLevel: 1;
