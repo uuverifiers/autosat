@@ -1,0 +1,130 @@
+// Agents changing their opinion according to neighbours on a linear array
+//
+// ==========================================================================
+// Agents can have one of two opinions, X and Y, or be undecided ( B )
+// In each round, pick an agent (scheduler).
+// A picked agent can either:
+//  - do a self loop: X -> X, Y -> Y, B -> B
+//  - change opinion according to the neighbour (_W_ means an agent with
+//    opinion W is selected)
+//        X _Y_ ->  X _B_
+//        X _B_ ->  X _X_
+//        Y _X_ ->  Y _B_
+//        Y _B_ ->  Y _Y_
+//       _B_ X  -> _X_ X
+//       _Y_ X  -> _B_ X
+//       _B_ Y  -> _Y_ Y
+//       _X_ Y  -> _B_ Y
+//
+// ==========================================================================
+
+I0 {
+
+  init: s0;
+
+  // at least 2 agents
+  //
+  s0 -> s1d X;
+  s0 -> s1d Y;
+  s0 -> s1d B;
+  s1d -> s1 delim;
+
+  s1 -> s1d X;
+  s1 -> s1d Y;
+  s1 -> s1d B;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+F {
+
+  init: s0;
+
+  s0 -> s1;
+  s0 -> s2;
+  s0 -> s3;
+
+  s1 -> s1d X;
+  s1d -> s1 delim;
+
+  s2 -> s2d Y;
+  s2d -> s2 delim;
+
+  s3 -> s3d B;
+  s3d -> s3 delim;
+
+  accepting: s1, s2, s3;
+}
+
+Enabled {
+
+  init: s0;
+
+  s0 -> s0d X;
+  s0 -> s0d Y;
+  s0 -> s0d B;
+  s0d -> s0 enabled;
+
+  accepting: s0;
+}
+
+P2 {
+
+  init: s0;
+
+  s0 -> s0d X/X;
+  s0 -> s0d Y/Y;
+  s0 -> s0d B/B;
+  s0d -> s0 delim/delim;
+  // self-loop
+  s0d -> sfinal chosen/delim;
+ 
+  // X on the left
+  s0 -> sxleft X/X;
+  sxleft -> sxleft1 delim/delim;
+  sxleft1 -> sfinalc Y/B;
+  sxleft1 -> sfinalc B/X;
+  sxleft1 -> sfinalc X/X;
+
+  // Y on the left
+  s0 -> syleft Y/Y;
+  syleft -> syleft1 delim/delim;
+  syleft1 -> sfinalc X/B;
+  syleft1 -> sfinalc B/Y;
+  syleft1 -> sfinalc Y/Y;
+
+  // X on the right
+  s0 -> sxright Y/B;
+  s0 -> sxright B/X;
+  s0 -> sxright X/X;
+  sxright -> sxright1 chosen/delim;
+  sxright1 -> sfinald X/X;
+
+  // Y on the right
+  s0 -> syright X/B;
+  s0 -> syright B/Y;
+  s0 -> syright Y/Y;
+  syright -> syright1 chosen/delim;
+  syright1 -> sfinald Y/Y;
+
+  // final state
+  sfinalc -> sfinal chosen/delim;
+  sfinald -> sfinal delim/delim;
+  sfinal -> sfinald X/X;
+  sfinal -> sfinald Y/Y;
+  sfinal -> sfinald B/B;
+
+  accepting: sfinal;
+}
+
+transducerStateGuessing: 1 .. 10;
+automatonStateGuessing: 0 .. 4;
+
+explicitChecksUntilLength: 12;
+
+// noPrecomputedInvariant;
+monolithicWitness;
+
+logLevel: 1;
