@@ -1,3 +1,7 @@
+// manual encoding of fairness into Moran's process with two alleles: A, B
+//
+// chosen-ness is encoded by 1 immediately after the original symbol, unchosen-ness by 0
+
 I0 {
 
 init: s0Xs0;
@@ -21,7 +25,7 @@ accepting: s1Xs1;
 }
 
 
-closedUnderTransitions;
+//closedUnderTransitions;
 
 F {
 
@@ -132,7 +136,7 @@ s0Xs0Xs0 -> s1bpXs1pXs1p B/B;
 s0Xs0Xs0 -> s2apXs1pXs1p A/A;
 s0Xs0Xs0 -> s2bpXs1pXs1p B/B;
 
-s0pXs1pXs1p -> s0Xs1Xs1_enXenX1;
+s0pXs1pXs1p -> s0Xs1Xs1_enXenX1 0/0;
 s0Xs1Xs1 -> s0pXs1pXs1p A/A;
 s0Xs1Xs1 -> s0pXs1pXs1p B/B;
 
@@ -140,7 +144,7 @@ s0Xs1Xs1_enXenX1 -> s0Xs1Xs1_enXenX1 1/1;
 s0Xs1Xs1_enXenX1 -> s0Xs1Xs1_enXenX0 1/0;
 
 s0Xs1Xs1_enXenX0 -> s0Xs1Xs1_enXenX0 0/0;
-s0Xs1Xs1_enXenX0 -> s0Xs1Xs1 enabled/enabled;
+s0Xs1Xs1_enXenX0 -> s0Xs1Xs1;
 
 s0Xs1Xs1 -> s1apXs1pXs1p A/A;
 s0Xs1Xs1 -> s1apXs1pXs1p B/A;
@@ -149,67 +153,69 @@ s0Xs1Xs1 -> s1bpXs1pXs1p B/B;
 s0Xs1Xs1 -> s2apXs1pXs1p A/A;
 s0Xs1Xs1 -> s2bpXs1pXs1p B/B;
 
-s1apXs1pXs1p -> s1aXs1Xs1_enXenX1;
+s1apXs1pXs1p -> s1aXs1Xs1_enXenX1 0/0;
 s1aXs1Xs1_enXenX1 -> s1aXs1Xs1_enXenX1 1/1;
 s1aXs1Xs1_enXenX1 -> s1aXs1Xs1_enXenX0 1/0;
 s1aXs1Xs1_enXenX0 -> s1aXs1Xs1_enXenX0 0/0;
-s1aXs1Xs1_enXenX0 -> s1aXs1Xs1 enabled/enabled;
+s1aXs1Xs1_enXenX0 -> s1aXs1Xs1;
 
 s1aXs1Xs1 -> s10pXs1pXs1p A/A;
-s10pXs1pXs1p -> sfXs1Xs1_chXenX1;
 
+s10pXs1pXs1p -> sfXs1Xs1_chXenX1 1/0;
 sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXenX1 1/1;
 sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXenX1 0/1;
 sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXen 0/0;
-sfXs1Xs1_chXen -> sfXs1Xs1 chosen/enabled;
+sfXs1Xs1_chXen -> sfXs1Xs1;
 
 sfXs1Xs1 -> sfpXs1pXs1p A/A;
 sfXs1Xs1 -> sfpXs1pXs1p B/B;
 
-sfpXs1pXs1p -> sfXs1Xs1_enXenX1;
+sfpXs1pXs1p -> sfXs1Xs1_enXenX1 0/0;
 sfXs1Xs1_enXenX1 -> sfXs1Xs1_enXenX1 1/1;
 sfXs1Xs1_enXenX1 -> sfXs1Xs1_enXenX0 1/0;
 sfXs1Xs1_enXenX0 -> sfXs1Xs1_enXenX0 0/0;
-sfXs1Xs1_enXenX0 -> sfXs1Xs1 enabled/enabled;
+sfXs1Xs1_enXenX0 -> sfXs1Xs1;
 
 s2bXs1Xs1 -> sfpXs1pXs1p A/B;
 s2bXs1Xs1 -> sfpXs1pXs1p B/B;
 
-s2apXs1pXs1p -> s2aXs1Xs1_chXenX1;
+s2apXs1pXs1p -> s2aXs1Xs1_chXenX1 1/0;
 s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXenX1 0/1;
 s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXenX1 1/1;
 s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXen 0/0;
+s2aXs1Xs1_chXen -> s2aXs1Xs1;
 
-s2aXs1Xs1_chXen -> s2aXs1Xs1 chosen/enabled;
 s2aXs1Xs1 -> sfpXs1pXs1p A/A;
 s2aXs1Xs1 -> sfpXs1pXs1p B/A;
 
-s2bpXs1pXs1p -> s2bXs1Xs1_chXenX1;
+s2bpXs1pXs1p -> s2bXs1Xs1_chXenX1 1/0;
 s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXenX1 0/1;
 s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXenX1 1/1;
 s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXen 0/0;
-s2bXs1Xs1_chXen -> s2bXs1Xs1 chosen/enabled;
+s2bXs1Xs1_chXen -> s2bXs1Xs1;
 
-s1bpXs1pXs1p -> s1bXs1Xs1_enXenX1;
+s1bpXs1pXs1p -> s1bXs1Xs1_enXenX1 0/0;
 s1bXs1Xs1_enXenX1 -> s1bXs1Xs1_enXenX1 1/1;
 s1bXs1Xs1_enXenX1 -> s1bXs1Xs1_enXenX0 1/0;
 s1bXs1Xs1_enXenX0 -> s1bXs1Xs1_enXenX0 0/0;
-s1bXs1Xs1_enXenX0 -> s1bXs1Xs1 enabled/enabled;
-s1bXs1Xs1 -> s10pXs1pXs1p B/B;
+s1bXs1Xs1_enXenX0 -> s1bXs1Xs1;
 
+s1bXs1Xs1 -> s10pXs1pXs1p B/B;
 
 accepting: sfXs1Xs1;
 }
 
 
-transducerStateGuessing: 1 .. 10;
+transducerStateGuessing: 1 .. 50;
 
 automatonStateGuessing: 0 .. 4;
 
-noPrecomputedInvariant;
+// noPrecomputedInvariant;
 
-useRankingFunctions;
+// useRankingFunctions;
+
+// monolithicWitness;
 
 logLevel: 1;
 
-explicitChecksUntilLength: 10;
+// explicitChecksUntilLength: 10;
