@@ -370,8 +370,8 @@ P2 {
 	w3_s1_0_X -> w3_s1_0_Sc G/S;
 	w3_s1_0_X -> w3_s1_0_Sc S/S;
 	// selected switch to G
-	w3_s1_0_X -> w3_s1_0_Gc G/S;
-	w3_s1_0_X -> w3_s1_0_Gc S/S;
+	w3_s1_0_X -> w3_s1_0_Gc G/G;
+	w3_s1_0_X -> w3_s1_0_Gc S/G;
 
 	// 0 gold, 1 silver, selected not yet read ==========================
 	w3_s0_1_Xd -> w3_s0_1_X delim/delim;
@@ -379,8 +379,8 @@ P2 {
 	w3_s0_1_X -> w3_s0_1_Sc G/S;
 	w3_s0_1_X -> w3_s0_1_Sc S/S;
 	// selected switch to G
-	w3_s0_1_X -> w3_s0_1_Gc G/S;
-	w3_s0_1_X -> w3_s0_1_Gc S/S;
+	w3_s0_1_X -> w3_s0_1_Gc G/G;
+	w3_s0_1_X -> w3_s0_1_Gc S/G;
 
 	// 1 gold, 0 silver, selected is G ==================================
 	w3_s1_0_Gc -> w3_s1_0_G chosen/delim;
