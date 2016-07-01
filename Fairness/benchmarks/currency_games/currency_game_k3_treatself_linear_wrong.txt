@@ -1,6 +1,6 @@
 // Currency game on a line with neigbourhood k = 3 (treating itself: N S N)
 //
-// Taken from Rupak's email:
+// THE MODEL IS WRONG (DOESN'T CONVERGE}
 
 I0 {
 
@@ -233,7 +233,7 @@ P2 {
 transducerStateGuessing: 1 .. 20;
 automatonStateGuessing: 0 .. 3;
 
-explicitChecksUntilLength: 12;
+explicitChecksUntilLength: 30;
 
 // noPrecomputedInvariant;
 monolithicWitness;

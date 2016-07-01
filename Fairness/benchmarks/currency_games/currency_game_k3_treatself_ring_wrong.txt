@@ -1,5 +1,7 @@
 // Currency game on a ring with neigbourhood k = 3 (treating itself: N S N)
 //
+// THE MODEL IS WRONG (DOESN'T CONVERGE}
+//
 // Taken from Rupak's email:
 //
 // ==========================================================================
@@ -304,7 +306,7 @@ P2 {
 }
 
 transducerStateGuessing: 1 .. 20;
-automatonStateGuessing: 0 .. 6;
+automatonStateGuessing: 0 .. 3;
 
 explicitChecksUntilLength: 12;
 
