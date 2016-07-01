@@ -162,7 +162,7 @@ P2 {
 	lh_s0_0_X -> lh_s1_0_Sc G/S;
 	// an S neighbour
 	lh_s0_0_X -> lh_s0_1_Gc S/G;
-	lh_s0_0_X -> lh_s0_1_Gc S/S;
+	lh_s0_0_X -> lh_s0_1_Sc S/S;
 
 	// 1 gold, 0 silver, selected is G ==================================
 	lh_s1_0_Gc -> lh_s1_0_G chosen/delim;
