@@ -5,7 +5,7 @@ init: s0Xs0;
 s0Xs0 -> s1pXs1p A;
 s0Xs0 -> s1pXs1p B;
 
-s1pXs1p -> s1Xs1_enabled_1;
+s1pXs1p -> s1Xs1_enabled_1 0;
 s1Xs1_enabled_1 -> s1Xs1_enabled_1 1;
 s1Xs1_enabled_1 -> s1Xs1_enabled_0 1;
 
@@ -13,7 +13,7 @@ s1Xs1_enabled_1 -> s1Xs1_enabled_0 1;
 s1Xs1_enabled_0 -> s1Xs1_enabled_0 0;
 s1Xs1_enabled_0 -> s1Xs1_enabled 0;
 
-s1Xs1_enabled -> s1Xs1 enabled;
+s1Xs1_enabled -> s1Xs1;
 s1Xs1 -> s1pXs1p A;
 s1Xs1 -> s1pXs1p B;
 
@@ -33,22 +33,22 @@ XXXinit -> s0Y1;
 s0Xs0 -> sapXs1p A;
 s0Xs0 -> sbpXs1p B;
 
-sapXs1p -> saXs1_enabled_1;
+sapXs1p -> saXs1_enabled_1 0;
 saXs1_enabled_1 -> saXs1_enabled_1 1;
 saXs1_enabled_1 -> saXs1_enabled_0;
 
 saXs1_enabled_0 -> saXs1_enabled_0 0;
 saXs1_enabled_0 -> saXs1_enabled 0;
-saXs1_enabled -> saXs1 enabled;
+saXs1_enabled -> saXs1;
 saXs1 -> sapXs1p A;
 
-sbpXs1p -> sbXs1_enabled_1;
+sbpXs1p -> sbXs1_enabled_1 0;
 sbXs1_enabled_1 -> sbXs1_enabled_1 1;
 sbXs1_enabled_1 -> sbXs1_enabled_0;
 
 sbXs1_enabled_0 -> sbXs1_enabled_0 0;
 sbXs1_enabled_0 -> sbXs1_enabled 0;
-sbXs1_enabled -> sbXs1 enabled;
+sbXs1_enabled -> sbXs1;
 sbXs1 -> sbpXs1p B;
 
 
@@ -56,29 +56,29 @@ sbXs1 -> sbpXs1p B;
 s0Y1 -> s1pY1 A;
 s0Y1 -> s1pY1 B;
 
-s1pY1 -> s1Y1_enabled_1;
+s1pY1 -> s1Y1_enabled_1 0;
 s1Y1_enabled_1 -> s1Y1_enabled_1 1;
 s1Y1_enabled_1 -> s1Y1_enabled_0;
 s1Y1_enabled_0 -> s1Y1_enabled_0 0;
 s1Y1_enabled_0 -> s1Y1_enabled 0;
-s1Y1_enabled -> s1Y1 enabled;
+s1Y1_enabled -> s1Y1;
 
 s1Y1 -> s1pY1 A;
 s1Y1 -> s1pY1 B;
 
-s1pY1 -> s1Y2Y0;
-s1Y2Y0 -> s1Y2 enabled;
+s1pY1 -> s1Y2Y0 0;
 s1Y2Y0 -> s1Y2Y0 0;
+s1Y2Y0 -> s1Y2;
 
 s1Y2 -> s1pY2 A;
 s1Y2 -> s1pY2 B;
 
-s1pY2 -> s1Y2_enabled_1;
+s1pY2 -> s1Y2_enabled_1 0;
 s1Y2_enabled_1 -> s1Y2_enabled_1 1;
 s1Y2_enabled_1 -> s1Y2_enabled_0;
 s1Y2_enabled_0 -> s1Y2_enabled_0 0;
 s1Y2_enabled_0 -> s1Y2_enabled 0;
-s1Y2_enabled -> s1Y2 enabled;
+s1Y2_enabled -> s1Y2;
 
 accepting: s1Y2, saXs1, sbXs1;
 }
@@ -93,24 +93,24 @@ XXXXsinitXXXX -> s0_en1;
 s0_en1 -> s1p_en1 A/A;
 s0_en1 -> s1p_en1 B/B;
 
-s1p_en1 -> s1_en2_enabled_chosen;
-s1p_en1 -> s1_en1_enabled_enabled;
+s1p_en1 -> s1_en1_enabled_enabled 0/0;
+s1p_en1 -> s1_en2_enabled_chosen 0/1;
 
-s1_en2_enabled_chosen -> s1_en2 enabled/chosen;
+s1_en1_enabled_enabled -> s1_en1_enabled_enabled 0/0;
+s1_en1_enabled_enabled -> s1_en1_enabled_enabled 1/1;
+s1_en1_enabled_enabled -> s1_en1;
+
 s1_en2_enabled_chosen -> s1_en2_enabled_chosen 0/0;
 s1_en2_enabled_chosen -> s1_en2_enabled_chosen 1/1;
+s1_en2_enabled_chosen -> s1_en2;
 
 s1_en2 -> s1p_en2 A/A;
 s1_en2 -> s1p_en2 B/B;
-s1p_en2 -> s1_en2_enabled_enabled;
+s1p_en2 -> s1_en2_enabled_enabled 0/0;
 
-s1_en2_enabled_enabled -> s1_en2 enabled/enabled;
 s1_en2_enabled_enabled -> s1_en2_enabled_enabled 0/0;
 s1_en2_enabled_enabled -> s1_en2_enabled_enabled 1/1;
-
-s1_en1_enabled_enabled -> s1_en1 enabled/enabled;
-s1_en1_enabled_enabled -> s1_en1_enabled_enabled 0/0;
-s1_en1_enabled_enabled -> s1_en1_enabled_enabled 1/1;
+s1_en2_enabled_enabled -> s1_en2;
 
 s1_en1 -> s1p_en1 A/A;
 s1_en1 -> s1p_en1 B/B;
