@@ -38,10 +38,7 @@ F {
 
 // everything is enabled
 Enabled {
-  init: s0;
-
-  s0 -> s1p A;
-  s0 -> s1p B;
+  init: s1;
 
   s1p -> s1 enabled;
 
@@ -63,9 +60,11 @@ P2 {
   // copy left
   s0 -> s1ap A/A;
   s0 -> s1ap B/A;
+  s0 -> s1ap B/B;
 
   s0 -> s1bp A/B;
   s0 -> s1bp B/B;
+  s0 -> s1bp A/A;
 
   s1ap -> s1a delim/delim;
   s1bp -> s1b delim/delim;
@@ -84,9 +83,11 @@ P2 {
 
   s2a -> sfp A/A;
   s2a -> sfp B/A;
+  s2a -> sfp B/B;
 
   s2b -> sfp A/B;
   s2b -> sfp B/B;
+  s2b -> sfp A/A;
 
   sf -> sfp A/A;
   sf -> sfp B/B;
@@ -105,4 +106,4 @@ noPrecomputedInvariant;
 useRankingFunctions;
 logLevel: 1;
 
-explicitChecksUntilLength: 10;
+// explicitChecksUntilLength: 20;
