@@ -100,7 +100,7 @@ P2 {
     accepting: s1, s5;
 }
 
-transducerStateGuessing: 1 .. 10;
+transducerStateGuessing: 1 .. 3;
 automatonStateGuessing: 0 .. 4;
 
 monolithicWitness;

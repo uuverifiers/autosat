@@ -1,6 +1,6 @@
-/**
- * Model of Moran processes, with two alleles A, B
- */
+//
+// Model of Moran processes, with two alleles A, B
+//
 
 // initial: words of length >= 1
 I0 {

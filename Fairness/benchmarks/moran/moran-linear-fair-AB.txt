@@ -66,28 +66,30 @@ P2 {
   s0 -> s1bp B/B;
   s0 -> s1bp A/A;
 
-  s1ap -> s1a delim/delim;
-  s1bp -> s1b delim/delim;
+  s1ap -> s1a chosen/delim;
+  s1bp -> s1b chosen/delim;
 
   s1a -> s10p A/A;  
   s1b -> s10p B/B;
 
-  s10p -> sf chosen/delim;
+  s10p -> sf delim/delim;
 
   // copy right
-  s0 -> s2ap A/A;  
+  s0 -> s2ap A/A;
   s0 -> s2bp B/B;
 
-  s2ap -> s2a chosen/delim;
-  s2bp -> s2b chosen/delim;
+  s2ap -> s2a delim/delim;
+  s2bp -> s2b delim/delim;
 
-  s2a -> sfp A/A;
-  s2a -> sfp B/A;
-  s2a -> sfp B/B;
+  s2a -> sfpc A/A;
+  s2a -> sfpc B/A;
+  s2a -> sfpc B/B;
 
-  s2b -> sfp A/B;
-  s2b -> sfp B/B;
-  s2b -> sfp A/A;
+  sfpc -> sf chosen/delim;
+
+  s2b -> sfpc A/B;
+  s2b -> sfpc B/B;
+  s2b -> sfpc A/A;
 
   sf -> sfp A/A;
   sf -> sfp B/B;
@@ -97,12 +99,12 @@ P2 {
   accepting: sf;
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 0 .. 4;
+transducerStateGuessing: 1 .. 3;
+automatonStateGuessing: 1 .. 3;
 
-//monolithicWitness;
+// monolithicWitness;
 
-noPrecomputedInvariant;
+// noPrecomputedInvariant;
 useRankingFunctions;
 logLevel: 1;
 
