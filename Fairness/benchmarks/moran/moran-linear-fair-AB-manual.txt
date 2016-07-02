@@ -129,10 +129,12 @@ init: s0Xs0Xs0;
 
 s0Xs0Xs0 -> s0pXs1pXs1p A/A;
 s0Xs0Xs0 -> s0pXs1pXs1p B/B;
-s0Xs0Xs0 -> s1apXs1pXs1p B/A;
-s0Xs0Xs0 -> s1bpXs1pXs1p A/B;
 s0Xs0Xs0 -> s1apXs1pXs1p A/A;
+s0Xs0Xs0 -> s1apXs1pXs1p B/A;
+s0Xs0Xs0 -> s1apXs1pXs1p B/B;
+s0Xs0Xs0 -> s1bpXs1pXs1p A/B;
 s0Xs0Xs0 -> s1bpXs1pXs1p B/B;
+s0Xs0Xs0 -> s1bpXs1pXs1p A/A;
 s0Xs0Xs0 -> s2apXs1pXs1p A/A;
 s0Xs0Xs0 -> s2bpXs1pXs1p B/B;
 
@@ -146,8 +148,10 @@ s0Xs1Xs1 -> s0pXs1pXs1p A/A;
 s0Xs1Xs1 -> s0pXs1pXs1p B/B;
 s0Xs1Xs1 -> s1apXs1pXs1p A/A;
 s0Xs1Xs1 -> s1apXs1pXs1p B/A;
+s0Xs1Xs1 -> s1apXs1pXs1p B/B;
 s0Xs1Xs1 -> s1bpXs1pXs1p A/B;
 s0Xs1Xs1 -> s1bpXs1pXs1p B/B;
+s0Xs1Xs1 -> s1bpXs1pXs1p A/A;
 s0Xs1Xs1 -> s2apXs1pXs1p A/A;
 s0Xs1Xs1 -> s2bpXs1pXs1p B/B;
 
@@ -175,6 +179,7 @@ sfXs1Xs1_enXenX0 -> sfXs1Xs1;
 
 s2bXs1Xs1 -> schosen A/B;
 s2bXs1Xs1 -> schosen B/B;
+s2bXs1Xs1 -> schosen A/A;
 
 s2apXs1pXs1p -> s2aXs1Xs1_chXenX1;
 s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXenX1 1/1;
@@ -185,6 +190,7 @@ s2aXs1Xs1_chXen -> s2aXs1Xs1;
 
 s2aXs1Xs1 -> schosen A/A;
 s2aXs1Xs1 -> schosen B/A;
+s2aXs1Xs1 -> schosen B/B;
 
 s2bpXs1pXs1p -> s2bXs1Xs1_chXenX1;
 s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXenX1 1/1;
@@ -218,4 +224,4 @@ automatonStateGuessing: 0 .. 4;
 
 logLevel: 1;
 
-explicitChecksUntilLength: 50;
+// explicitChecksUntilLength: 50;
