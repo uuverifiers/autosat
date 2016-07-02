@@ -1,6 +1,6 @@
 // manual encoding of fairness into Moran's process with two alleles: A, B
 //
-// chosen-ness is encoded by 1 immediately after the original symbol, unchosen-ness by 0
+// chosen-ness is encoded by setting all 1's in the counter
 
 I0 {
 
@@ -9,7 +9,7 @@ init: s0Xs0;
 s0Xs0 -> s1pXs1p A;
 s0Xs0 -> s1pXs1p B;
 
-s1pXs1p -> s1Xs1_enabled_1 0;
+s1pXs1p -> s1Xs1_enabled_1;
 s1Xs1_enabled_1 -> s1Xs1_enabled_1 1;
 s1Xs1_enabled_1 -> s1Xs1_enabled_0 1;
 
@@ -37,7 +37,7 @@ XXXinit -> s0Y1;
 s0Xs0 -> sapXs1p A;
 s0Xs0 -> sbpXs1p B;
 
-sapXs1p -> saXs1_enabled_1 0;
+sapXs1p -> saXs1_enabled_1;
 saXs1_enabled_1 -> saXs1_enabled_1 1;
 saXs1_enabled_1 -> saXs1_enabled_0;
 
@@ -46,7 +46,7 @@ saXs1_enabled_0 -> saXs1_enabled 0;
 saXs1_enabled -> saXs1;
 saXs1 -> sapXs1p A;
 
-sbpXs1p -> sbXs1_enabled_1 0;
+sbpXs1p -> sbXs1_enabled_1;
 sbXs1_enabled_1 -> sbXs1_enabled_1 1;
 sbXs1_enabled_1 -> sbXs1_enabled_0;
 
@@ -60,7 +60,7 @@ sbXs1 -> sbpXs1p B;
 s0Y1 -> s1pY1 A;
 s0Y1 -> s1pY1 B;
 
-s1pY1 -> s1Y1_enabled_1 0;
+s1pY1 -> s1Y1_enabled_1;
 s1Y1_enabled_1 -> s1Y1_enabled_1 1;
 s1Y1_enabled_1 -> s1Y1_enabled_0;
 s1Y1_enabled_0 -> s1Y1_enabled_0 0;
@@ -77,7 +77,7 @@ s1Y2Y0 -> s1Y2;
 s1Y2 -> s1pY2 A;
 s1Y2 -> s1pY2 B;
 
-s1pY2 -> s1Y2_enabled_1 0;
+s1pY2 -> s1Y2_enabled_1;
 s1Y2_enabled_1 -> s1Y2_enabled_1 1;
 s1Y2_enabled_1 -> s1Y2_enabled_0;
 s1Y2_enabled_0 -> s1Y2_enabled_0 0;
@@ -97,24 +97,24 @@ XXXXsinitXXXX -> s0_en1;
 s0_en1 -> s1p_en1 A/A;
 s0_en1 -> s1p_en1 B/B;
 
-s1p_en1 -> s1_en1_enabled_enabled 0/0;
-s1p_en1 -> s1_en2_enabled_chosen 0/1;
+s1p_en1 -> s1_en1_enabled_enabled;
+s1p_en1 -> s1_en2_enabled_chosen;
 
 s1_en1_enabled_enabled -> s1_en1_enabled_enabled 0/0;
 s1_en1_enabled_enabled -> s1_en1_enabled_enabled 1/1;
-s1_en1_enabled_enabled -> s1_en1;
+s1_en1_enabled_enabled -> s1_en1 0/0;
 
-s1_en2_enabled_chosen -> s1_en2_enabled_chosen 0/0;
+s1_en2_enabled_chosen -> s1_en2_enabled_chosen 0/1;
 s1_en2_enabled_chosen -> s1_en2_enabled_chosen 1/1;
-s1_en2_enabled_chosen -> s1_en2;
+s1_en2_enabled_chosen -> s1_en2 0/1;
 
 s1_en2 -> s1p_en2 A/A;
 s1_en2 -> s1p_en2 B/B;
-s1p_en2 -> s1_en2_enabled_enabled 0/0;
+s1p_en2 -> s1_en2_enabled_enabled;
 
 s1_en2_enabled_enabled -> s1_en2_enabled_enabled 0/0;
 s1_en2_enabled_enabled -> s1_en2_enabled_enabled 1/1;
-s1_en2_enabled_enabled -> s1_en2;
+s1_en2_enabled_enabled -> s1_en2 0/0;
 
 s1_en1 -> s1p_en1 A/A;
 s1_en1 -> s1p_en1 B/B;
@@ -136,16 +136,14 @@ s0Xs0Xs0 -> s1bpXs1pXs1p B/B;
 s0Xs0Xs0 -> s2apXs1pXs1p A/A;
 s0Xs0Xs0 -> s2bpXs1pXs1p B/B;
 
-s0pXs1pXs1p -> s0Xs1Xs1_enXenX1 0/0;
-s0Xs1Xs1 -> s0pXs1pXs1p A/A;
-s0Xs1Xs1 -> s0pXs1pXs1p B/B;
-
+s0pXs1pXs1p -> s0Xs1Xs1_enXenX1;
 s0Xs1Xs1_enXenX1 -> s0Xs1Xs1_enXenX1 1/1;
 s0Xs1Xs1_enXenX1 -> s0Xs1Xs1_enXenX0 1/0;
-
 s0Xs1Xs1_enXenX0 -> s0Xs1Xs1_enXenX0 0/0;
-s0Xs1Xs1_enXenX0 -> s0Xs1Xs1;
+s0Xs1Xs1_enXenX0 -> s0Xs1Xs1 0/0;
 
+s0Xs1Xs1 -> s0pXs1pXs1p A/A;
+s0Xs1Xs1 -> s0pXs1pXs1p B/B;
 s0Xs1Xs1 -> s1apXs1pXs1p A/A;
 s0Xs1Xs1 -> s1apXs1pXs1p B/A;
 s0Xs1Xs1 -> s1bpXs1pXs1p A/B;
@@ -153,54 +151,56 @@ s0Xs1Xs1 -> s1bpXs1pXs1p B/B;
 s0Xs1Xs1 -> s2apXs1pXs1p A/A;
 s0Xs1Xs1 -> s2bpXs1pXs1p B/B;
 
-s1apXs1pXs1p -> s1aXs1Xs1_enXenX1 0/0;
+s1apXs1pXs1p -> s1aXs1Xs1_enXenX1;
 s1aXs1Xs1_enXenX1 -> s1aXs1Xs1_enXenX1 1/1;
-s1aXs1Xs1_enXenX1 -> s1aXs1Xs1_enXenX0 1/0;
-s1aXs1Xs1_enXenX0 -> s1aXs1Xs1_enXenX0 0/0;
-s1aXs1Xs1_enXenX0 -> s1aXs1Xs1;
+s1aXs1Xs1_enXenX1 -> s1aXs1Xs1 1/0;
 
 s1aXs1Xs1 -> s10pXs1pXs1p A/A;
 
-s10pXs1pXs1p -> sfXs1Xs1_chXenX1 1/0;
+s10pXs1pXs1p -> sfXs1Xs1_chXenX1;
 sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXenX1 1/1;
-sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXenX1 0/1;
-sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXen 0/0;
+sfXs1Xs1_chXenX1 -> sfXs1Xs1_chXenX0 1/0;
+sfXs1Xs1_chXenX0 -> sfXs1Xs1_chXenX0 0/0;
+sfXs1Xs1_chXenX0 -> sfXs1Xs1_chXen 0/0;
 sfXs1Xs1_chXen -> sfXs1Xs1;
 
 sfXs1Xs1 -> sfpXs1pXs1p A/A;
 sfXs1Xs1 -> sfpXs1pXs1p B/B;
 
-sfpXs1pXs1p -> sfXs1Xs1_enXenX1 0/0;
+sfpXs1pXs1p -> sfXs1Xs1_enXenX1;
 sfXs1Xs1_enXenX1 -> sfXs1Xs1_enXenX1 1/1;
 sfXs1Xs1_enXenX1 -> sfXs1Xs1_enXenX0 1/0;
 sfXs1Xs1_enXenX0 -> sfXs1Xs1_enXenX0 0/0;
 sfXs1Xs1_enXenX0 -> sfXs1Xs1;
 
-s2bXs1Xs1 -> sfpXs1pXs1p A/B;
-s2bXs1Xs1 -> sfpXs1pXs1p B/B;
+s2bXs1Xs1 -> schosen A/B;
+s2bXs1Xs1 -> schosen B/B;
 
-s2apXs1pXs1p -> s2aXs1Xs1_chXenX1 1/0;
-s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXenX1 0/1;
+s2apXs1pXs1p -> s2aXs1Xs1_chXenX1;
 s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXenX1 1/1;
-s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXen 0/0;
+s2aXs1Xs1_chXenX1 -> s2aXs1Xs1_chXenX0 1/0;
+s2aXs1Xs1_chXenX0 -> s2aXs1Xs1_chXenX0 0/0;
+s2aXs1Xs1_chXenX0 -> s2aXs1Xs1_chXen 0/0;
 s2aXs1Xs1_chXen -> s2aXs1Xs1;
 
-s2aXs1Xs1 -> sfpXs1pXs1p A/A;
-s2aXs1Xs1 -> sfpXs1pXs1p B/A;
+s2aXs1Xs1 -> schosen A/A;
+s2aXs1Xs1 -> schosen B/A;
 
-s2bpXs1pXs1p -> s2bXs1Xs1_chXenX1 1/0;
-s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXenX1 0/1;
+s2bpXs1pXs1p -> s2bXs1Xs1_chXenX1;
 s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXenX1 1/1;
-s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXen 0/0;
+s2bXs1Xs1_chXenX1 -> s2bXs1Xs1_chXenX0 1/0;
+s2bXs1Xs1_chXenX0 -> s2bXs1Xs1_chXenX0 0/0;
+s2bXs1Xs1_chXenX0 -> s2bXs1Xs1_chXen 0/0;
 s2bXs1Xs1_chXen -> s2bXs1Xs1;
 
-s1bpXs1pXs1p -> s1bXs1Xs1_enXenX1 0/0;
+s1bpXs1pXs1p -> s1bXs1Xs1_enXenX1;
 s1bXs1Xs1_enXenX1 -> s1bXs1Xs1_enXenX1 1/1;
-s1bXs1Xs1_enXenX1 -> s1bXs1Xs1_enXenX0 1/0;
-s1bXs1Xs1_enXenX0 -> s1bXs1Xs1_enXenX0 0/0;
-s1bXs1Xs1_enXenX0 -> s1bXs1Xs1;
+s1bXs1Xs1_enXenX1 -> s1bXs1Xs1 1/0;
 
 s1bXs1Xs1 -> s10pXs1pXs1p B/B;
+
+schosen -> schosen 1/1;
+schosen -> sfXs1Xs1 1/0;
 
 accepting: sfXs1Xs1;
 }
@@ -218,4 +218,4 @@ automatonStateGuessing: 0 .. 4;
 
 logLevel: 1;
 
-// explicitChecksUntilLength: 10;
+explicitChecksUntilLength: 50;
