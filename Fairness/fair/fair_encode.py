@@ -215,7 +215,7 @@ enabled process's counter reaching zero.
             zeroState = tgt + "Y0"
             aut5.addTrans(transition = (src, zeroState))
             aut5.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            aut5.addTrans(transition = (zeroState, tgt))
+            aut5.addTrans(zeroState, SYMBOL_ZERO, tgt)
         else:
             # for other symbols
             aut5.addTrans(transition = trans)
