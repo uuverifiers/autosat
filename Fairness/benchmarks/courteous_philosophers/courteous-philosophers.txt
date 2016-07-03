@@ -503,7 +503,63 @@ P2 {
 
   init: s0;
 
-  accepting: ;
+  /////////////////////////////////////////////////////
+  // self loop
+  /////////////////////////////////////////////////////
+  s0 -> ssl;
+
+  ssl -> ssl N/N;
+  ssl -> ssl L/L;
+  ssl -> ssl R/R;
+  ssl -> ssl H/H;
+  ssl -> ssl Wl/Wl;
+  ssl -> ssl Wr/Wr;
+  ssl -> ssl Sl/Sl;
+  ssl -> ssl Sr/Sr;
+  ssl -> ssl E/E;
+  ssl -> ssl delim/delim;
+  ssl -> ssl chosen/delim;
+
+
+  /////////////////////////////////////////////////////
+  // get hungry
+  /////////////////////////////////////////////////////
+  s0 -> sgh1;
+
+  sgh1 -> sgh1 N/N;
+  sgh1 -> sgh1 L/L;
+  sgh1 -> sgh1 R/R;
+  sgh1 -> sgh1 H/H;
+  sgh1 -> sgh1 Wl/Wl;
+  sgh1 -> sgh1 Wr/Wr;
+  sgh1 -> sgh1 Sl/Sl;
+  sgh1 -> sgh1 Sr/Sr;
+  sgh1 -> sgh1 E/E;
+  sgh1 -> sgh1 delim/delim;
+
+  sgh1 -> sgh2 H/Wl;
+  sgh1 -> sgh2 H/Wr;
+
+  sgh2 -> sgh3 N/N;
+  sgh2 -> sgh3 L/L;
+  sgh2 -> sgh3 R/R;
+
+  sgh3 -> sfinalcopy chosen/delim;
+
+  sfinalcopy -> sfinalcopy N/N;
+  sfinalcopy -> sfinalcopy L/L;
+  sfinalcopy -> sfinalcopy R/R;
+  sfinalcopy -> sfinalcopy H/H;
+  sfinalcopy -> sfinalcopy Wl/Wl;
+  sfinalcopy -> sfinalcopy Wr/Wr;
+  sfinalcopy -> sfinalcopy Sl/Sl;
+  sfinalcopy -> sfinalcopy Sr/Sr;
+  sfinalcopy -> sfinalcopy E/E;
+  sfinalcopy -> sfinalcopy delim/delim;
+
+
+
+  accepting: ssl, sfinalcopy;
 
 }
 
