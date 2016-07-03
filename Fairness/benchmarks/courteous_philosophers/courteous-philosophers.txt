@@ -559,6 +559,39 @@ P2 {
 
   sgh3 -> sfinalcopy chosen/delim;
 
+  /////////////////////////////////////////////////////
+  // take left fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> stl1;
+
+  stl1 -> stl1 N/N;
+  stl1 -> stl1 L/L;
+  stl1 -> stl1 R/R;
+  stl1 -> stl1 H/H;
+  stl1 -> stl1 Wl/Wl;
+  stl1 -> stl1 Wr/Wr;
+  stl1 -> stl1 Sl/Sl;
+  stl1 -> stl1 Sr/Sr;
+  stl1 -> stl1 E/E;
+  stl1 -> stl1 delim/delim;
+
+  stl1 -> stl2 H/H;
+  stl1 -> stl2 Wl/Wl;
+  stl1 -> stl2 Wr/Wr;
+  stl1 -> stl2 Sl/Sl;
+  stl1 -> stl2 Sr/Sr;
+
+  stl2 -> stl3 N/N;
+  stl2 -> stl3 L/L;
+  stl3 -> stl4 delim/delim;
+  stl4 -> stl5 N/N;
+  stl4 -> stl5 L/L;
+
+  stl5 -> stl6 Wl/Sl;
+  stl6 -> stl7 N/N;
+  stl6 -> stl7 L/L;
+  stl6 -> stl7 R/R;
+  stl7 -> sfinalcopy chosen/delim;
 
   accepting: sfinalcopy;
 
