@@ -506,19 +506,32 @@ P2 {
   /////////////////////////////////////////////////////
   // self loop
   /////////////////////////////////////////////////////
-  s0 -> ssl;
+  s0 -> ssl1;
 
-  ssl -> ssl N/N;
-  ssl -> ssl L/L;
-  ssl -> ssl R/R;
-  ssl -> ssl H/H;
-  ssl -> ssl Wl/Wl;
-  ssl -> ssl Wr/Wr;
-  ssl -> ssl Sl/Sl;
-  ssl -> ssl Sr/Sr;
-  ssl -> ssl E/E;
-  ssl -> ssl delim/delim;
-  ssl -> ssl chosen/delim;
+  ssl1 -> ssl1 N/N;
+  ssl1 -> ssl1 L/L;
+  ssl1 -> ssl1 R/R;
+  ssl1 -> ssl1 H/H;
+  ssl1 -> ssl1 Wl/Wl;
+  ssl1 -> ssl1 Wr/Wr;
+  ssl1 -> ssl1 Sl/Sl;
+  ssl1 -> ssl1 Sr/Sr;
+  ssl1 -> ssl1 E/E;
+  ssl1 -> ssl1 delim/delim;
+
+  ssl1 -> sfinalcopy chosen/delim;
+
+  sfinalcopy -> sfinalcopy N/N;
+  sfinalcopy -> sfinalcopy L/L;
+  sfinalcopy -> sfinalcopy R/R;
+  sfinalcopy -> sfinalcopy H/H;
+  sfinalcopy -> sfinalcopy Wl/Wl;
+  sfinalcopy -> sfinalcopy Wr/Wr;
+  sfinalcopy -> sfinalcopy Sl/Sl;
+  sfinalcopy -> sfinalcopy Sr/Sr;
+  sfinalcopy -> sfinalcopy E/E;
+  sfinalcopy -> sfinalcopy delim/delim;
+
 
 
   /////////////////////////////////////////////////////
@@ -546,20 +559,8 @@ P2 {
 
   sgh3 -> sfinalcopy chosen/delim;
 
-  sfinalcopy -> sfinalcopy N/N;
-  sfinalcopy -> sfinalcopy L/L;
-  sfinalcopy -> sfinalcopy R/R;
-  sfinalcopy -> sfinalcopy H/H;
-  sfinalcopy -> sfinalcopy Wl/Wl;
-  sfinalcopy -> sfinalcopy Wr/Wr;
-  sfinalcopy -> sfinalcopy Sl/Sl;
-  sfinalcopy -> sfinalcopy Sr/Sr;
-  sfinalcopy -> sfinalcopy E/E;
-  sfinalcopy -> sfinalcopy delim/delim;
 
-
-
-  accepting: ssl, sfinalcopy;
+  accepting: sfinalcopy;
 
 }
 
