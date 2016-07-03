@@ -82,39 +82,62 @@ I0 {
 
   init: sinit;
 
-  sinit -> s0a;
-  sinit -> s0b;
-  sinit -> s0d;
+//  sinit -> s0a;
+//  sinit -> s0b;
+//  sinit -> s0d;
+//
+//  // marking the first philosopher
+//  s0a -> s1ad n_Hm_n;
+//  s1ad -> s1a delim;
+//  s1a -> s2ad n_H_n;
+//  s2ad -> s2a delim;
+//  s2a -> s3ad n_H_n;
+//  s3ad -> s3a delim;
+//  s3a -> s3ad n_H_n;
+//
+//  // marking the second philosopher
+//  s0b -> s1bd n_H_n;
+//  s1bd -> s1b delim;
+//  s1b -> s2bd n_Hm_n;
+//  s2bd -> s2b delim;
+//  s2b -> s3bd n_H_n;
+//  s3bd -> s3b delim;
+//  s3b -> s3bd n_H_n;
+//  
+//  // marking any other philosopher
+//  s0d -> s1dd n_H_n;
+//  s1dd -> s1d delim;
+//  s1d -> s2dd n_H_n;
+//  s2dd -> s2d delim;
+//  s2d -> s2dd n_H_n;
+//  s2d -> s3dd n_Hm_n;
+//  s3dd -> s3d delim;
+//  s3d -> s3dd n_H_n;
+//
+// accepting: s3a, s3b, s3d;
 
-  // marking the first philosopher
-  s0a -> s1ad n_Hm_n;
-  s1ad -> s1a delim;
-  s1a -> s2ad n_H_n;
-  s2ad -> s2a delim;
-  s2a -> s3ad n_H_n;
-  s3ad -> s3a delim;
-  s3a -> s3ad n_H_n;
+  // first philosopher
+  sinit -> sp1l N;
+  sp1l -> sp1c H;
+  sp1c -> sp1r N;
+  sp1r -> sp1d delim;
 
-  // marking the second philosopher
-  s0b -> s1bd n_H_n;
-  s1bd -> s1b delim;
-  s1b -> s2bd n_Hm_n;
-  s2bd -> s2b delim;
-  s2b -> s3bd n_H_n;
-  s3bd -> s3b delim;
-  s3b -> s3bd n_H_n;
-  
-  // marking any other philosopher
-  s0d -> s1dd n_H_n;
-  s1dd -> s1d delim;
-  s1d -> s2dd n_H_n;
-  s2dd -> s2d delim;
-  s2d -> s2dd n_H_n;
-  s2d -> s3dd n_Hm_n;
-  s3dd -> s3d delim;
-  s3d -> s3dd n_H_n;
+  // second philosopher
+  sp1d -> sp2l N;
+  sp2l -> sp2c H;
+  sp2c -> sp2r N;
+  sp2r -> sp2d delim;
 
-  accepting: s3a, s3b, s3d;
+  // other philosophers
+  sp2d -> sp3l N;
+  sp3l -> sp3c H;
+  sp3c -> sp3r N;
+  sp3r -> sp3d delim;
+
+  // loop
+  sp3d -> sp3l N;
+
+  accepting: sp3d;
 }
 
 closedUnderTransitions;
@@ -122,157 +145,202 @@ closedUnderTransitions;
 F {
   init: s0;
 
-  // H
-  s0 -> s0d n_H_n;
-  s0 -> s0d n_H_l;
-  s0 -> s0d n_H_r;
-  s0 -> s0d l_H_n;
-  s0 -> s0d l_H_l;
-  s0 -> s0d l_H_r;
-  s0 -> s0d r_H_n;
-  s0 -> s0d r_H_l;
-  s0 -> s0d r_H_r;
+//   // H
+//   s0 -> s0d n_H_n;
+//   s0 -> s0d n_H_l;
+//   s0 -> s0d n_H_r;
+//   s0 -> s0d l_H_n;
+//   s0 -> s0d l_H_l;
+//   s0 -> s0d l_H_r;
+//   s0 -> s0d r_H_n;
+//   s0 -> s0d r_H_l;
+//   s0 -> s0d r_H_r;
+// 
+//   // Wl
+//   s0 -> s0d n_Wl_n;
+//   s0 -> s0d n_Wl_l;
+//   s0 -> s0d n_Wl_r;
+//   s0 -> s0d l_Wl_n;
+//   s0 -> s0d l_Wl_l;
+//   s0 -> s0d l_Wl_r;
+//   s0 -> s0d r_Wl_n;
+//   s0 -> s0d r_Wl_l;
+//   s0 -> s0d r_Wl_r;
+// 
+//   // Wr
+//   s0 -> s0d n_Wr_n;
+//   s0 -> s0d n_Wr_l;
+//   s0 -> s0d n_Wr_r;
+//   s0 -> s0d l_Wr_n;
+//   s0 -> s0d l_Wr_l;
+//   s0 -> s0d l_Wr_r;
+//   s0 -> s0d r_Wr_n;
+//   s0 -> s0d r_Wr_l;
+//   s0 -> s0d r_Wr_r;
+// 
+//   // Sl
+//   s0 -> s0d n_Sl_n;
+//   s0 -> s0d n_Sl_l;
+//   s0 -> s0d n_Sl_r;
+//   s0 -> s0d l_Sl_n;
+//   s0 -> s0d l_Sl_l;
+//   s0 -> s0d l_Sl_r;
+//   s0 -> s0d r_Sl_n;
+//   s0 -> s0d r_Sl_l;
+//   s0 -> s0d r_Sl_r;
+// 
+//   // Sr
+//   s0 -> s0d n_Sr_n;
+//   s0 -> s0d n_Sr_l;
+//   s0 -> s0d n_Sr_r;
+//   s0 -> s0d l_Sr_n;
+//   s0 -> s0d l_Sr_l;
+//   s0 -> s0d l_Sr_r;
+//   s0 -> s0d r_Sr_n;
+//   s0 -> s0d r_Sr_l;
+//   s0 -> s0d r_Sr_r;
+// 
+//   // E
+//   s0 -> s0d n_E_n;
+//   s0 -> s0d n_E_l;
+//   s0 -> s0d n_E_r;
+//   s0 -> s0d l_E_n;
+//   s0 -> s0d l_E_l;
+//   s0 -> s0d l_E_r;
+//   s0 -> s0d r_E_n;
+//   s0 -> s0d r_E_l;
+//   s0 -> s0d r_E_r;
+// 
+//   s0d -> s0 delim;
+// 
+//   // the marked guy
+//   // Em
+//   s0 -> s1d n_Em_n;
+//   s0 -> s1d n_Em_l;
+//   s0 -> s1d n_Em_r;
+//   s0 -> s1d l_Em_n;
+//   s0 -> s1d l_Em_l;
+//   s0 -> s1d l_Em_r;
+//   s0 -> s1d r_Em_n;
+//   s0 -> s1d r_Em_l;
+//   s0 -> s1d r_Em_r;
+// 
+//   // after the marked guy
+// 
+//   // H
+//   s1 -> s1d n_H_n;
+//   s1 -> s1d n_H_l;
+//   s1 -> s1d n_H_r;
+//   s1 -> s1d l_H_n;
+//   s1 -> s1d l_H_l;
+//   s1 -> s1d l_H_r;
+//   s1 -> s1d r_H_n;
+//   s1 -> s1d r_H_l;
+//   s1 -> s1d r_H_r;
+// 
+//   // Wl
+//   s1 -> s1d n_Wl_n;
+//   s1 -> s1d n_Wl_l;
+//   s1 -> s1d n_Wl_r;
+//   s1 -> s1d l_Wl_n;
+//   s1 -> s1d l_Wl_l;
+//   s1 -> s1d l_Wl_r;
+//   s1 -> s1d r_Wl_n;
+//   s1 -> s1d r_Wl_l;
+//   s1 -> s1d r_Wl_r;
+// 
+//   // Wr
+//   s1 -> s1d n_Wr_n;
+//   s1 -> s1d n_Wr_l;
+//   s1 -> s1d n_Wr_r;
+//   s1 -> s1d l_Wr_n;
+//   s1 -> s1d l_Wr_l;
+//   s1 -> s1d l_Wr_r;
+//   s1 -> s1d r_Wr_n;
+//   s1 -> s1d r_Wr_l;
+//   s1 -> s1d r_Wr_r;
+// 
+//   // Sl
+//   s1 -> s1d n_Sl_n;
+//   s1 -> s1d n_Sl_l;
+//   s1 -> s1d n_Sl_r;
+//   s1 -> s1d l_Sl_n;
+//   s1 -> s1d l_Sl_l;
+//   s1 -> s1d l_Sl_r;
+//   s1 -> s1d r_Sl_n;
+//   s1 -> s1d r_Sl_l;
+//   s1 -> s1d r_Sl_r;
+// 
+//   // Sr
+//   s1 -> s1d n_Sr_n;
+//   s1 -> s1d n_Sr_l;
+//   s1 -> s1d n_Sr_r;
+//   s1 -> s1d l_Sr_n;
+//   s1 -> s1d l_Sr_l;
+//   s1 -> s1d l_Sr_r;
+//   s1 -> s1d r_Sr_n;
+//   s1 -> s1d r_Sr_l;
+//   s1 -> s1d r_Sr_r;
+// 
+//   // E
+//   s1 -> s1d n_E_n;
+//   s1 -> s1d n_E_l;
+//   s1 -> s1d n_E_r;
+//   s1 -> s1d l_E_n;
+//   s1 -> s1d l_E_l;
+//   s1 -> s1d l_E_r;
+//   s1 -> s1d r_E_n;
+//   s1 -> s1d r_E_l;
+//   s1 -> s1d r_E_r;
+// 
+//   s1d -> s1 delim;
+// 
+//   accepting: s1;
 
-  // Wl
-  s0 -> s0d n_Wl_n;
-  s0 -> s0d n_Wl_l;
-  s0 -> s0d n_Wl_r;
-  s0 -> s0d l_Wl_n;
-  s0 -> s0d l_Wl_l;
-  s0 -> s0d l_Wl_r;
-  s0 -> s0d r_Wl_n;
-  s0 -> s0d r_Wl_l;
-  s0 -> s0d r_Wl_r;
+  /////////////////////////////////
+  // before
+  /////////////////////////////////
+  s0 -> sp1l N;
+  s0 -> sp1l L;
+  s0 -> sp1l R;
 
-  // Wr
-  s0 -> s0d n_Wr_n;
-  s0 -> s0d n_Wr_l;
-  s0 -> s0d n_Wr_r;
-  s0 -> s0d l_Wr_n;
-  s0 -> s0d l_Wr_l;
-  s0 -> s0d l_Wr_r;
-  s0 -> s0d r_Wr_n;
-  s0 -> s0d r_Wr_l;
-  s0 -> s0d r_Wr_r;
+  sp1l -> sp1c H;
+  sp1l -> sp1c Wl;
+  sp1l -> sp1c Wr;
+  sp1l -> sp1c Sl;
+  sp1l -> sp1c Sr;
+  sp1l -> sp1c E;
 
-  // Sl
-  s0 -> s0d n_Sl_n;
-  s0 -> s0d n_Sl_l;
-  s0 -> s0d n_Sl_r;
-  s0 -> s0d l_Sl_n;
-  s0 -> s0d l_Sl_l;
-  s0 -> s0d l_Sl_r;
-  s0 -> s0d r_Sl_n;
-  s0 -> s0d r_Sl_l;
-  s0 -> s0d r_Sl_r;
+  // one eating
+  sp1l -> sp2c E;
 
-  // Sr
-  s0 -> s0d n_Sr_n;
-  s0 -> s0d n_Sr_l;
-  s0 -> s0d n_Sr_r;
-  s0 -> s0d l_Sr_n;
-  s0 -> s0d l_Sr_l;
-  s0 -> s0d l_Sr_r;
-  s0 -> s0d r_Sr_n;
-  s0 -> s0d r_Sr_l;
-  s0 -> s0d r_Sr_r;
+  sp1c -> sp1r N;
+  sp1c -> sp1r L;
+  sp1c -> sp1r R;
 
-  // E
-  s0 -> s0d n_E_n;
-  s0 -> s0d n_E_l;
-  s0 -> s0d n_E_r;
-  s0 -> s0d l_E_n;
-  s0 -> s0d l_E_l;
-  s0 -> s0d l_E_r;
-  s0 -> s0d r_E_n;
-  s0 -> s0d r_E_l;
-  s0 -> s0d r_E_r;
+  sp1r -> s0 delim;
 
-  s0d -> s0 delim;
+  /////////////////////////////////
+  // after
+  /////////////////////////////////
+  sp2c -> sp2r N;
+  sp2c -> sp2r R;
+  sp2c -> sp2r L;
 
-  // the marked guy
-  // Em
-  s0 -> s1d n_Em_n;
-  s0 -> s1d n_Em_l;
-  s0 -> s1d n_Em_r;
-  s0 -> s1d l_Em_n;
-  s0 -> s1d l_Em_l;
-  s0 -> s1d l_Em_r;
-  s0 -> s1d r_Em_n;
-  s0 -> s1d r_Em_l;
-  s0 -> s1d r_Em_r;
+  sp2r -> sp2d delim;
+  
+  sp2d -> sp2l N;
+  sp2d -> sp2l R;
+  sp2d -> sp2l L;
 
-  // after the marked guy
+  sp2l -> sp2c H;
+  sp2l -> sp2c Wl;
+  sp2l -> sp2c Wr;
+  sp2l -> sp2c Sl;
+  sp2l -> sp2c Sr;
+  sp2l -> sp2c E;
 
-  // H
-  s1 -> s1d n_H_n;
-  s1 -> s1d n_H_l;
-  s1 -> s1d n_H_r;
-  s1 -> s1d l_H_n;
-  s1 -> s1d l_H_l;
-  s1 -> s1d l_H_r;
-  s1 -> s1d r_H_n;
-  s1 -> s1d r_H_l;
-  s1 -> s1d r_H_r;
-
-  // Wl
-  s1 -> s1d n_Wl_n;
-  s1 -> s1d n_Wl_l;
-  s1 -> s1d n_Wl_r;
-  s1 -> s1d l_Wl_n;
-  s1 -> s1d l_Wl_l;
-  s1 -> s1d l_Wl_r;
-  s1 -> s1d r_Wl_n;
-  s1 -> s1d r_Wl_l;
-  s1 -> s1d r_Wl_r;
-
-  // Wr
-  s1 -> s1d n_Wr_n;
-  s1 -> s1d n_Wr_l;
-  s1 -> s1d n_Wr_r;
-  s1 -> s1d l_Wr_n;
-  s1 -> s1d l_Wr_l;
-  s1 -> s1d l_Wr_r;
-  s1 -> s1d r_Wr_n;
-  s1 -> s1d r_Wr_l;
-  s1 -> s1d r_Wr_r;
-
-  // Sl
-  s1 -> s1d n_Sl_n;
-  s1 -> s1d n_Sl_l;
-  s1 -> s1d n_Sl_r;
-  s1 -> s1d l_Sl_n;
-  s1 -> s1d l_Sl_l;
-  s1 -> s1d l_Sl_r;
-  s1 -> s1d r_Sl_n;
-  s1 -> s1d r_Sl_l;
-  s1 -> s1d r_Sl_r;
-
-  // Sr
-  s1 -> s1d n_Sr_n;
-  s1 -> s1d n_Sr_l;
-  s1 -> s1d n_Sr_r;
-  s1 -> s1d l_Sr_n;
-  s1 -> s1d l_Sr_l;
-  s1 -> s1d l_Sr_r;
-  s1 -> s1d r_Sr_n;
-  s1 -> s1d r_Sr_l;
-  s1 -> s1d r_Sr_r;
-
-  // E
-  s1 -> s1d n_E_n;
-  s1 -> s1d n_E_l;
-  s1 -> s1d n_E_r;
-  s1 -> s1d l_E_n;
-  s1 -> s1d l_E_l;
-  s1 -> s1d l_E_r;
-  s1 -> s1d r_E_n;
-  s1 -> s1d r_E_l;
-  s1 -> s1d r_E_r;
-
-  s1d -> s1 delim;
-
-  accepting: s1;
+  accepting: sp2d;
 }
 
 
@@ -280,132 +348,151 @@ F {
 Enabled {
   init: s0;
 
-  s0 -> s1 n_H_n;
-  s0 -> s1 n_H_l;
-  s0 -> s1 n_H_r;
-  s0 -> s1 l_H_n;
-  s0 -> s1 l_H_l;
-  s0 -> s1 l_H_r;
-  s0 -> s1 r_H_n;
-  s0 -> s1 r_H_l;
-  s0 -> s1 r_H_r;
+//  s0 -> s1 n_H_n;
+//  s0 -> s1 n_H_l;
+//  s0 -> s1 n_H_r;
+//  s0 -> s1 l_H_n;
+//  s0 -> s1 l_H_l;
+//  s0 -> s1 l_H_r;
+//  s0 -> s1 r_H_n;
+//  s0 -> s1 r_H_l;
+//  s0 -> s1 r_H_r;
+//
+//  s0 -> s1 n_Hm_n;
+//  s0 -> s1 n_Hm_l;
+//  s0 -> s1 n_Hm_r;
+//  s0 -> s1 l_Hm_n;
+//  s0 -> s1 l_Hm_l;
+//  s0 -> s1 l_Hm_r;
+//  s0 -> s1 r_Hm_n;
+//  s0 -> s1 r_Hm_l;
+//  s0 -> s1 r_Hm_r;
+//
+//  // Wl
+//  s0 -> s1 n_Wl_n;
+//  s0 -> s1 n_Wl_l;
+//  s0 -> s1 n_Wl_r;
+//  s0 -> s1 l_Wl_n;
+//  s0 -> s1 l_Wl_l;
+//  s0 -> s1 l_Wl_r;
+//  s0 -> s1 r_Wl_n;
+//  s0 -> s1 r_Wl_l;
+//  s0 -> s1 r_Wl_r;
+//
+//  s0 -> s1 n_Wlm_n;
+//  s0 -> s1 n_Wlm_l;
+//  s0 -> s1 n_Wlm_r;
+//  s0 -> s1 l_Wlm_n;
+//  s0 -> s1 l_Wlm_l;
+//  s0 -> s1 l_Wlm_r;
+//  s0 -> s1 r_Wlm_n;
+//  s0 -> s1 r_Wlm_l;
+//  s0 -> s1 r_Wlm_r;
+//
+//  // Wr
+//  s0 -> s1 n_Wr_n;
+//  s0 -> s1 n_Wr_l;
+//  s0 -> s1 n_Wr_r;
+//  s0 -> s1 l_Wr_n;
+//  s0 -> s1 l_Wr_l;
+//  s0 -> s1 l_Wr_r;
+//  s0 -> s1 r_Wr_n;
+//  s0 -> s1 r_Wr_l;
+//  s0 -> s1 r_Wr_r;
+//
+//  s0 -> s1 n_Wrm_n;
+//  s0 -> s1 n_Wrm_l;
+//  s0 -> s1 n_Wrm_r;
+//  s0 -> s1 l_Wrm_n;
+//  s0 -> s1 l_Wrm_l;
+//  s0 -> s1 l_Wrm_r;
+//  s0 -> s1 r_Wrm_n;
+//  s0 -> s1 r_Wrm_l;
+//  s0 -> s1 r_Wrm_r;
+//
+//  // Sl
+//  s0 -> s1 n_Sl_n;
+//  s0 -> s1 n_Sl_l;
+//  s0 -> s1 n_Sl_r;
+//  s0 -> s1 l_Sl_n;
+//  s0 -> s1 l_Sl_l;
+//  s0 -> s1 l_Sl_r;
+//  s0 -> s1 r_Sl_n;
+//  s0 -> s1 r_Sl_l;
+//  s0 -> s1 r_Sl_r;
+//
+//  s0 -> s1 n_Slm_n;
+//  s0 -> s1 n_Slm_l;
+//  s0 -> s1 n_Slm_r;
+//  s0 -> s1 l_Slm_n;
+//  s0 -> s1 l_Slm_l;
+//  s0 -> s1 l_Slm_r;
+//  s0 -> s1 r_Slm_n;
+//  s0 -> s1 r_Slm_l;
+//  s0 -> s1 r_Slm_r;
+//
+//  // Sr
+//  s0 -> s1 n_Sr_n;
+//  s0 -> s1 n_Sr_l;
+//  s0 -> s1 n_Sr_r;
+//  s0 -> s1 l_Sr_n;
+//  s0 -> s1 l_Sr_l;
+//  s0 -> s1 l_Sr_r;
+//  s0 -> s1 r_Sr_n;
+//  s0 -> s1 r_Sr_l;
+//  s0 -> s1 r_Sr_r;
+//
+//  s0 -> s1 n_Srm_n;
+//  s0 -> s1 n_Srm_l;
+//  s0 -> s1 n_Srm_r;
+//  s0 -> s1 l_Srm_n;
+//  s0 -> s1 l_Srm_l;
+//  s0 -> s1 l_Srm_r;
+//  s0 -> s1 r_Srm_n;
+//  s0 -> s1 r_Srm_l;
+//  s0 -> s1 r_Srm_r;
+//
+//  // E
+//  s0 -> s1 n_E_n;
+//  s0 -> s1 n_E_l;
+//  s0 -> s1 n_E_r;
+//  s0 -> s1 l_E_n;
+//  s0 -> s1 l_E_l;
+//  s0 -> s1 l_E_r;
+//  s0 -> s1 r_E_n;
+//  s0 -> s1 r_E_l;
+//  s0 -> s1 r_E_r;
+//
+//  s0 -> s1 n_Em_n;
+//  s0 -> s1 n_Em_l;
+//  s0 -> s1 n_Em_r;
+//  s0 -> s1 l_Em_n;
+//  s0 -> s1 l_Em_l;
+//  s0 -> s1 l_Em_r;
+//  s0 -> s1 r_Em_n;
+//  s0 -> s1 r_Em_l;
+//  s0 -> s1 r_Em_r;
+//
+//  s1 -> s0 enabled;
+//
+//  accepting: s0;
 
-  s0 -> s1 n_Hm_n;
-  s0 -> s1 n_Hm_l;
-  s0 -> s1 n_Hm_r;
-  s0 -> s1 l_Hm_n;
-  s0 -> s1 l_Hm_l;
-  s0 -> s1 l_Hm_r;
-  s0 -> s1 r_Hm_n;
-  s0 -> s1 r_Hm_l;
-  s0 -> s1 r_Hm_r;
+  s0 -> sp1l N;
+  s0 -> sp1l L;
+  s0 -> sp1l R;
 
-  // Wl
-  s0 -> s1 n_Wl_n;
-  s0 -> s1 n_Wl_l;
-  s0 -> s1 n_Wl_r;
-  s0 -> s1 l_Wl_n;
-  s0 -> s1 l_Wl_l;
-  s0 -> s1 l_Wl_r;
-  s0 -> s1 r_Wl_n;
-  s0 -> s1 r_Wl_l;
-  s0 -> s1 r_Wl_r;
+  sp1l -> sp1c H;
+  sp1l -> sp1c Wl;
+  sp1l -> sp1c Wr;
+  sp1l -> sp1c Sl;
+  sp1l -> sp1c Sr;
+  sp1l -> sp1c E;
 
-  s0 -> s1 n_Wlm_n;
-  s0 -> s1 n_Wlm_l;
-  s0 -> s1 n_Wlm_r;
-  s0 -> s1 l_Wlm_n;
-  s0 -> s1 l_Wlm_l;
-  s0 -> s1 l_Wlm_r;
-  s0 -> s1 r_Wlm_n;
-  s0 -> s1 r_Wlm_l;
-  s0 -> s1 r_Wlm_r;
+  sp1c -> sp1r N;
+  sp1c -> sp1r L;
+  sp1c -> sp1r R;
 
-  // Wr
-  s0 -> s1 n_Wr_n;
-  s0 -> s1 n_Wr_l;
-  s0 -> s1 n_Wr_r;
-  s0 -> s1 l_Wr_n;
-  s0 -> s1 l_Wr_l;
-  s0 -> s1 l_Wr_r;
-  s0 -> s1 r_Wr_n;
-  s0 -> s1 r_Wr_l;
-  s0 -> s1 r_Wr_r;
-
-  s0 -> s1 n_Wrm_n;
-  s0 -> s1 n_Wrm_l;
-  s0 -> s1 n_Wrm_r;
-  s0 -> s1 l_Wrm_n;
-  s0 -> s1 l_Wrm_l;
-  s0 -> s1 l_Wrm_r;
-  s0 -> s1 r_Wrm_n;
-  s0 -> s1 r_Wrm_l;
-  s0 -> s1 r_Wrm_r;
-
-  // Sl
-  s0 -> s1 n_Sl_n;
-  s0 -> s1 n_Sl_l;
-  s0 -> s1 n_Sl_r;
-  s0 -> s1 l_Sl_n;
-  s0 -> s1 l_Sl_l;
-  s0 -> s1 l_Sl_r;
-  s0 -> s1 r_Sl_n;
-  s0 -> s1 r_Sl_l;
-  s0 -> s1 r_Sl_r;
-
-  s0 -> s1 n_Slm_n;
-  s0 -> s1 n_Slm_l;
-  s0 -> s1 n_Slm_r;
-  s0 -> s1 l_Slm_n;
-  s0 -> s1 l_Slm_l;
-  s0 -> s1 l_Slm_r;
-  s0 -> s1 r_Slm_n;
-  s0 -> s1 r_Slm_l;
-  s0 -> s1 r_Slm_r;
-
-  // Sr
-  s0 -> s1 n_Sr_n;
-  s0 -> s1 n_Sr_l;
-  s0 -> s1 n_Sr_r;
-  s0 -> s1 l_Sr_n;
-  s0 -> s1 l_Sr_l;
-  s0 -> s1 l_Sr_r;
-  s0 -> s1 r_Sr_n;
-  s0 -> s1 r_Sr_l;
-  s0 -> s1 r_Sr_r;
-
-  s0 -> s1 n_Srm_n;
-  s0 -> s1 n_Srm_l;
-  s0 -> s1 n_Srm_r;
-  s0 -> s1 l_Srm_n;
-  s0 -> s1 l_Srm_l;
-  s0 -> s1 l_Srm_r;
-  s0 -> s1 r_Srm_n;
-  s0 -> s1 r_Srm_l;
-  s0 -> s1 r_Srm_r;
-
-  // E
-  s0 -> s1 n_E_n;
-  s0 -> s1 n_E_l;
-  s0 -> s1 n_E_r;
-  s0 -> s1 l_E_n;
-  s0 -> s1 l_E_l;
-  s0 -> s1 l_E_r;
-  s0 -> s1 r_E_n;
-  s0 -> s1 r_E_l;
-  s0 -> s1 r_E_r;
-
-  s0 -> s1 n_Em_n;
-  s0 -> s1 n_Em_l;
-  s0 -> s1 n_Em_r;
-  s0 -> s1 l_Em_n;
-  s0 -> s1 l_Em_l;
-  s0 -> s1 l_Em_r;
-  s0 -> s1 r_Em_n;
-  s0 -> s1 r_Em_l;
-  s0 -> s1 r_Em_r;
-
-  s1 -> s0 enabled;
+  sp1r -> s0 enabled;
 
   accepting: s0;
 }
@@ -548,4 +635,9 @@ automatonStateGuessing: 1 .. 5;
 
 symmetries: rotation;
 
+monolithicWitness;
+
 logLevel: 1;
+parallel: 1;
+
+explicitChecksUntilLength: 30;

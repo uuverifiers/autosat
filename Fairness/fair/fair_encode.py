@@ -274,7 +274,8 @@ Encodes fairness into aut for Player 1.
                 output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
                 output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, tgt)
             else:
-                raise Exception("Invalid delimiter symbol (only 'enabled' and 'chosen' are allowed)")
+                raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
+                    symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
         else:
             # other transitions
             output.addTrans(transition = trans)

@@ -1,9 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check the number of command-line arguments
 if [ \( "$#" -eq 0 \) ] ; then
-	echo "usage: ${0} <file> [params]"
+	echo "usage: ${0} [--silent] <file> [params]"
 	exit 1
+fi
+
+if [ "$1" == "--silent" ] ; then
+	SILENT="1"
+	shift
 fi
 
 if [ $(uname) = "Linux" ]; then
@@ -22,11 +27,15 @@ LIVENESSBASE="`dirname $($pathCmd $0)`/../LivenessProver/"
 # set the base directory for the main script
 export BASEDIR="${LIVENESSBASE}"
 
-# run in case the core verifier will not terminate
-cd ${OUTPUT_DIR} && ./alltosvg && cd ..
+if [ -z "${SILENT}" ] ; then
+	# run in case the core verifier will not terminate
+	cd ${OUTPUT_DIR} && ./alltosvg && cd ..
+fi
 
 # run the main script
 . ../LivenessProver/slrp
 
-cp ${SRC} "${OUTPUT_DIR}/slrp_input.txt"
-cd ${OUTPUT_DIR} && ./alltosvg && cd ..
+if [ -z "${SILENT}" ] ; then
+	cp ${SRC} "${OUTPUT_DIR}/slrp_input.txt"
+	cd ${OUTPUT_DIR} && ./alltosvg && cd ..
+fi
