@@ -139,7 +139,7 @@ automatonStateGuessing: 0 .. 4;
 // monolithicWitness;
 
 noPrecomputedInvariant;
-// useRankingFunctions;
+useRankingFunctions;
 
 logLevel: 1;
 parallel: 1;
