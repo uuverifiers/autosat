@@ -127,12 +127,17 @@ P2 {
   accepting: sfinal;
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 0 .. 4;
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 0 .. 10;
 
-explicitChecksUntilLength: 12;
 
 // noPrecomputedInvariant;
-monolithicWitness;
+// monolithicWitness;
+// useRankingFunctions
 
+parallel: 1;
 logLevel: 1;
+
+// explicitChecksUntilLength: 28;
+
+
