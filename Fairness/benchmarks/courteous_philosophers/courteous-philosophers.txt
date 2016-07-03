@@ -562,39 +562,76 @@ P2 {
   /////////////////////////////////////////////////////
   // take left fork nowrap
   /////////////////////////////////////////////////////
-  s0 -> stl1;
+  s0 -> stln1;
 
-  stl1 -> stl1 N/N;
-  stl1 -> stl1 L/L;
-  stl1 -> stl1 R/R;
-  stl1 -> stl1 H/H;
-  stl1 -> stl1 Wl/Wl;
-  stl1 -> stl1 Wr/Wr;
-  stl1 -> stl1 Sl/Sl;
-  stl1 -> stl1 Sr/Sr;
-  stl1 -> stl1 E/E;
-  stl1 -> stl1 delim/delim;
+  stln1 -> stln1 N/N;
+  stln1 -> stln1 L/L;
+  stln1 -> stln1 R/R;
+  stln1 -> stln1 H/H;
+  stln1 -> stln1 Wl/Wl;
+  stln1 -> stln1 Wr/Wr;
+  stln1 -> stln1 Sl/Sl;
+  stln1 -> stln1 Sr/Sr;
+  stln1 -> stln1 E/E;
+  stln1 -> stln1 delim/delim;
 
-  stl1 -> stl2 H/H;
-  stl1 -> stl2 Wl/Wl;
-  stl1 -> stl2 Wr/Wr;
-  stl1 -> stl2 Sl/Sl;
-  stl1 -> stl2 Sr/Sr;
+  stln1 -> stln2 H/H;
+  stln1 -> stln2 Wl/Wl;
+  stln1 -> stln2 Wr/Wr;
+  stln1 -> stln2 Sl/Sl;
+  stln1 -> stln2 Sr/Sr;
 
-  stl2 -> stl3 N/N;
-  stl2 -> stl3 L/L;
-  stl3 -> stl4 delim/delim;
-  stl4 -> stl5 N/N;
-  stl4 -> stl5 L/L;
+  stln2 -> stln3 N/N;
+  stln2 -> stln3 L/L;
+  stln3 -> stln4 delim/delim;
+  stln4 -> stln5 N/N;
+  stln4 -> stln5 L/L;
 
-  stl5 -> stl6 Wl/Sl;
-  stl6 -> stl7 N/N;
-  stl6 -> stl7 L/L;
-  stl6 -> stl7 R/R;
-  stl7 -> sfinalcopy chosen/delim;
+  stln5 -> stln6 Wl/Sl;
 
-  accepting: sfinalcopy;
+  stln6 -> stln7 N/N;
+  stln6 -> stln7 L/L;
+  stln6 -> stln7 R/R;
+  stln7 -> sfinalcopy chosen/delim;
 
+  /////////////////////////////////////////////////////
+  // take left fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> stlw1;
+
+  stlw1 -> stlw2 N/N;
+  stlw1 -> stlw2 L/L;
+
+  stlw2 -> stlw3 Wl/Sl;
+
+  stlw3 -> stlw4 N/N;
+  stlw3 -> stlw4 L/L;
+  stlw3 -> stlw4 R/R;
+  stlw4 -> stlw5 chosen/delim;
+
+  stlw5 -> stlw5 N/N;
+  stlw5 -> stlw5 L/L;
+  stlw5 -> stlw5 R/R;
+  stlw5 -> stlw5 H/H;
+  stlw5 -> stlw5 Wl/Wl;
+  stlw5 -> stlw5 Wr/Wr;
+  stlw5 -> stlw5 Sl/Sl;
+  stlw5 -> stlw5 Sr/Sr;
+  stlw5 -> stlw5 E/E;
+  stlw5 -> stlw5 delim/delim;
+
+  stlw5 -> stlw6 H/H;
+  stlw5 -> stlw6 Wl/Wl;
+  stlw5 -> stlw6 Wr/Wr;
+  stlw5 -> stlw6 Sl/Sl;
+  stlw5 -> stlw6 Sr/Sr;
+
+  stlw6 -> stlw7 N/N;
+  stlw6 -> stlw7 L/L;
+  stlw7 -> sfinalterminal delim/delim;
+
+
+  accepting: sfinalcopy, sfinalterminal;
 }
 
 transducerStateGuessing: 1 .. 3;
