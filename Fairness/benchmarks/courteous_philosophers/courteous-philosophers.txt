@@ -579,7 +579,6 @@ P2 {
   stln1 -> stln2 Wl/Wl;
   stln1 -> stln2 Wr/Wr;
   stln1 -> stln2 Sl/Sl;
-  stln1 -> stln2 Sr/Sr;
 
   stln2 -> stln3 N/N;
   stln2 -> stln3 L/L;
@@ -624,15 +623,233 @@ P2 {
   stlw5 -> stlw6 Wl/Wl;
   stlw5 -> stlw6 Wr/Wr;
   stlw5 -> stlw6 Sl/Sl;
-  stlw5 -> stlw6 Sr/Sr;
 
   stlw6 -> stlw7 N/N;
   stlw6 -> stlw7 L/L;
   stlw7 -> sfinalterminal delim/delim;
 
+  /////////////////////////////////////////////////////
+  // take right fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> strn1;
+
+  strn1 -> strn1 N/N;
+  strn1 -> strn1 L/L;
+  strn1 -> strn1 R/R;
+  strn1 -> strn1 H/H;
+  strn1 -> strn1 Wl/Wl;
+  strn1 -> strn1 Wr/Wr;
+  strn1 -> strn1 Sl/Sl;
+  strn1 -> strn1 Sr/Sr;
+  strn1 -> strn1 E/E;
+  strn1 -> strn1 delim/delim;
+
+  strn1 -> strn2 Wr/Sr;
+
+  strn2 -> strn3 N/N;
+  strn2 -> strn3 R/R;
+  strn3 -> strn4 chosen/delim;
+  strn4 -> strn5 N/N;
+  strn4 -> strn5 R/R;
+
+  strn5 -> sfinalcopy H/H;
+  strn5 -> sfinalcopy Wl/Wl;
+  strn5 -> sfinalcopy Wr/Wr;
+  strn5 -> sfinalcopy Sr/Sr;
+
+  /////////////////////////////////////////////////////
+  // take right fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> strw1;
+
+  strw1 -> strw2 N/N;
+  strw1 -> strw2 R/R;
+
+  strw2 -> strw3 H/H;
+  strw2 -> strw3 Wl/Wl;
+  strw2 -> strw3 Wr/Wr;
+  strw2 -> strw3 Sr/Sr;
+
+  strw3 -> strw3 N/N;
+  strw3 -> strw3 L/L;
+  strw3 -> strw3 R/R;
+  strw3 -> strw3 H/H;
+  strw3 -> strw3 Wl/Wl;
+  strw3 -> strw3 Wr/Wr;
+  strw3 -> strw3 Sl/Sl;
+  strw3 -> strw3 Sr/Sr;
+  strw3 -> strw3 E/E;
+  strw3 -> strw3 delim/delim;
+
+  strw3 -> strw4 Wr/Sr;
+
+  strw4 -> strw5 N/N;
+  strw4 -> strw5 R/R;
+  strw5 -> sfinalterminal chosen/delim;
+
+  /////////////////////////////////////////////////////
+  // complete right fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> scrn1;
+
+  scrn1 -> scrn1 N/N;
+  scrn1 -> scrn1 L/L;
+  scrn1 -> scrn1 R/R;
+  scrn1 -> scrn1 H/H;
+  scrn1 -> scrn1 Wl/Wl;
+  scrn1 -> scrn1 Wr/Wr;
+  scrn1 -> scrn1 Sl/Sl;
+  scrn1 -> scrn1 Sr/Sr;
+  scrn1 -> scrn1 E/E;
+  scrn1 -> scrn1 delim/delim;
+
+  scrn1 -> scrn2 Sl/E;
+  scrn2 -> scrn3 N/N;
+  scrn2 -> scrn3 L/L;
+  scrn2 -> scrn3 R/R;
+
+  scrn3 -> scrn4 chosen/delim;
+
+  scrn4 -> scrn5 N/N;
+  scrn4 -> scrn5 L/L;
+  scrn4 -> scrn5 R/R;
+
+  scrn5 -> sfinalcopy H/H;
+  scrn5 -> sfinalcopy Wl/Wl;
+  scrn5 -> sfinalcopy Wr/Wr;
+  scrn5 -> sfinalcopy Sr/Sr;
+
+  scrn1 -> scrn6 Sl/Wl;
+  scrn1 -> scrn6 Sl/Wr;
+  scrn6 -> scrn7 N/N;
+  scrn6 -> scrn7 L/L;
+  scrn6 -> scrn7 R/R;
+  
+  scrn7 -> scrn8 chosen/delim;
+
+  scrn8 -> scrn9 N/N;
+  scrn8 -> scrn9 L/L;
+  scrn8 -> scrn9 R/R;
+
+  scrn9 -> sfinalcopy Sl/Sl;
+  scrn9 -> sfinalcopy E/E;
+
+
+  /////////////////////////////////////////////////////
+  // complete right fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> scrw1;
+
+  scrw1 -> scrw2 N/N;
+  scrw1 -> scrw2 L/L;
+  scrw1 -> scrw2 R/R;
+
+  scrw2 -> scrw3 H/H;
+  scrw2 -> scrw3 Wl/Wl;
+  scrw2 -> scrw3 Wr/Wr;
+  scrw2 -> scrw3 Sr/Sr;
+
+  scrw3 -> scrw3 N/N;
+  scrw3 -> scrw3 L/L;
+  scrw3 -> scrw3 R/R;
+  scrw3 -> scrw3 H/H;
+  scrw3 -> scrw3 Wl/Wl;
+  scrw3 -> scrw3 Wr/Wr;
+  scrw3 -> scrw3 Sl/Sl;
+  scrw3 -> scrw3 Sr/Sr;
+  scrw3 -> scrw3 E/E;
+  scrw3 -> scrw3 delim/delim;
+
+  scrw3 -> scrw4 Sl/E;
+
+  scrw4 -> scrw5 N/N;
+  scrw4 -> scrw5 L/L;
+  scrw4 -> scrw5 R/R;
+
+  scrw5 -> sfinalterminal chosen/delim;
+
+  scrw2 -> scrw6 Sl/Sl;
+  scrw2 -> scrw6 E/E;
+
+  scrw6 -> scrw6 N/N;
+  scrw6 -> scrw6 L/L;
+  scrw6 -> scrw6 R/R;
+  scrw6 -> scrw6 H/H;
+  scrw6 -> scrw6 Wl/Wl;
+  scrw6 -> scrw6 Wr/Wr;
+  scrw6 -> scrw6 Sl/Sl;
+  scrw6 -> scrw6 Sr/Sr;
+  scrw6 -> scrw6 E/E;
+  scrw6 -> scrw6 delim/delim;
+
+  scrw6 -> scrw4 Sl/Wl;
+  scrw6 -> scrw4 Sl/Wr;
+
+  /////////////////////////////////////////////////////
+  // complete left fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> scln1;
+
+  scln1 -> scln1 N/N;
+  scln1 -> scln1 L/L;
+  scln1 -> scln1 R/R;
+  scln1 -> scln1 H/H;
+  scln1 -> scln1 Wl/Wl;
+  scln1 -> scln1 Wr/Wr;
+  scln1 -> scln1 Sl/Sl;
+  scln1 -> scln1 Sr/Sr;
+  scln1 -> scln1 E/E;
+  scln1 -> scln1 delim/delim;
+
+  scln1 -> scln2 H/H;
+  scln1 -> scln2 Wl/Wl;
+  scln1 -> scln2 Wr/Wr;
+  scln1 -> scln2 Sl/Sl;
+
+  scln2 -> scln3 N/N;
+  scln2 -> scln3 L/L;
+  scln2 -> scln3 R/R;
+
+  scln3 -> scln4 delim/delim;
+
+  scln4 -> scln5 N/N;
+  scln4 -> scln5 L/L;
+  scln4 -> scln5 R/R;
+
+  scln5 -> scln6 Sr/E;
+
+  scln6 -> scln7 N/N;
+  scln6 -> scln7 L/L;
+  scln6 -> scln7 R/R;
+  scln7 -> sfinalcopy chosen/enabled;
+
+  scln1 -> scln8 Sr/Sr;
+  scln1 -> scln8 E/E;
+
+  scln8 -> scln9 N/N;
+  scln8 -> scln9 L/L;
+  scln8 -> scln9 R/R;
+
+  scln9 -> scln10 delim/delim;
+
+  scln10 -> scln11 N/N;
+  scln10 -> scln11 L/L;
+  scln10 -> scln11 R/R;
+
+  scln11 -> scln6 Sr/Wl;
+  scln11 -> scln6 Sr/Wr;
+
+
+
+
+
+
+
+
 
   accepting: sfinalcopy, sfinalterminal;
 }
+
 
 transducerStateGuessing: 1 .. 3;
 automatonStateGuessing: 1 .. 5;
