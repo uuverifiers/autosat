@@ -125,6 +125,8 @@ automatonStateGuessing: 0 .. 4;
 explicitChecksUntilLength: 12;
 
 // noPrecomputedInvariant;
-monolithicWitness;
+// monolithicWitness;
+useRankingFunctions;
 
 logLevel: 1;
+parallel: 1;
