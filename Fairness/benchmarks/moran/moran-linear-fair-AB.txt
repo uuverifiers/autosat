@@ -99,13 +99,15 @@ P2 {
   accepting: sf;
 }
 
-transducerStateGuessing: 1 .. 3;
-automatonStateGuessing: 1 .. 3;
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 0 .. 3;
 
-// monolithicWitness;
+monolithicWitness;
 
 // noPrecomputedInvariant;
-useRankingFunctions;
+// useRankingFunctions;
+
 logLevel: 1;
+parallel: 1;
 
 // explicitChecksUntilLength: 20;
