@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.BitSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -200,6 +201,7 @@ public class AutomataConverter {
 	public static Automata toMinimalDFA(Automata dfa){
 	    final State[] states = dfa.getStates();
 	    final int numStates = states.length;
+	    final long numStatesLong = (long)numStates;
 	    final int numLabels = dfa.getNumLabels();
 	    final Set<Integer> accepting = dfa.getAcceptingStates();
 
@@ -230,22 +232,24 @@ public class AutomataConverter {
 		    invTransitions[s][l] = ar;
 		}
 
-	    final boolean[] nonEqStates = new boolean[numStates * numStates];
-	    final Stack<Integer> todo = new Stack<Integer>();
+            final BitSet[] nonEqStates = new BitSet [numStates];
+	    final Stack<Long> todo = new Stack<Long>();
 
 	    // initialise
 	    for (int i = 0; i < numStates; ++i)
 		for (int j = 0; j < i; ++j)
 		    if (accepting.contains(i) != accepting.contains(j)) {
-			nonEqStates[i * numStates + j] = true;
-			todo.push(i * numStates + j);
+                        if (nonEqStates[i] == null)
+                            nonEqStates[i] = new BitSet();
+			nonEqStates[i].set(j);
+			todo.push(i * numStatesLong + j);
 		    }
 
 	    // fixed-point iteration
 	    while (!todo.empty()) {
-		final int nextPair = todo.pop();
-		final int state1Id = nextPair / numStates;
-		final int state2Id = nextPair % numStates;
+		final long nextPair = todo.pop();
+		final int state1Id = (int)(nextPair / numStatesLong);
+		final int state2Id = (int)(nextPair % numStatesLong);
 
 		for (int l = 0; l < numLabels; ++l) {
 		    final int[] pre1 = invTransitions[state1Id][l];
@@ -259,17 +263,24 @@ public class AutomataConverter {
 		    for (int s1 : pre1)
 			for (int s2 : pre2)
 			    if (s1 != s2) {
-				final int ind;
+				final int smaller, bigger;
 				if (s1 > s2) {
-				    ind = s1 * numStates + s2;
+                                    bigger = s1;
+                                    smaller = s2;
 				} else {
-				    ind = s2 * numStates + s1;
+                                    bigger = s2;
+                                    smaller = s1;
 				}
-				
-				if (!nonEqStates[ind]) {
-				    nonEqStates[ind] = true;
+
+                                if (nonEqStates[bigger] == null)
+                                    nonEqStates[bigger] = new BitSet();
+
+                                if (!nonEqStates[bigger].get(smaller)) {
+                                    nonEqStates[bigger].set(smaller);
+                                    final long ind =
+                                        bigger * numStatesLong + smaller;
 				    todo.push(ind);
-				}
+                                }
 			    }
 		}
 	    }
@@ -279,16 +290,16 @@ public class AutomataConverter {
 	    int num = 0;
 	    for (int i = 0; i < numStates; ++i)
 		if (mapping[i] < 0) {
-		    for (int j = i; j < numStates; ++j)
-			if (!nonEqStates[i * numStates + j] &&
-			    !nonEqStates[j * numStates + i])
+                    mapping[i] = num;
+		    for (int j = i + 1; j < numStates; ++j)
+			if (nonEqStates[j] == null || !nonEqStates[j].get(i))
 			    mapping[j] = num;
 		    ++num;
 		}
 
 	    Automata result = mapStates(dfa, mapping, num, true);
 
-	    //	    System.out.println("" + numStates + " -> " + result.getStates().length);
+            //            System.out.println("" + numStates + " -> " + result.getStates().length);
 	    return result;
 	}
 
