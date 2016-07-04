@@ -2,8 +2,12 @@
 
 BENCHMARKS="\
 	benchmarks/currency_games/flip-game.txt \
-	benchmarks/moran/moran-linear-fair-AB.txt \
 	benchmarks/herman/herman-ring-selfloops.txt \
+	benchmarks/agents-opinions/agents_opinions_n2_randomswitch_linear.txt \
+	benchmarks/moran/moran-linear-fair-AB.txt \
+	benchmarks/moran/moran-linear-fair-ABC.txt \
+	benchmarks/agents-opinions/agents_opinions_n2_linear.txt \
+	benchmarks/agents-opinions/agents_opinions_linear.txt \
 	"
 
 RUNCMD="./runFairFancy --silent"
@@ -17,7 +21,8 @@ for i in ${BENCHMARKS} ; do
 		> ${TMPFILE}
 	echo "logLevel: 1;" >> ${TMPFILE}
 
-	echo -n "Running ${i}:	"
+	echo -n "$(date "+%y-%m-%d %H:%M:%S");	"
+	echo -n "${i};	"
 	STARTTIME=$(date +%s.%N)
 	${RUNCMD} ${TMPFILE} > ${OUTFILE}
 	ENDTIME=$(date +%s.%N)
@@ -27,11 +32,11 @@ for i in ${BENCHMARKS} ; do
 	ret=$?
 
 	if [ "$ret" -eq 0 ] ; then
-		echo -e -n "\e[1;32mCORRECT\e[0m:	"
+		echo -e -n "\e[1;32mCORRECT\e[0m;	"
 	else
-		echo -e -n "--\e[1;31mFAILURE\e[0m--:	"
+		echo -e -n "--\e[1;31mFAILURE\e[0m--;	"
 	fi
 
-	echo -n "${DIFFTIME}:	"
+	echo -n "${DIFFTIME};	"
 	echo "( ${OUTFILE} )"
 done
