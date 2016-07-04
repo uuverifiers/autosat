@@ -27,9 +27,9 @@ for i in ${BENCHMARKS} ; do
 	ret=$?
 
 	if [ "$ret" -eq 0 ] ; then
-		echo -n "CORRECT:	"
+		echo -e -n "\e[1;32mCORRECT\e[0m:	"
 	else
-		echo -n "--FAILURE--:	"
+		echo -e -n "--\e[1;31mFAILURE\e[0m--:	"
 	fi
 
 	echo -n "${DIFFTIME}:	"
