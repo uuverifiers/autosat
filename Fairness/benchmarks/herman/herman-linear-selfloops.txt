@@ -1,4 +1,4 @@
-// Herman's protocol on a ring with enabledness and self-loops
+// Herman's protocol on a linear array with enabledness and self-loops
 //
 // This an adaptation of Herman's protocol in a ring.  This version uses a
 // delimiter to distinguish sub-words of individual processes, and the Enabled
@@ -62,8 +62,6 @@ P2 {
 
     // normal passing
     sinit -> s0;
-    // wraparound
-    sinit -> s3;
 
     s0 -> s0p N/N;
     s0 -> s0p T/T;
@@ -87,17 +85,7 @@ P2 {
     s1 -> s1p N/N;
     s1 -> s1p T/T;
 
-    s3 -> s4p N/T;
-    s3 -> s4p T/T;
-    s4p -> s4 delim/delim;
-
-    s4 -> s4p N/N;
-    s4 -> s4p T/T;
-
-    s4 -> s5p T/N;
-    s5p -> s5 chosen/delim;
-
-    accepting: s1, s5;
+    accepting: s1;
 }
 
 transducerStateGuessing: 1 .. 3;
@@ -107,7 +95,6 @@ automatonStateGuessing: 0 .. 4;
 useRankingFunctions;
 noPrecomputedInvariant;
 
-// explicitChecksUntilLength: 6;
+// explicitChecksUntilLength: 12;
 
 logLevel: 1;
-parallel: 1;

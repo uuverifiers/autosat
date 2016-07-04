@@ -3,6 +3,7 @@
 BENCHMARKS="\
 	benchmarks/wolf-sheep/wolf-sheep-linear-nograss.txt \
 	benchmarks/currency_games/flip-game.txt \
+	benchmarks/herman/herman-linear-selfloops.txt \
 	benchmarks/herman/herman-ring-selfloops.txt \
 	benchmarks/agents-opinions/agents_opinions_n2_randomswitch_linear.txt \
 	benchmarks/moran/moran-linear-fair-AB.txt \
