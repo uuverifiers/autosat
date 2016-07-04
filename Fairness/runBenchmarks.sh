@@ -1,6 +1,7 @@
 #!/bin/bash
 
 BENCHMARKS="\
+	benchmarks/wolf-sheep/wolf-sheep-linear-nograss.txt \
 	benchmarks/currency_games/flip-game.txt \
 	benchmarks/herman/herman-ring-selfloops.txt \
 	benchmarks/agents-opinions/agents_opinions_n2_randomswitch_linear.txt \
