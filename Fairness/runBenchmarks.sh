@@ -15,6 +15,7 @@ for i in ${BENCHMARKS} ; do
 		| grep -v '^logLevel' \
 		| grep -v '^explicitChecksUntilLength' \
 		> ${TMPFILE}
+	echo "logLevel: 1;" >> ${TMPFILE}
 
 	echo -n "Running ${i}:	"
 	STARTTIME=$(date +%s.%N)
@@ -22,7 +23,7 @@ for i in ${BENCHMARKS} ; do
 	ENDTIME=$(date +%s.%N)
 	DIFFTIME=$(echo "$ENDTIME - $STARTTIME" | bc)
 
-	grep -q "VERDICT: Player 2 can win from every initial configuration" ${OUTFILE}
+	grep -q "VERDICT: Player 2 can win from every" ${OUTFILE}
 	ret=$?
 
 	if [ "$ret" -eq 0 ] ; then
@@ -31,5 +32,6 @@ for i in ${BENCHMARKS} ; do
 		echo -n "--FAILURE--:	"
 	fi
 
-	echo "${DIFFTIME}"
+	echo -n "${DIFFTIME}:	"
+	echo "( ${OUTFILE} )"
 done
