@@ -840,11 +840,181 @@ P2 {
   scln11 -> scln6 Sr/Wr;
 
 
+  /////////////////////////////////////////////////////
+  // complete left fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> sclw1;
+
+  sclw1 -> sclw2 N/N;
+  sclw1 -> sclw2 L/L;
+  sclw1 -> sclw2 R/R;
+
+  sclw2 -> sclw3 Sr/E;
+  sclw3 -> sclw4 N/N;
+  sclw3 -> sclw4 L/L;
+  sclw3 -> sclw4 R/R;
+
+  sclw4 -> sclw5 chosen/delim;
+
+  sclw5 -> sclw5 N/N;
+  sclw5 -> sclw5 L/L;
+  sclw5 -> sclw5 R/R;
+  sclw5 -> sclw5 H/H;
+  sclw5 -> sclw5 Wl/Wl;
+  sclw5 -> sclw5 Wr/Wr;
+  sclw5 -> sclw5 Sl/Sl;
+  sclw5 -> sclw5 Sr/Sr;
+  sclw5 -> sclw5 E/E;
+  sclw5 -> sclw5 delim/delim;
+
+  sclw5 -> sclw6 H/H;
+  sclw5 -> sclw6 Wl/Wl;
+  sclw5 -> sclw6 Wr/Wr;
+  sclw5 -> sclw6 Sl/Sl;
+
+  sclw6 -> sclw7 N/N;
+  sclw6 -> sclw7 L/L;
+  sclw6 -> sclw7 R/R;
+
+  sclw7 -> sfinalterminal delim/delim;
+
+  sclw2 -> sclw8 Sr/Wl;
+  sclw2 -> sclw8 Sr/Wr;
+
+  sclw8 -> sclw9 N/N;
+  sclw8 -> sclw9 L/L;
+  sclw8 -> sclw9 R/R;
+
+  sclw9 -> sclw10 chosen/delim;
+
+  sclw10 -> sclw10 N/N;
+  sclw10 -> sclw10 L/L;
+  sclw10 -> sclw10 R/R;
+  sclw10 -> sclw10 H/H;
+  sclw10 -> sclw10 Wl/Wl;
+  sclw10 -> sclw10 Wr/Wr;
+  sclw10 -> sclw10 Sl/Sl;
+  sclw10 -> sclw10 Sr/Sr;
+  sclw10 -> sclw10 E/E;
+  sclw10 -> sclw10 delim/delim;
+
+  sclw10 -> sclw6 Sr/Sr;
+  sclw10 -> sclw6 E/E;
 
 
+  /////////////////////////////////////////////////////
+  // finalize no-wrap
+  /////////////////////////////////////////////////////
+  s0 -> sfn1;
 
+  sfn1 -> sfn1 N/N;
+  sfn1 -> sfn1 L/L;
+  sfn1 -> sfn1 R/R;
+  sfn1 -> sfn1 H/H;
+  sfn1 -> sfn1 Wl/Wl;
+  sfn1 -> sfn1 Wr/Wr;
+  sfn1 -> sfn1 Sl/Sl;
+  sfn1 -> sfn1 Sr/Sr;
+  sfn1 -> sfn1 E/E;
+  sfn1 -> sfn1 delim/delim;
 
+  sfn1 -> sfn2 N/R;
+  sfn1 -> sfn2 L/R;
+  sfn1 -> sfn2 R/R;
 
+  sfn2 -> sfn3 delim/delim;
+
+  sfn3 -> sfn4 N/R;
+  sfn3 -> sfn4 L/R;
+  sfn3 -> sfn4 R/R;
+
+  sfn4 -> sfn5 E/H;
+
+  sfn5 -> sfn6 N/L;
+  sfn5 -> sfn6 L/L;
+  sfn5 -> sfn6 R/L;
+
+  sfn6 -> sfn7 chosen/delim;
+
+  sfn7 -> sfinalcopy N/L;
+  sfn7 -> sfinalcopy L/L;
+  sfn7 -> sfinalcopy R/L;
+
+  /////////////////////////////////////////////////////
+  // finalize right-wrap
+  /////////////////////////////////////////////////////
+  s0 -> sfwr1;
+
+  sfwr1 -> sfwr2 N/L;
+  sfwr1 -> sfwr2 L/L;
+  sfwr1 -> sfwr2 R/L;
+
+  sfwr2 -> sfwr2 N/N;
+  sfwr2 -> sfwr2 L/L;
+  sfwr2 -> sfwr2 R/R;
+  sfwr2 -> sfwr2 H/H;
+  sfwr2 -> sfwr2 Wl/Wl;
+  sfwr2 -> sfwr2 Wr/Wr;
+  sfwr2 -> sfwr2 Sl/Sl;
+  sfwr2 -> sfwr2 Sr/Sr;
+  sfwr2 -> sfwr2 E/E;
+  sfwr2 -> sfwr2 delim/delim;
+
+  sfwr2 -> sfwr3 N/R;
+  sfwr2 -> sfwr3 L/R;
+  sfwr2 -> sfwr3 R/R;
+
+  sfwr3 -> sfwr4 delim/delim;
+
+  sfwr4 -> sfwr5 N/R;
+  sfwr4 -> sfwr5 L/R;
+  sfwr4 -> sfwr5 R/R;
+
+  sfwr5 -> sfwr6 E/H;
+
+  sfwr6 -> sfwr7 N/L;
+  sfwr6 -> sfwr7 L/L;
+  sfwr6 -> sfwr7 R/L;
+
+  sfwr7 -> sfinalterminal chosen/enabled;
+
+  /////////////////////////////////////////////////////
+  // finalize left-wrap
+  /////////////////////////////////////////////////////
+  s0 -> sfwl1;
+
+  sfwl1 -> sfwl2 N/R;
+  sfwl1 -> sfwl2 L/R;
+  sfwl1 -> sfwl2 R/R;
+
+  sfwl2 -> sfwl3 E/H;
+
+  sfwl3 -> sfwl4 N/L;
+  sfwl3 -> sfwl4 L/L;
+  sfwl3 -> sfwl4 R/L;
+
+  sfwl4 -> sfwl5 chosen/enabled;
+
+  sfwl5 -> sfwl6 N/L;
+  sfwl5 -> sfwl6 L/L;
+  sfwl5 -> sfwl6 R/L;
+
+  sfwl6 -> sfwl6 N/N;
+  sfwl6 -> sfwl6 L/L;
+  sfwl6 -> sfwl6 R/R;
+  sfwl6 -> sfwl6 H/H;
+  sfwl6 -> sfwl6 Wl/Wl;
+  sfwl6 -> sfwl6 Wr/Wr;
+  sfwl6 -> sfwl6 Sl/Sl;
+  sfwl6 -> sfwl6 Sr/Sr;
+  sfwl6 -> sfwl6 E/E;
+  sfwl6 -> sfwl6 delim/delim;
+
+  sfwl6 -> sfwl7 N/R;
+  sfwl6 -> sfwl7 L/R;
+  sfwl6 -> sfwl7 R/R;
+
+  sfwl7 -> sfinalterminal delim/delim;
 
 
   accepting: sfinalcopy, sfinalterminal;
