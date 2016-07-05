@@ -34,9 +34,13 @@
 I0 {
   init: s0;
 
+  s0 -> s0p S;
+  s0 -> s0p W;
+  s0 -> s0p D;
+  s0p -> s0 delim;
+
   s0 -> s1p S;
   s0 -> s1p W;
-  s0 -> s1p D;
 
   s1p -> s1 delim;
 
@@ -53,17 +57,17 @@ closedUnderTransitions;
 F {
   init: s0;
 
-  s0 -> ss A;
-  ss -> ss A;
+  s0 -> ss S;
+  ss -> ss S;
   ss -> ss delim;
 
   s0 -> sw W;
   sw -> sw W;
   sw -> sw delim;
 
-  s0 -> sd D;
-  sd -> sd D;
-  sd -> sd delim;
+//  s0 -> sd D;
+//  sd -> sd D;
+//  sd -> sd delim;
 
   accepting: ss, sw, sd;
 }
@@ -106,12 +110,12 @@ P2 {
   // sheep and wolfs can die:
   //   S -> D
   //   W -> D
-  s0 -> sdie1;
-
-  sdie1 -> sdie2 S/D;
-  sdie1 -> sdie2 W/D;
-
-  sdie2 -> sfinalcopy chosen/delim;
+//  s0 -> sdie1;
+//
+//  sdie1 -> sdie2 S/D;
+//  sdie1 -> sdie2 W/D;
+//
+//  sdie2 -> sfinalcopy chosen/delim;
 
   // sheep and wolfs can move around and reproduce
   //   SD -> DS
@@ -182,4 +186,4 @@ useRankingFunctions;
 logLevel: 1;
 parallel: 1;
 
-// explicitChecksUntilLength: 20;
+explicitChecksUntilLength: 20;
