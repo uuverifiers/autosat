@@ -7,11 +7,11 @@ BENCHMARKS="\
 	benchmarks/herman/herman-ring-selfloops.txt \
 	benchmarks/herman/herman-odd-linear-selfloops.txt \
 	benchmarks/herman/herman-odd-ring-selfloops.txt \
-	benchmarks/agents-opinions/agents_opinions_n2_randomswitch_linear.txt \
+	benchmarks/cell-cycle-switch/cell-cycle-switch-n2-randomswitch-linear.txt \
 	benchmarks/moran/moran-linear-fair-AB.txt \
 	benchmarks/moran/moran-linear-fair-ABC.txt \
-	benchmarks/agents-opinions/agents_opinions_n2_linear.txt \
-	benchmarks/agents-opinions/agents_opinions_linear.txt \
+	benchmarks/cell-cycle-switch/cell-cycle-switch-n2-linear.txt \
+	benchmarks/cell-cycle-switch/cell-cycle-switch-linear.txt \
 	"
 
 RUNCMD="./runFairFancy --silent"
