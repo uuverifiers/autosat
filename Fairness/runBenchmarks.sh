@@ -5,6 +5,8 @@ BENCHMARKS="\
 	benchmarks/currency_games/flip-game.txt \
 	benchmarks/herman/herman-linear-selfloops.txt \
 	benchmarks/herman/herman-ring-selfloops.txt \
+	benchmarks/herman/herman-odd-linear-selfloops.txt \
+	benchmarks/herman/herman-odd-ring-selfloops.txt \
 	benchmarks/agents-opinions/agents_opinions_n2_randomswitch_linear.txt \
 	benchmarks/moran/moran-linear-fair-AB.txt \
 	benchmarks/moran/moran-linear-fair-ABC.txt \
