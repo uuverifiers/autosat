@@ -65,9 +65,9 @@ F {
   sw -> sw W;
   sw -> sw delim;
 
-//  s0 -> sd D;
-//  sd -> sd D;
-//  sd -> sd delim;
+  s0 -> sd D;
+  sd -> sd D;
+  sd -> sd delim;
 
   accepting: ss, sw, sd;
 }
@@ -110,12 +110,12 @@ P2 {
   // sheep and wolfs can die:
   //   S -> D
   //   W -> D
-//  s0 -> sdie1;
-//
-//  sdie1 -> sdie2 S/D;
-//  sdie1 -> sdie2 W/D;
-//
-//  sdie2 -> sfinalcopy chosen/delim;
+  s0 -> sdie1;
+
+  sdie1 -> sdie2 S/D;
+  sdie1 -> sdie2 W/D;
+
+  sdie2 -> sfinalcopy chosen/delim;
 
   // sheep and wolfs can move around and reproduce
   //   SD -> DS
