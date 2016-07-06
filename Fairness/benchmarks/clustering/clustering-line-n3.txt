@@ -1,0 +1,226 @@
+// Clustering on a line for 3 alleles: changing from (A + B + C)* to
+// (A*B*C* + A*C*B* + B*A*C* + B*C*A* + C*A*B* + C*B*A*)
+//
+// processes can self-loop:
+//   A -> A
+//   B -> B
+//   C -> C
+//
+// and bubble around:
+//   AB -> BA
+//   BA -> AB
+//   AC -> CA
+//   CA -> AC
+//   BC -> CB
+//   CB -> BC
+
+// initial: words of length >= 1
+I0 {
+  init: s0;
+
+  s0 -> s1p A;
+  s0 -> s1p B;
+  s0 -> s1p C;
+  s1p -> s1 delim;
+
+  s1 -> s1p A;
+  s1 -> s1p B;
+  s1 -> s1p C;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+// final: TODO
+F {
+  init: s0;
+
+  //////////////////////////////
+  // starting with A
+  //////////////////////////////
+  s0 -> sA;
+  sA -> sA A;
+  sA -> sA delim;
+
+  // starting with AB
+  sA -> sAB;
+  sAB -> sAB B;
+  sAB -> sAB delim;
+
+  sAB -> sABC;
+  sABC -> sABC C;
+  sABC -> sABC delim;
+
+  // starting with AC
+  sA -> sAC;
+  sAC -> sAC C;
+  sAC -> sAC delim;
+
+  sAC -> sACB;
+  sACB -> sACB B;
+  sACB -> sACB delim;
+
+  //////////////////////////////
+  // starting with B
+  //////////////////////////////
+  s0 -> sB;
+  sB -> sB B;
+  sB -> sB delim;
+
+  // starting with BA
+  sB -> sBA;
+  sBA -> sBA A;
+  sBA -> sBA delim;
+
+  sBA -> sABC;
+
+  // starting with BC
+  sB -> sBC;
+  sBC -> sBC C;
+  sBC -> sBC delim;
+
+  sBC -> sBCA;
+  sBCA -> sBCA A;
+  sBCA -> sBCA delim;
+
+  //////////////////////////////
+  // starting with C
+  //////////////////////////////
+  s0 -> sC;
+  sC -> sC C;
+  sC -> sC delim;
+
+  // starting with CA
+  sC -> sCA;
+  sCA -> sCA A;
+  sCA -> sCA delim;
+
+  sCA -> sACB;
+
+  // starting with CB
+  sC -> sCB;
+  sCB -> sCB B;
+  sCB -> sCB delim;
+
+  sCB -> sBCA;
+
+  accepting: sABC, sACB, sBCA;
+}
+
+// everything is enabled
+Enabled {
+  init: s1;
+
+  s1p -> s1 enabled;
+
+  s1 -> s1p A;
+  s1 -> s1p B;
+  s1 -> s1p C;
+
+  accepting: s1;
+}
+
+P2 {
+  init: s0;
+
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 C/C;
+  s0 -> s0 delim/delim;
+
+  // all processes can self-loop:
+  //   A -> A
+  //   B -> B
+  //   C -> C
+  s0 -> ssl;
+
+  ssl -> sfinalcopy chosen/delim;
+
+  sfinalcopy -> sfinalcopy A/A;
+  sfinalcopy -> sfinalcopy B/B;
+  sfinalcopy -> sfinalcopy C/C;
+  sfinalcopy -> sfinalcopy delim/delim;
+
+  // AB -> BA for A chosen
+  s0 -> sABa1 A/B;
+  sABa1 -> sABa2 chosen/delim;
+  sABa2 -> sfinalcopy B/A;
+
+  // AB -> BA for B chosen
+  s0 -> sABb1 A/B;
+  sABb1 -> sABb2 delim/delim;
+  sABb2 -> sABb3 B/A;
+  sABb3 -> sfinalcopy chosen/delim;
+
+  // BA -> AB for B chosen
+  s0 -> sBAb1 B/A;
+  sBAb1 -> sBAb2 chosen/delim;
+  sBAb2 -> sfinalcopy A/B;
+
+  // BA -> AB for A chosen
+  s0 -> sBAa1 B/A;
+  sBAa1 -> sBAa2 delim/delim;
+  sBAa2 -> sBAa3 A/B;
+  sBAa3 -> sfinalcopy chosen/delim;
+
+  // AC -> CA for A chosen
+  s0 -> sACa1 A/C;
+  sACa1 -> sACa2 chosen/delim;
+  sACa2 -> sfinalcopy C/A;
+
+  // AC -> CA for C chosen
+  s0 -> sACc1 A/C;
+  sACc1 -> sACc2 delim/delim;
+  sACc2 -> sACc3 C/A;
+  sACc3 -> sfinalcopy chosen/delim;
+
+  // CA -> AC for C chosen
+  s0 -> sCAc1 C/A;
+  sCAc1 -> sCAc2 chosen/delim;
+  sCAc2 -> sfinalcopy A/C;
+
+  // CA -> AC for A chosen
+  s0 -> sCAa1 C/A;
+  sCAa1 -> sCAa2 delim/delim;
+  sCAa2 -> sCAa3 A/C;
+  sCAa3 -> sfinalcopy chosen/delim;
+
+  // BC -> CB for B chosen
+  s0 -> sBCb1 B/C;
+  sBCb1 -> sBCb2 chosen/delim;
+  sBCb2 -> sfinalcopy C/B;
+
+  // BC -> CB for C chosen
+  s0 -> sBCc1 B/C;
+  sBCc1 -> sBCc2 delim/delim;
+  sBCc2 -> sBCc3 C/B;
+  sBCc3 -> sfinalcopy chosen/delim;
+
+  // CB -> BC for C chosen
+  s0 -> sCBc1 C/B;
+  sCBc1 -> sCBc2 chosen/delim;
+  sCBc2 -> sfinalcopy B/C;
+
+  // CB -> BC for B chosen
+  s0 -> sCBb1 C/B;
+  sCBb1 -> sCBb2 delim/delim;
+  sCBb2 -> sCBb3 B/C;
+  sCBb3 -> sfinalcopy chosen/delim;
+
+
+  accepting: sfinalcopy;
+}
+
+transducerStateGuessing: 1 .. 5;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+// noPrecomputedInvariant;
+useRankingFunctions;
+
+logLevel: 1;
+parallel: 1;
+
+// explicitChecksUntilLength: 20;

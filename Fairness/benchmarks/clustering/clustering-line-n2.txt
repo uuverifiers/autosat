@@ -1,4 +1,4 @@
-// Clustering on a line: changing from (A + B)* to A*B*
+// Clustering on a line for 2 alleles: changing from (A + B)* to (A*B* + B*A*)
 //
 // processes can self-loop:
 //   A -> A
