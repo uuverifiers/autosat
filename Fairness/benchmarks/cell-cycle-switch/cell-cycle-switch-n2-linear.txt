@@ -1,5 +1,11 @@
 // Agents changing their opinion according to neighbours on a linear array
 //
+// The problem can also be treated as a population model with two species (X and
+// Y) played on a linear array where the possible values of a cell is X, Y, or B
+// (empty cell).  A member of a species (X or Y) can interact with his direct
+// neighbours by (i) killing a neighbour (e.g. XY -> XB or YX -> YB), or
+// reproducing into an empty neighbouring cell (e.g. XB -> XX)
+//
 // ==========================================================================
 // Agents can have one of two opinions, X and Y, or be undecided ( B )
 // In each round, pick an agent (scheduler).
@@ -25,12 +31,14 @@ I0 {
   // at least 2 agents
   //
   s0 -> s1d X;
-  s0 -> s1d Y;
+  // don't consider Y's 
+  // s0 -> s1d Y;
   s0 -> s1d B;
   s1d -> s1 delim;
 
   s1 -> s1d X;
-  s1 -> s1d Y;
+  // don't consider Y's 
+  // s1 -> s1d Y;
   s1 -> s1d B;
 
   accepting: s1;
@@ -119,12 +127,17 @@ P2 {
   accepting: sfinal;
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 0 .. 4;
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 0 .. 10;
 
-explicitChecksUntilLength: 12;
 
 // noPrecomputedInvariant;
-monolithicWitness;
+// monolithicWitness;
+// useRankingFunctions
 
+parallel: 1;
 logLevel: 1;
+
+// explicitChecksUntilLength: 28;
+
+

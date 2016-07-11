@@ -82,39 +82,62 @@ I0 {
 
   init: sinit;
 
-  sinit -> s0a;
-  sinit -> s0b;
-  sinit -> s0d;
+//  sinit -> s0a;
+//  sinit -> s0b;
+//  sinit -> s0d;
+//
+//  // marking the first philosopher
+//  s0a -> s1ad n_Hm_n;
+//  s1ad -> s1a delim;
+//  s1a -> s2ad n_H_n;
+//  s2ad -> s2a delim;
+//  s2a -> s3ad n_H_n;
+//  s3ad -> s3a delim;
+//  s3a -> s3ad n_H_n;
+//
+//  // marking the second philosopher
+//  s0b -> s1bd n_H_n;
+//  s1bd -> s1b delim;
+//  s1b -> s2bd n_Hm_n;
+//  s2bd -> s2b delim;
+//  s2b -> s3bd n_H_n;
+//  s3bd -> s3b delim;
+//  s3b -> s3bd n_H_n;
+//  
+//  // marking any other philosopher
+//  s0d -> s1dd n_H_n;
+//  s1dd -> s1d delim;
+//  s1d -> s2dd n_H_n;
+//  s2dd -> s2d delim;
+//  s2d -> s2dd n_H_n;
+//  s2d -> s3dd n_Hm_n;
+//  s3dd -> s3d delim;
+//  s3d -> s3dd n_H_n;
+//
+// accepting: s3a, s3b, s3d;
 
-  // marking the first philosopher
-  s0a -> s1ad n_Hm_n;
-  s1ad -> s1a delim;
-  s1a -> s2ad n_H_n;
-  s2ad -> s2a delim;
-  s2a -> s3ad n_H_n;
-  s3ad -> s3a delim;
-  s3a -> s3ad n_H_n;
+  // first philosopher
+  sinit -> sp1l N;
+  sp1l -> sp1c H;
+  sp1c -> sp1r N;
+  sp1r -> sp1d delim;
 
-  // marking the second philosopher
-  s0b -> s1bd n_H_n;
-  s1bd -> s1b delim;
-  s1b -> s2bd n_Hm_n;
-  s2bd -> s2b delim;
-  s2b -> s3bd n_H_n;
-  s3bd -> s3b delim;
-  s3b -> s3bd n_H_n;
-  
-  // marking any other philosopher
-  s0d -> s1dd n_H_n;
-  s1dd -> s1d delim;
-  s1d -> s2dd n_H_n;
-  s2dd -> s2d delim;
-  s2d -> s2dd n_H_n;
-  s2d -> s3dd n_Hm_n;
-  s3dd -> s3d delim;
-  s3d -> s3dd n_H_n;
+  // second philosopher
+  sp1d -> sp2l N;
+  sp2l -> sp2c H;
+  sp2c -> sp2r N;
+  sp2r -> sp2d delim;
 
-  accepting: s3a, s3b, s3d;
+  // other philosophers
+  sp2d -> sp3l N;
+  sp3l -> sp3c H;
+  sp3c -> sp3r N;
+  sp3r -> sp3d delim;
+
+  // loop
+  sp3d -> sp3l N;
+
+  accepting: sp3d;
 }
 
 closedUnderTransitions;
@@ -122,157 +145,202 @@ closedUnderTransitions;
 F {
   init: s0;
 
-  // H
-  s0 -> s0d n_H_n;
-  s0 -> s0d n_H_l;
-  s0 -> s0d n_H_r;
-  s0 -> s0d l_H_n;
-  s0 -> s0d l_H_l;
-  s0 -> s0d l_H_r;
-  s0 -> s0d r_H_n;
-  s0 -> s0d r_H_l;
-  s0 -> s0d r_H_r;
+//   // H
+//   s0 -> s0d n_H_n;
+//   s0 -> s0d n_H_l;
+//   s0 -> s0d n_H_r;
+//   s0 -> s0d l_H_n;
+//   s0 -> s0d l_H_l;
+//   s0 -> s0d l_H_r;
+//   s0 -> s0d r_H_n;
+//   s0 -> s0d r_H_l;
+//   s0 -> s0d r_H_r;
+// 
+//   // Wl
+//   s0 -> s0d n_Wl_n;
+//   s0 -> s0d n_Wl_l;
+//   s0 -> s0d n_Wl_r;
+//   s0 -> s0d l_Wl_n;
+//   s0 -> s0d l_Wl_l;
+//   s0 -> s0d l_Wl_r;
+//   s0 -> s0d r_Wl_n;
+//   s0 -> s0d r_Wl_l;
+//   s0 -> s0d r_Wl_r;
+// 
+//   // Wr
+//   s0 -> s0d n_Wr_n;
+//   s0 -> s0d n_Wr_l;
+//   s0 -> s0d n_Wr_r;
+//   s0 -> s0d l_Wr_n;
+//   s0 -> s0d l_Wr_l;
+//   s0 -> s0d l_Wr_r;
+//   s0 -> s0d r_Wr_n;
+//   s0 -> s0d r_Wr_l;
+//   s0 -> s0d r_Wr_r;
+// 
+//   // Sl
+//   s0 -> s0d n_Sl_n;
+//   s0 -> s0d n_Sl_l;
+//   s0 -> s0d n_Sl_r;
+//   s0 -> s0d l_Sl_n;
+//   s0 -> s0d l_Sl_l;
+//   s0 -> s0d l_Sl_r;
+//   s0 -> s0d r_Sl_n;
+//   s0 -> s0d r_Sl_l;
+//   s0 -> s0d r_Sl_r;
+// 
+//   // Sr
+//   s0 -> s0d n_Sr_n;
+//   s0 -> s0d n_Sr_l;
+//   s0 -> s0d n_Sr_r;
+//   s0 -> s0d l_Sr_n;
+//   s0 -> s0d l_Sr_l;
+//   s0 -> s0d l_Sr_r;
+//   s0 -> s0d r_Sr_n;
+//   s0 -> s0d r_Sr_l;
+//   s0 -> s0d r_Sr_r;
+// 
+//   // E
+//   s0 -> s0d n_E_n;
+//   s0 -> s0d n_E_l;
+//   s0 -> s0d n_E_r;
+//   s0 -> s0d l_E_n;
+//   s0 -> s0d l_E_l;
+//   s0 -> s0d l_E_r;
+//   s0 -> s0d r_E_n;
+//   s0 -> s0d r_E_l;
+//   s0 -> s0d r_E_r;
+// 
+//   s0d -> s0 delim;
+// 
+//   // the marked guy
+//   // Em
+//   s0 -> s1d n_Em_n;
+//   s0 -> s1d n_Em_l;
+//   s0 -> s1d n_Em_r;
+//   s0 -> s1d l_Em_n;
+//   s0 -> s1d l_Em_l;
+//   s0 -> s1d l_Em_r;
+//   s0 -> s1d r_Em_n;
+//   s0 -> s1d r_Em_l;
+//   s0 -> s1d r_Em_r;
+// 
+//   // after the marked guy
+// 
+//   // H
+//   s1 -> s1d n_H_n;
+//   s1 -> s1d n_H_l;
+//   s1 -> s1d n_H_r;
+//   s1 -> s1d l_H_n;
+//   s1 -> s1d l_H_l;
+//   s1 -> s1d l_H_r;
+//   s1 -> s1d r_H_n;
+//   s1 -> s1d r_H_l;
+//   s1 -> s1d r_H_r;
+// 
+//   // Wl
+//   s1 -> s1d n_Wl_n;
+//   s1 -> s1d n_Wl_l;
+//   s1 -> s1d n_Wl_r;
+//   s1 -> s1d l_Wl_n;
+//   s1 -> s1d l_Wl_l;
+//   s1 -> s1d l_Wl_r;
+//   s1 -> s1d r_Wl_n;
+//   s1 -> s1d r_Wl_l;
+//   s1 -> s1d r_Wl_r;
+// 
+//   // Wr
+//   s1 -> s1d n_Wr_n;
+//   s1 -> s1d n_Wr_l;
+//   s1 -> s1d n_Wr_r;
+//   s1 -> s1d l_Wr_n;
+//   s1 -> s1d l_Wr_l;
+//   s1 -> s1d l_Wr_r;
+//   s1 -> s1d r_Wr_n;
+//   s1 -> s1d r_Wr_l;
+//   s1 -> s1d r_Wr_r;
+// 
+//   // Sl
+//   s1 -> s1d n_Sl_n;
+//   s1 -> s1d n_Sl_l;
+//   s1 -> s1d n_Sl_r;
+//   s1 -> s1d l_Sl_n;
+//   s1 -> s1d l_Sl_l;
+//   s1 -> s1d l_Sl_r;
+//   s1 -> s1d r_Sl_n;
+//   s1 -> s1d r_Sl_l;
+//   s1 -> s1d r_Sl_r;
+// 
+//   // Sr
+//   s1 -> s1d n_Sr_n;
+//   s1 -> s1d n_Sr_l;
+//   s1 -> s1d n_Sr_r;
+//   s1 -> s1d l_Sr_n;
+//   s1 -> s1d l_Sr_l;
+//   s1 -> s1d l_Sr_r;
+//   s1 -> s1d r_Sr_n;
+//   s1 -> s1d r_Sr_l;
+//   s1 -> s1d r_Sr_r;
+// 
+//   // E
+//   s1 -> s1d n_E_n;
+//   s1 -> s1d n_E_l;
+//   s1 -> s1d n_E_r;
+//   s1 -> s1d l_E_n;
+//   s1 -> s1d l_E_l;
+//   s1 -> s1d l_E_r;
+//   s1 -> s1d r_E_n;
+//   s1 -> s1d r_E_l;
+//   s1 -> s1d r_E_r;
+// 
+//   s1d -> s1 delim;
+// 
+//   accepting: s1;
 
-  // Wl
-  s0 -> s0d n_Wl_n;
-  s0 -> s0d n_Wl_l;
-  s0 -> s0d n_Wl_r;
-  s0 -> s0d l_Wl_n;
-  s0 -> s0d l_Wl_l;
-  s0 -> s0d l_Wl_r;
-  s0 -> s0d r_Wl_n;
-  s0 -> s0d r_Wl_l;
-  s0 -> s0d r_Wl_r;
+  /////////////////////////////////
+  // before
+  /////////////////////////////////
+  s0 -> sp1l N;
+  s0 -> sp1l L;
+  s0 -> sp1l R;
 
-  // Wr
-  s0 -> s0d n_Wr_n;
-  s0 -> s0d n_Wr_l;
-  s0 -> s0d n_Wr_r;
-  s0 -> s0d l_Wr_n;
-  s0 -> s0d l_Wr_l;
-  s0 -> s0d l_Wr_r;
-  s0 -> s0d r_Wr_n;
-  s0 -> s0d r_Wr_l;
-  s0 -> s0d r_Wr_r;
+  sp1l -> sp1c H;
+  sp1l -> sp1c Wl;
+  sp1l -> sp1c Wr;
+  sp1l -> sp1c Sl;
+  sp1l -> sp1c Sr;
+  sp1l -> sp1c E;
 
-  // Sl
-  s0 -> s0d n_Sl_n;
-  s0 -> s0d n_Sl_l;
-  s0 -> s0d n_Sl_r;
-  s0 -> s0d l_Sl_n;
-  s0 -> s0d l_Sl_l;
-  s0 -> s0d l_Sl_r;
-  s0 -> s0d r_Sl_n;
-  s0 -> s0d r_Sl_l;
-  s0 -> s0d r_Sl_r;
+  // one eating
+  sp1l -> sp2c E;
 
-  // Sr
-  s0 -> s0d n_Sr_n;
-  s0 -> s0d n_Sr_l;
-  s0 -> s0d n_Sr_r;
-  s0 -> s0d l_Sr_n;
-  s0 -> s0d l_Sr_l;
-  s0 -> s0d l_Sr_r;
-  s0 -> s0d r_Sr_n;
-  s0 -> s0d r_Sr_l;
-  s0 -> s0d r_Sr_r;
+  sp1c -> sp1r N;
+  sp1c -> sp1r L;
+  sp1c -> sp1r R;
 
-  // E
-  s0 -> s0d n_E_n;
-  s0 -> s0d n_E_l;
-  s0 -> s0d n_E_r;
-  s0 -> s0d l_E_n;
-  s0 -> s0d l_E_l;
-  s0 -> s0d l_E_r;
-  s0 -> s0d r_E_n;
-  s0 -> s0d r_E_l;
-  s0 -> s0d r_E_r;
+  sp1r -> s0 delim;
 
-  s0d -> s0 delim;
+  /////////////////////////////////
+  // after
+  /////////////////////////////////
+  sp2c -> sp2r N;
+  sp2c -> sp2r R;
+  sp2c -> sp2r L;
 
-  // the marked guy
-  // Em
-  s0 -> s1d n_Em_n;
-  s0 -> s1d n_Em_l;
-  s0 -> s1d n_Em_r;
-  s0 -> s1d l_Em_n;
-  s0 -> s1d l_Em_l;
-  s0 -> s1d l_Em_r;
-  s0 -> s1d r_Em_n;
-  s0 -> s1d r_Em_l;
-  s0 -> s1d r_Em_r;
+  sp2r -> sp2d delim;
+  
+  sp2d -> sp2l N;
+  sp2d -> sp2l R;
+  sp2d -> sp2l L;
 
-  // after the marked guy
+  sp2l -> sp2c H;
+  sp2l -> sp2c Wl;
+  sp2l -> sp2c Wr;
+  sp2l -> sp2c Sl;
+  sp2l -> sp2c Sr;
+  sp2l -> sp2c E;
 
-  // H
-  s1 -> s1d n_H_n;
-  s1 -> s1d n_H_l;
-  s1 -> s1d n_H_r;
-  s1 -> s1d l_H_n;
-  s1 -> s1d l_H_l;
-  s1 -> s1d l_H_r;
-  s1 -> s1d r_H_n;
-  s1 -> s1d r_H_l;
-  s1 -> s1d r_H_r;
-
-  // Wl
-  s1 -> s1d n_Wl_n;
-  s1 -> s1d n_Wl_l;
-  s1 -> s1d n_Wl_r;
-  s1 -> s1d l_Wl_n;
-  s1 -> s1d l_Wl_l;
-  s1 -> s1d l_Wl_r;
-  s1 -> s1d r_Wl_n;
-  s1 -> s1d r_Wl_l;
-  s1 -> s1d r_Wl_r;
-
-  // Wr
-  s1 -> s1d n_Wr_n;
-  s1 -> s1d n_Wr_l;
-  s1 -> s1d n_Wr_r;
-  s1 -> s1d l_Wr_n;
-  s1 -> s1d l_Wr_l;
-  s1 -> s1d l_Wr_r;
-  s1 -> s1d r_Wr_n;
-  s1 -> s1d r_Wr_l;
-  s1 -> s1d r_Wr_r;
-
-  // Sl
-  s1 -> s1d n_Sl_n;
-  s1 -> s1d n_Sl_l;
-  s1 -> s1d n_Sl_r;
-  s1 -> s1d l_Sl_n;
-  s1 -> s1d l_Sl_l;
-  s1 -> s1d l_Sl_r;
-  s1 -> s1d r_Sl_n;
-  s1 -> s1d r_Sl_l;
-  s1 -> s1d r_Sl_r;
-
-  // Sr
-  s1 -> s1d n_Sr_n;
-  s1 -> s1d n_Sr_l;
-  s1 -> s1d n_Sr_r;
-  s1 -> s1d l_Sr_n;
-  s1 -> s1d l_Sr_l;
-  s1 -> s1d l_Sr_r;
-  s1 -> s1d r_Sr_n;
-  s1 -> s1d r_Sr_l;
-  s1 -> s1d r_Sr_r;
-
-  // E
-  s1 -> s1d n_E_n;
-  s1 -> s1d n_E_l;
-  s1 -> s1d n_E_r;
-  s1 -> s1d l_E_n;
-  s1 -> s1d l_E_l;
-  s1 -> s1d l_E_r;
-  s1 -> s1d r_E_n;
-  s1 -> s1d r_E_l;
-  s1 -> s1d r_E_r;
-
-  s1d -> s1 delim;
-
-  accepting: s1;
+  accepting: sp2d;
 }
 
 
@@ -280,132 +348,151 @@ F {
 Enabled {
   init: s0;
 
-  s0 -> s1 n_H_n;
-  s0 -> s1 n_H_l;
-  s0 -> s1 n_H_r;
-  s0 -> s1 l_H_n;
-  s0 -> s1 l_H_l;
-  s0 -> s1 l_H_r;
-  s0 -> s1 r_H_n;
-  s0 -> s1 r_H_l;
-  s0 -> s1 r_H_r;
+//  s0 -> s1 n_H_n;
+//  s0 -> s1 n_H_l;
+//  s0 -> s1 n_H_r;
+//  s0 -> s1 l_H_n;
+//  s0 -> s1 l_H_l;
+//  s0 -> s1 l_H_r;
+//  s0 -> s1 r_H_n;
+//  s0 -> s1 r_H_l;
+//  s0 -> s1 r_H_r;
+//
+//  s0 -> s1 n_Hm_n;
+//  s0 -> s1 n_Hm_l;
+//  s0 -> s1 n_Hm_r;
+//  s0 -> s1 l_Hm_n;
+//  s0 -> s1 l_Hm_l;
+//  s0 -> s1 l_Hm_r;
+//  s0 -> s1 r_Hm_n;
+//  s0 -> s1 r_Hm_l;
+//  s0 -> s1 r_Hm_r;
+//
+//  // Wl
+//  s0 -> s1 n_Wl_n;
+//  s0 -> s1 n_Wl_l;
+//  s0 -> s1 n_Wl_r;
+//  s0 -> s1 l_Wl_n;
+//  s0 -> s1 l_Wl_l;
+//  s0 -> s1 l_Wl_r;
+//  s0 -> s1 r_Wl_n;
+//  s0 -> s1 r_Wl_l;
+//  s0 -> s1 r_Wl_r;
+//
+//  s0 -> s1 n_Wlm_n;
+//  s0 -> s1 n_Wlm_l;
+//  s0 -> s1 n_Wlm_r;
+//  s0 -> s1 l_Wlm_n;
+//  s0 -> s1 l_Wlm_l;
+//  s0 -> s1 l_Wlm_r;
+//  s0 -> s1 r_Wlm_n;
+//  s0 -> s1 r_Wlm_l;
+//  s0 -> s1 r_Wlm_r;
+//
+//  // Wr
+//  s0 -> s1 n_Wr_n;
+//  s0 -> s1 n_Wr_l;
+//  s0 -> s1 n_Wr_r;
+//  s0 -> s1 l_Wr_n;
+//  s0 -> s1 l_Wr_l;
+//  s0 -> s1 l_Wr_r;
+//  s0 -> s1 r_Wr_n;
+//  s0 -> s1 r_Wr_l;
+//  s0 -> s1 r_Wr_r;
+//
+//  s0 -> s1 n_Wrm_n;
+//  s0 -> s1 n_Wrm_l;
+//  s0 -> s1 n_Wrm_r;
+//  s0 -> s1 l_Wrm_n;
+//  s0 -> s1 l_Wrm_l;
+//  s0 -> s1 l_Wrm_r;
+//  s0 -> s1 r_Wrm_n;
+//  s0 -> s1 r_Wrm_l;
+//  s0 -> s1 r_Wrm_r;
+//
+//  // Sl
+//  s0 -> s1 n_Sl_n;
+//  s0 -> s1 n_Sl_l;
+//  s0 -> s1 n_Sl_r;
+//  s0 -> s1 l_Sl_n;
+//  s0 -> s1 l_Sl_l;
+//  s0 -> s1 l_Sl_r;
+//  s0 -> s1 r_Sl_n;
+//  s0 -> s1 r_Sl_l;
+//  s0 -> s1 r_Sl_r;
+//
+//  s0 -> s1 n_Slm_n;
+//  s0 -> s1 n_Slm_l;
+//  s0 -> s1 n_Slm_r;
+//  s0 -> s1 l_Slm_n;
+//  s0 -> s1 l_Slm_l;
+//  s0 -> s1 l_Slm_r;
+//  s0 -> s1 r_Slm_n;
+//  s0 -> s1 r_Slm_l;
+//  s0 -> s1 r_Slm_r;
+//
+//  // Sr
+//  s0 -> s1 n_Sr_n;
+//  s0 -> s1 n_Sr_l;
+//  s0 -> s1 n_Sr_r;
+//  s0 -> s1 l_Sr_n;
+//  s0 -> s1 l_Sr_l;
+//  s0 -> s1 l_Sr_r;
+//  s0 -> s1 r_Sr_n;
+//  s0 -> s1 r_Sr_l;
+//  s0 -> s1 r_Sr_r;
+//
+//  s0 -> s1 n_Srm_n;
+//  s0 -> s1 n_Srm_l;
+//  s0 -> s1 n_Srm_r;
+//  s0 -> s1 l_Srm_n;
+//  s0 -> s1 l_Srm_l;
+//  s0 -> s1 l_Srm_r;
+//  s0 -> s1 r_Srm_n;
+//  s0 -> s1 r_Srm_l;
+//  s0 -> s1 r_Srm_r;
+//
+//  // E
+//  s0 -> s1 n_E_n;
+//  s0 -> s1 n_E_l;
+//  s0 -> s1 n_E_r;
+//  s0 -> s1 l_E_n;
+//  s0 -> s1 l_E_l;
+//  s0 -> s1 l_E_r;
+//  s0 -> s1 r_E_n;
+//  s0 -> s1 r_E_l;
+//  s0 -> s1 r_E_r;
+//
+//  s0 -> s1 n_Em_n;
+//  s0 -> s1 n_Em_l;
+//  s0 -> s1 n_Em_r;
+//  s0 -> s1 l_Em_n;
+//  s0 -> s1 l_Em_l;
+//  s0 -> s1 l_Em_r;
+//  s0 -> s1 r_Em_n;
+//  s0 -> s1 r_Em_l;
+//  s0 -> s1 r_Em_r;
+//
+//  s1 -> s0 enabled;
+//
+//  accepting: s0;
 
-  s0 -> s1 n_Hm_n;
-  s0 -> s1 n_Hm_l;
-  s0 -> s1 n_Hm_r;
-  s0 -> s1 l_Hm_n;
-  s0 -> s1 l_Hm_l;
-  s0 -> s1 l_Hm_r;
-  s0 -> s1 r_Hm_n;
-  s0 -> s1 r_Hm_l;
-  s0 -> s1 r_Hm_r;
+  s0 -> sp1l N;
+  s0 -> sp1l L;
+  s0 -> sp1l R;
 
-  // Wl
-  s0 -> s1 n_Wl_n;
-  s0 -> s1 n_Wl_l;
-  s0 -> s1 n_Wl_r;
-  s0 -> s1 l_Wl_n;
-  s0 -> s1 l_Wl_l;
-  s0 -> s1 l_Wl_r;
-  s0 -> s1 r_Wl_n;
-  s0 -> s1 r_Wl_l;
-  s0 -> s1 r_Wl_r;
+  sp1l -> sp1c H;
+  sp1l -> sp1c Wl;
+  sp1l -> sp1c Wr;
+  sp1l -> sp1c Sl;
+  sp1l -> sp1c Sr;
+  sp1l -> sp1c E;
 
-  s0 -> s1 n_Wlm_n;
-  s0 -> s1 n_Wlm_l;
-  s0 -> s1 n_Wlm_r;
-  s0 -> s1 l_Wlm_n;
-  s0 -> s1 l_Wlm_l;
-  s0 -> s1 l_Wlm_r;
-  s0 -> s1 r_Wlm_n;
-  s0 -> s1 r_Wlm_l;
-  s0 -> s1 r_Wlm_r;
+  sp1c -> sp1r N;
+  sp1c -> sp1r L;
+  sp1c -> sp1r R;
 
-  // Wr
-  s0 -> s1 n_Wr_n;
-  s0 -> s1 n_Wr_l;
-  s0 -> s1 n_Wr_r;
-  s0 -> s1 l_Wr_n;
-  s0 -> s1 l_Wr_l;
-  s0 -> s1 l_Wr_r;
-  s0 -> s1 r_Wr_n;
-  s0 -> s1 r_Wr_l;
-  s0 -> s1 r_Wr_r;
-
-  s0 -> s1 n_Wrm_n;
-  s0 -> s1 n_Wrm_l;
-  s0 -> s1 n_Wrm_r;
-  s0 -> s1 l_Wrm_n;
-  s0 -> s1 l_Wrm_l;
-  s0 -> s1 l_Wrm_r;
-  s0 -> s1 r_Wrm_n;
-  s0 -> s1 r_Wrm_l;
-  s0 -> s1 r_Wrm_r;
-
-  // Sl
-  s0 -> s1 n_Sl_n;
-  s0 -> s1 n_Sl_l;
-  s0 -> s1 n_Sl_r;
-  s0 -> s1 l_Sl_n;
-  s0 -> s1 l_Sl_l;
-  s0 -> s1 l_Sl_r;
-  s0 -> s1 r_Sl_n;
-  s0 -> s1 r_Sl_l;
-  s0 -> s1 r_Sl_r;
-
-  s0 -> s1 n_Slm_n;
-  s0 -> s1 n_Slm_l;
-  s0 -> s1 n_Slm_r;
-  s0 -> s1 l_Slm_n;
-  s0 -> s1 l_Slm_l;
-  s0 -> s1 l_Slm_r;
-  s0 -> s1 r_Slm_n;
-  s0 -> s1 r_Slm_l;
-  s0 -> s1 r_Slm_r;
-
-  // Sr
-  s0 -> s1 n_Sr_n;
-  s0 -> s1 n_Sr_l;
-  s0 -> s1 n_Sr_r;
-  s0 -> s1 l_Sr_n;
-  s0 -> s1 l_Sr_l;
-  s0 -> s1 l_Sr_r;
-  s0 -> s1 r_Sr_n;
-  s0 -> s1 r_Sr_l;
-  s0 -> s1 r_Sr_r;
-
-  s0 -> s1 n_Srm_n;
-  s0 -> s1 n_Srm_l;
-  s0 -> s1 n_Srm_r;
-  s0 -> s1 l_Srm_n;
-  s0 -> s1 l_Srm_l;
-  s0 -> s1 l_Srm_r;
-  s0 -> s1 r_Srm_n;
-  s0 -> s1 r_Srm_l;
-  s0 -> s1 r_Srm_r;
-
-  // E
-  s0 -> s1 n_E_n;
-  s0 -> s1 n_E_l;
-  s0 -> s1 n_E_r;
-  s0 -> s1 l_E_n;
-  s0 -> s1 l_E_l;
-  s0 -> s1 l_E_r;
-  s0 -> s1 r_E_n;
-  s0 -> s1 r_E_l;
-  s0 -> s1 r_E_r;
-
-  s0 -> s1 n_Em_n;
-  s0 -> s1 n_Em_l;
-  s0 -> s1 n_Em_r;
-  s0 -> s1 l_Em_n;
-  s0 -> s1 l_Em_l;
-  s0 -> s1 l_Em_r;
-  s0 -> s1 r_Em_n;
-  s0 -> s1 r_Em_l;
-  s0 -> s1 r_Em_r;
-
-  s1 -> s0 enabled;
+  sp1r -> s0 enabled;
 
   accepting: s0;
 }
@@ -416,136 +503,532 @@ P2 {
 
   init: s0;
 
-  /////////////
+  /////////////////////////////////////////////////////
+  // self loop
+  /////////////////////////////////////////////////////
+  s0 -> ssl1;
 
-  s0 -> s1;
+  ssl1 -> ssl1 N/N;
+  ssl1 -> ssl1 L/L;
+  ssl1 -> ssl1 R/R;
+  ssl1 -> ssl1 H/H;
+  ssl1 -> ssl1 Wl/Wl;
+  ssl1 -> ssl1 Wr/Wr;
+  ssl1 -> ssl1 Sl/Sl;
+  ssl1 -> ssl1 Sr/Sr;
+  ssl1 -> ssl1 E/E;
+  ssl1 -> ssl1 delim/delim;
 
-  s1 -> s1 H/H;
-  s1 -> s1 Wl/Wl;
-  s1 -> s1 Wr/Wr;
-  s1 -> s1 Sl/Sl;
-  s1 -> s1 Sr/Sr;
+  ssl1 -> sfinalcopy chosen/delim;
 
-  s1 -> s2 H_/Wl;
-  s1 -> s2 H_/Wr;
-  s1 -> s2 Wl_/Sl;
-  s1 -> s2 Wr_/Sr;
+  sfinalcopy -> sfinalcopy N/N;
+  sfinalcopy -> sfinalcopy L/L;
+  sfinalcopy -> sfinalcopy R/R;
+  sfinalcopy -> sfinalcopy H/H;
+  sfinalcopy -> sfinalcopy Wl/Wl;
+  sfinalcopy -> sfinalcopy Wr/Wr;
+  sfinalcopy -> sfinalcopy Sl/Sl;
+  sfinalcopy -> sfinalcopy Sr/Sr;
+  sfinalcopy -> sfinalcopy E/E;
+  sfinalcopy -> sfinalcopy delim/delim;
 
-  s2 -> s2 H/H;
-  s2 -> s2 Wl/Wl;
-  s2 -> s2 Wr/Wr;
-  s2 -> s2 Sl/Sl;
-  s2 -> s2 Sr/Sr;
 
-  /////////////
 
-  s1 -> s6 H/H;
-  s1 -> s6 Wl/Wl;
-  s1 -> s6 Wr/Wr;
-  s1 -> s6 Sl/Sl;
+  /////////////////////////////////////////////////////
+  // get hungry
+  /////////////////////////////////////////////////////
+  s0 -> sgh1;
 
-  s6 -> s2 Sr_/E;
+  sgh1 -> sgh1 N/N;
+  sgh1 -> sgh1 L/L;
+  sgh1 -> sgh1 R/R;
+  sgh1 -> sgh1 H/H;
+  sgh1 -> sgh1 Wl/Wl;
+  sgh1 -> sgh1 Wr/Wr;
+  sgh1 -> sgh1 Sl/Sl;
+  sgh1 -> sgh1 Sr/Sr;
+  sgh1 -> sgh1 E/E;
+  sgh1 -> sgh1 delim/delim;
 
-  /////////////
+  sgh1 -> sgh2 H/Wl;
+  sgh1 -> sgh2 H/Wr;
 
-  s1 -> s7 Sr/Sr;
+  sgh2 -> sgh3 N/N;
+  sgh2 -> sgh3 L/L;
+  sgh2 -> sgh3 R/R;
 
-  s7 -> s2 Sr_/H;
+  sgh3 -> sfinalcopy chosen/delim;
 
-  /////////////
+  /////////////////////////////////////////////////////
+  // take left fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> stln1;
 
-  s1 -> s8 Sl_/E;
+  stln1 -> stln1 N/N;
+  stln1 -> stln1 L/L;
+  stln1 -> stln1 R/R;
+  stln1 -> stln1 H/H;
+  stln1 -> stln1 Wl/Wl;
+  stln1 -> stln1 Wr/Wr;
+  stln1 -> stln1 Sl/Sl;
+  stln1 -> stln1 Sr/Sr;
+  stln1 -> stln1 E/E;
+  stln1 -> stln1 delim/delim;
 
-  s8 -> s2 H/H;
-  s8 -> s2 Wl/Wl;
-  s8 -> s2 Wr/Wr;
-  s8 -> s2 Sr/Sr;
+  stln1 -> stln2 H/H;
+  stln1 -> stln2 Wl/Wl;
+  stln1 -> stln2 Wr/Wr;
+  stln1 -> stln2 Sl/Sl;
 
-  /////////////
+  stln2 -> stln3 N/N;
+  stln2 -> stln3 L/L;
+  stln3 -> stln4 delim/delim;
+  stln4 -> stln5 N/N;
+  stln4 -> stln5 L/L;
 
-  s1 -> s9 Sl_/H;
+  stln5 -> stln6 Wl/Sl;
 
-  s9 -> s2 Sl/Sl;
+  stln6 -> stln7 N/N;
+  stln6 -> stln7 L/L;
+  stln6 -> stln7 R/R;
+  stln7 -> sfinalcopy chosen/delim;
 
-  /////////////
+  /////////////////////////////////////////////////////
+  // take left fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> stlw1;
 
-  // wrap-around case 1a
+  stlw1 -> stlw2 N/N;
+  stlw1 -> stlw2 L/L;
 
-  s0 -> s10;
+  stlw2 -> stlw3 Wl/Sl;
 
-  s10 -> s11 Sr_/E;
+  stlw3 -> stlw4 N/N;
+  stlw3 -> stlw4 L/L;
+  stlw3 -> stlw4 R/R;
+  stlw4 -> stlw5 chosen/delim;
 
-  s11 -> s11 H/H;
-  s11 -> s11 Wl/Wl;
-  s11 -> s11 Wr/Wr;
-  s11 -> s11 Sl/Sl;
-  s11 -> s11 Sr/Sr;
+  stlw5 -> stlw5 N/N;
+  stlw5 -> stlw5 L/L;
+  stlw5 -> stlw5 R/R;
+  stlw5 -> stlw5 H/H;
+  stlw5 -> stlw5 Wl/Wl;
+  stlw5 -> stlw5 Wr/Wr;
+  stlw5 -> stlw5 Sl/Sl;
+  stlw5 -> stlw5 Sr/Sr;
+  stlw5 -> stlw5 E/E;
+  stlw5 -> stlw5 delim/delim;
 
-  s11 -> s12 H/H;
-  s11 -> s12 Wl/Wl;
-  s11 -> s12 Wr/Wr;
-  s11 -> s12 Sl/Sl;
+  stlw5 -> stlw6 H/H;
+  stlw5 -> stlw6 Wl/Wl;
+  stlw5 -> stlw6 Wr/Wr;
+  stlw5 -> stlw6 Sl/Sl;
 
-  /////////////
+  stlw6 -> stlw7 N/N;
+  stlw6 -> stlw7 L/L;
+  stlw7 -> sfinalterminal delim/delim;
 
-  // wrap-around case 1b
+  /////////////////////////////////////////////////////
+  // take right fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> strn1;
 
-  s0 -> s15;
+  strn1 -> strn1 N/N;
+  strn1 -> strn1 L/L;
+  strn1 -> strn1 R/R;
+  strn1 -> strn1 H/H;
+  strn1 -> strn1 Wl/Wl;
+  strn1 -> strn1 Wr/Wr;
+  strn1 -> strn1 Sl/Sl;
+  strn1 -> strn1 Sr/Sr;
+  strn1 -> strn1 E/E;
+  strn1 -> strn1 delim/delim;
 
-  s15 -> s16 Sr_/H;
+  strn1 -> strn2 Wr/Sr;
 
-  s16 -> s16 H/H;
-  s16 -> s16 Wl/Wl;
-  s16 -> s16 Wr/Wr;
-  s16 -> s16 Sl/Sl;
-  s16 -> s16 Sr/Sr;
+  strn2 -> strn3 N/N;
+  strn2 -> strn3 R/R;
+  strn3 -> strn4 chosen/delim;
+  strn4 -> strn5 N/N;
+  strn4 -> strn5 R/R;
 
-  s16 -> s17 Sr/Sr;
+  strn5 -> sfinalcopy H/H;
+  strn5 -> sfinalcopy Wl/Wl;
+  strn5 -> sfinalcopy Wr/Wr;
+  strn5 -> sfinalcopy Sr/Sr;
+
+  /////////////////////////////////////////////////////
+  // take right fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> strw1;
+
+  strw1 -> strw2 N/N;
+  strw1 -> strw2 R/R;
+
+  strw2 -> strw3 H/H;
+  strw2 -> strw3 Wl/Wl;
+  strw2 -> strw3 Wr/Wr;
+  strw2 -> strw3 Sr/Sr;
+
+  strw3 -> strw3 N/N;
+  strw3 -> strw3 L/L;
+  strw3 -> strw3 R/R;
+  strw3 -> strw3 H/H;
+  strw3 -> strw3 Wl/Wl;
+  strw3 -> strw3 Wr/Wr;
+  strw3 -> strw3 Sl/Sl;
+  strw3 -> strw3 Sr/Sr;
+  strw3 -> strw3 E/E;
+  strw3 -> strw3 delim/delim;
+
+  strw3 -> strw4 Wr/Sr;
+
+  strw4 -> strw5 N/N;
+  strw4 -> strw5 R/R;
+  strw5 -> sfinalterminal chosen/delim;
+
+  /////////////////////////////////////////////////////
+  // complete right fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> scrn1;
+
+  scrn1 -> scrn1 N/N;
+  scrn1 -> scrn1 L/L;
+  scrn1 -> scrn1 R/R;
+  scrn1 -> scrn1 H/H;
+  scrn1 -> scrn1 Wl/Wl;
+  scrn1 -> scrn1 Wr/Wr;
+  scrn1 -> scrn1 Sl/Sl;
+  scrn1 -> scrn1 Sr/Sr;
+  scrn1 -> scrn1 E/E;
+  scrn1 -> scrn1 delim/delim;
+
+  scrn1 -> scrn2 Sl/E;
+  scrn2 -> scrn3 N/N;
+  scrn2 -> scrn3 L/L;
+  scrn2 -> scrn3 R/R;
+
+  scrn3 -> scrn4 chosen/delim;
+
+  scrn4 -> scrn5 N/N;
+  scrn4 -> scrn5 L/L;
+  scrn4 -> scrn5 R/R;
+
+  scrn5 -> sfinalcopy H/H;
+  scrn5 -> sfinalcopy Wl/Wl;
+  scrn5 -> sfinalcopy Wr/Wr;
+  scrn5 -> sfinalcopy Sr/Sr;
+
+  scrn1 -> scrn6 Sl/Wl;
+  scrn1 -> scrn6 Sl/Wr;
+  scrn6 -> scrn7 N/N;
+  scrn6 -> scrn7 L/L;
+  scrn6 -> scrn7 R/R;
   
-  /////////////
+  scrn7 -> scrn8 chosen/delim;
 
-  // wrap-around case 2a
+  scrn8 -> scrn9 N/N;
+  scrn8 -> scrn9 L/L;
+  scrn8 -> scrn9 R/R;
 
-  s0 -> s20;
+  scrn9 -> sfinalcopy Sl/Sl;
+  scrn9 -> sfinalcopy E/E;
 
-  s20 -> s21 H/H;
-  s20 -> s21 Wl/Wl;
-  s20 -> s21 Wr/Wr;
-  s20 -> s21 Sr/Sr;
 
-  s21 -> s21 H/H;
-  s21 -> s21 Wl/Wl;
-  s21 -> s21 Wr/Wr;
-  s21 -> s21 Sl/Sl;
-  s21 -> s21 Sr/Sr;
+  /////////////////////////////////////////////////////
+  // complete right fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> scrw1;
 
-  s21 -> s22 Sl_/E;
+  scrw1 -> scrw2 N/N;
+  scrw1 -> scrw2 L/L;
+  scrw1 -> scrw2 R/R;
 
-  /////////////
+  scrw2 -> scrw3 H/H;
+  scrw2 -> scrw3 Wl/Wl;
+  scrw2 -> scrw3 Wr/Wr;
+  scrw2 -> scrw3 Sr/Sr;
 
-  // wrap-around case 2b
+  scrw3 -> scrw3 N/N;
+  scrw3 -> scrw3 L/L;
+  scrw3 -> scrw3 R/R;
+  scrw3 -> scrw3 H/H;
+  scrw3 -> scrw3 Wl/Wl;
+  scrw3 -> scrw3 Wr/Wr;
+  scrw3 -> scrw3 Sl/Sl;
+  scrw3 -> scrw3 Sr/Sr;
+  scrw3 -> scrw3 E/E;
+  scrw3 -> scrw3 delim/delim;
 
-  s0 -> s25;
+  scrw3 -> scrw4 Sl/E;
 
-  s25 -> s26 Sl/Sl;
+  scrw4 -> scrw5 N/N;
+  scrw4 -> scrw5 L/L;
+  scrw4 -> scrw5 R/R;
 
-  s26 -> s26 H/H;
-  s26 -> s26 Wl/Wl;
-  s26 -> s26 Wr/Wr;
-  s26 -> s26 Sl/Sl;
-  s26 -> s26 Sr/Sr;
+  scrw5 -> sfinalterminal chosen/delim;
 
-  s26 -> s27 Sl_/H;
+  scrw2 -> scrw6 Sl/Sl;
+  scrw2 -> scrw6 E/E;
 
-  /////////////
+  scrw6 -> scrw6 N/N;
+  scrw6 -> scrw6 L/L;
+  scrw6 -> scrw6 R/R;
+  scrw6 -> scrw6 H/H;
+  scrw6 -> scrw6 Wl/Wl;
+  scrw6 -> scrw6 Wr/Wr;
+  scrw6 -> scrw6 Sl/Sl;
+  scrw6 -> scrw6 Sr/Sr;
+  scrw6 -> scrw6 E/E;
+  scrw6 -> scrw6 delim/delim;
 
-  accepting: s2, s12, s17, s22, s27;
+  scrw6 -> scrw4 Sl/Wl;
+  scrw6 -> scrw4 Sl/Wr;
 
+  /////////////////////////////////////////////////////
+  // complete left fork nowrap
+  /////////////////////////////////////////////////////
+  s0 -> scln1;
+
+  scln1 -> scln1 N/N;
+  scln1 -> scln1 L/L;
+  scln1 -> scln1 R/R;
+  scln1 -> scln1 H/H;
+  scln1 -> scln1 Wl/Wl;
+  scln1 -> scln1 Wr/Wr;
+  scln1 -> scln1 Sl/Sl;
+  scln1 -> scln1 Sr/Sr;
+  scln1 -> scln1 E/E;
+  scln1 -> scln1 delim/delim;
+
+  scln1 -> scln2 H/H;
+  scln1 -> scln2 Wl/Wl;
+  scln1 -> scln2 Wr/Wr;
+  scln1 -> scln2 Sl/Sl;
+
+  scln2 -> scln3 N/N;
+  scln2 -> scln3 L/L;
+  scln2 -> scln3 R/R;
+
+  scln3 -> scln4 delim/delim;
+
+  scln4 -> scln5 N/N;
+  scln4 -> scln5 L/L;
+  scln4 -> scln5 R/R;
+
+  scln5 -> scln6 Sr/E;
+
+  scln6 -> scln7 N/N;
+  scln6 -> scln7 L/L;
+  scln6 -> scln7 R/R;
+  scln7 -> sfinalcopy chosen/enabled;
+
+  scln1 -> scln8 Sr/Sr;
+  scln1 -> scln8 E/E;
+
+  scln8 -> scln9 N/N;
+  scln8 -> scln9 L/L;
+  scln8 -> scln9 R/R;
+
+  scln9 -> scln10 delim/delim;
+
+  scln10 -> scln11 N/N;
+  scln10 -> scln11 L/L;
+  scln10 -> scln11 R/R;
+
+  scln11 -> scln6 Sr/Wl;
+  scln11 -> scln6 Sr/Wr;
+
+
+  /////////////////////////////////////////////////////
+  // complete left fork wrap-around
+  /////////////////////////////////////////////////////
+  s0 -> sclw1;
+
+  sclw1 -> sclw2 N/N;
+  sclw1 -> sclw2 L/L;
+  sclw1 -> sclw2 R/R;
+
+  sclw2 -> sclw3 Sr/E;
+  sclw3 -> sclw4 N/N;
+  sclw3 -> sclw4 L/L;
+  sclw3 -> sclw4 R/R;
+
+  sclw4 -> sclw5 chosen/delim;
+
+  sclw5 -> sclw5 N/N;
+  sclw5 -> sclw5 L/L;
+  sclw5 -> sclw5 R/R;
+  sclw5 -> sclw5 H/H;
+  sclw5 -> sclw5 Wl/Wl;
+  sclw5 -> sclw5 Wr/Wr;
+  sclw5 -> sclw5 Sl/Sl;
+  sclw5 -> sclw5 Sr/Sr;
+  sclw5 -> sclw5 E/E;
+  sclw5 -> sclw5 delim/delim;
+
+  sclw5 -> sclw6 H/H;
+  sclw5 -> sclw6 Wl/Wl;
+  sclw5 -> sclw6 Wr/Wr;
+  sclw5 -> sclw6 Sl/Sl;
+
+  sclw6 -> sclw7 N/N;
+  sclw6 -> sclw7 L/L;
+  sclw6 -> sclw7 R/R;
+
+  sclw7 -> sfinalterminal delim/delim;
+
+  sclw2 -> sclw8 Sr/Wl;
+  sclw2 -> sclw8 Sr/Wr;
+
+  sclw8 -> sclw9 N/N;
+  sclw8 -> sclw9 L/L;
+  sclw8 -> sclw9 R/R;
+
+  sclw9 -> sclw10 chosen/delim;
+
+  sclw10 -> sclw10 N/N;
+  sclw10 -> sclw10 L/L;
+  sclw10 -> sclw10 R/R;
+  sclw10 -> sclw10 H/H;
+  sclw10 -> sclw10 Wl/Wl;
+  sclw10 -> sclw10 Wr/Wr;
+  sclw10 -> sclw10 Sl/Sl;
+  sclw10 -> sclw10 Sr/Sr;
+  sclw10 -> sclw10 E/E;
+  sclw10 -> sclw10 delim/delim;
+
+  sclw10 -> sclw6 Sr/Sr;
+  sclw10 -> sclw6 E/E;
+
+
+  /////////////////////////////////////////////////////
+  // finalize no-wrap
+  /////////////////////////////////////////////////////
+  s0 -> sfn1;
+
+  sfn1 -> sfn1 N/N;
+  sfn1 -> sfn1 L/L;
+  sfn1 -> sfn1 R/R;
+  sfn1 -> sfn1 H/H;
+  sfn1 -> sfn1 Wl/Wl;
+  sfn1 -> sfn1 Wr/Wr;
+  sfn1 -> sfn1 Sl/Sl;
+  sfn1 -> sfn1 Sr/Sr;
+  sfn1 -> sfn1 E/E;
+  sfn1 -> sfn1 delim/delim;
+
+  sfn1 -> sfn2 N/R;
+  sfn1 -> sfn2 L/R;
+  sfn1 -> sfn2 R/R;
+
+  sfn2 -> sfn3 delim/delim;
+
+  sfn3 -> sfn4 N/R;
+  sfn3 -> sfn4 L/R;
+  sfn3 -> sfn4 R/R;
+
+  sfn4 -> sfn5 E/H;
+
+  sfn5 -> sfn6 N/L;
+  sfn5 -> sfn6 L/L;
+  sfn5 -> sfn6 R/L;
+
+  sfn6 -> sfn7 chosen/delim;
+
+  sfn7 -> sfinalcopy N/L;
+  sfn7 -> sfinalcopy L/L;
+  sfn7 -> sfinalcopy R/L;
+
+  /////////////////////////////////////////////////////
+  // finalize right-wrap
+  /////////////////////////////////////////////////////
+  s0 -> sfwr1;
+
+  sfwr1 -> sfwr2 N/L;
+  sfwr1 -> sfwr2 L/L;
+  sfwr1 -> sfwr2 R/L;
+
+  sfwr2 -> sfwr2 N/N;
+  sfwr2 -> sfwr2 L/L;
+  sfwr2 -> sfwr2 R/R;
+  sfwr2 -> sfwr2 H/H;
+  sfwr2 -> sfwr2 Wl/Wl;
+  sfwr2 -> sfwr2 Wr/Wr;
+  sfwr2 -> sfwr2 Sl/Sl;
+  sfwr2 -> sfwr2 Sr/Sr;
+  sfwr2 -> sfwr2 E/E;
+  sfwr2 -> sfwr2 delim/delim;
+
+  sfwr2 -> sfwr3 N/R;
+  sfwr2 -> sfwr3 L/R;
+  sfwr2 -> sfwr3 R/R;
+
+  sfwr3 -> sfwr4 delim/delim;
+
+  sfwr4 -> sfwr5 N/R;
+  sfwr4 -> sfwr5 L/R;
+  sfwr4 -> sfwr5 R/R;
+
+  sfwr5 -> sfwr6 E/H;
+
+  sfwr6 -> sfwr7 N/L;
+  sfwr6 -> sfwr7 L/L;
+  sfwr6 -> sfwr7 R/L;
+
+  sfwr7 -> sfinalterminal chosen/enabled;
+
+  /////////////////////////////////////////////////////
+  // finalize left-wrap
+  /////////////////////////////////////////////////////
+  s0 -> sfwl1;
+
+  sfwl1 -> sfwl2 N/R;
+  sfwl1 -> sfwl2 L/R;
+  sfwl1 -> sfwl2 R/R;
+
+  sfwl2 -> sfwl3 E/H;
+
+  sfwl3 -> sfwl4 N/L;
+  sfwl3 -> sfwl4 L/L;
+  sfwl3 -> sfwl4 R/L;
+
+  sfwl4 -> sfwl5 chosen/enabled;
+
+  sfwl5 -> sfwl6 N/L;
+  sfwl5 -> sfwl6 L/L;
+  sfwl5 -> sfwl6 R/L;
+
+  sfwl6 -> sfwl6 N/N;
+  sfwl6 -> sfwl6 L/L;
+  sfwl6 -> sfwl6 R/R;
+  sfwl6 -> sfwl6 H/H;
+  sfwl6 -> sfwl6 Wl/Wl;
+  sfwl6 -> sfwl6 Wr/Wr;
+  sfwl6 -> sfwl6 Sl/Sl;
+  sfwl6 -> sfwl6 Sr/Sr;
+  sfwl6 -> sfwl6 E/E;
+  sfwl6 -> sfwl6 delim/delim;
+
+  sfwl6 -> sfwl7 N/R;
+  sfwl6 -> sfwl7 L/R;
+  sfwl6 -> sfwl7 R/R;
+
+  sfwl7 -> sfinalterminal delim/delim;
+
+
+  accepting: sfinalcopy, sfinalterminal;
 }
+
 
 transducerStateGuessing: 1 .. 3;
 automatonStateGuessing: 1 .. 5;
 
-symmetries: rotation;
+// symmetries: rotation;
+
+monolithicWitness;
 
 logLevel: 1;
+parallel: 1;
+
+explicitChecksUntilLength: 30;

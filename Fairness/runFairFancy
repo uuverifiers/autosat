@@ -2,8 +2,13 @@
 
 # Check the number of command-line arguments
 if [ \( "$#" -eq 0 \) ] ; then
-	echo "usage: ${0} <file> [params]"
+	echo "usage: ${0} [--silent] <file> [params]"
 	exit 1
+fi
+
+if [ "$1" == "--silent" ] ; then
+	SILENT="1"
+	shift
 fi
 
 # source file
@@ -29,16 +34,28 @@ OUTPUT_DIR="./output"
 cd ${OUTPUT_DIR} && ./clean_dir && cd ..
 
 # encode enablednes
-${ENABLED_ENCODER} ${FILE} > ${ENABLED_ENC_FILE}
-rc=$?
+if [ -z "${SILENT}" ] ; then
+	${ENABLED_ENCODER} ${FILE} > ${ENABLED_ENC_FILE}
+	rc=$?
+else
+	${ENABLED_ENCODER} ${FILE} > ${ENABLED_ENC_FILE} 2>/dev/null
+	rc=$?
+fi
+
 if [[ $rc != 0 ]]; then
 	echo "Error when encoding enabledness into the model"
 	exit $rc
 fi
 
 # encode fairness
-${FAIR_ENCODER} ${ENABLED_ENC_FILE} > ${FAIR_ENC_FILE}
-rc=$?
+if [ -z "${SILENT}" ] ; then
+	${FAIR_ENCODER} ${ENABLED_ENC_FILE} > ${FAIR_ENC_FILE}
+	rc=$?
+else
+	${FAIR_ENCODER} ${ENABLED_ENC_FILE} > ${FAIR_ENC_FILE} 2>/dev/null
+	rc=$?
+fi
+
 if [[ $rc != 0 ]]; then
 	echo "Error when encoding fairness into the model"
 	exit $rc
@@ -49,5 +66,11 @@ cp ${FILE} "${OUTPUT_DIR}/source.txt"
 cp ${ENABLED_ENC_FILE} "${OUTPUT_DIR}/enabled_encoded.txt"
 cp ${FAIR_ENC_FILE} "${OUTPUT_DIR}/fair_encoded.txt"
 
+RUNCMD="./runFancy"
+
+if [ -n "${SILENT}" ] ; then
+	RUNCMD="${RUNCMD} --silent"
+fi
+
 # run the usual stuff
-./runFancy ${FAIR_ENC_FILE} $@ | tee ${OUTPUT_DIR}/output.log
+${RUNCMD} ${FAIR_ENC_FILE} $@ | tee ${OUTPUT_DIR}/output.log

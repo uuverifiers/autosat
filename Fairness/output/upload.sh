@@ -6,6 +6,7 @@ FILES=" \
 	enabled_encoded.txt \
 	fair_encoded.txt \
 	index.html \
+	index-old.html \
 	output.log \
 	"
 

@@ -1,0 +1,116 @@
+// Clustering on a line for 2 alleles: changing from (A + B)* to (A*B* + B*A*)
+//
+// processes can self-loop:
+//   A -> A
+//   B -> B
+//
+// and bubble around:
+//   AB -> BA
+//   BA -> AB
+
+// initial: words of length >= 1
+I0 {
+  init: s0;
+
+  s0 -> s1p A;
+  s0 -> s1p B;
+  s1p -> s1 delim;
+
+  s1 -> s1p A;
+  s1 -> s1p B;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+// final: TODO
+F {
+  init: s0;
+
+  s0 -> s1;
+  s1 -> s1 A;
+  s1 -> s1 delim;
+
+  s1 -> s2;
+  s2 -> s2 B;
+  s2 -> s2 delim;
+
+  s0 -> s3;
+  s3 -> s3 B;
+  s3 -> s3 delim;
+
+  s3 -> s4;
+  s4 -> s4 A;
+  s4 -> s4 delim;
+
+  accepting: s2, s4;
+}
+
+// everything is enabled
+Enabled {
+  init: s1;
+
+  s1p -> s1 enabled;
+
+  s1 -> s1p A;
+  s1 -> s1p B;
+
+  accepting: s1;
+}
+
+P2 {
+  init: s0;
+
+  s0 -> s0 A/A;
+  s0 -> s0 B/B;
+  s0 -> s0 delim/delim;
+
+  // all processes can self-loop:
+  //   A -> A
+  //   B -> B
+  s0 -> ssl;
+
+  ssl -> sfinalcopy chosen/delim;
+
+  sfinalcopy -> sfinalcopy A/A;
+  sfinalcopy -> sfinalcopy B/B;
+  sfinalcopy -> sfinalcopy delim/delim;
+
+  // AB -> BA for A chosen
+  s0 -> sABa1 A/B;
+  sABa1 -> sABa2 chosen/delim;
+  sABa2 -> sfinalcopy B/A;
+
+  // AB -> BA for B chosen
+  s0 -> sABb1 A/B;
+  sABb1 -> sABb2 delim/delim;
+  sABb2 -> sABb3 B/A;
+  sABb3 -> sfinalcopy chosen/delim;
+
+  // BA -> AB for B chosen
+  s0 -> sBAb1 B/A;
+  sBAb1 -> sBAb2 chosen/delim;
+  sBAb2 -> sfinalcopy A/B;
+
+  // BA -> AB for A chosen
+  s0 -> sBAa1 B/A;
+  sBAa1 -> sBAa2 delim/delim;
+  sBAa2 -> sBAa3 A/B;
+  sBAa3 -> sfinalcopy chosen/delim;
+
+  accepting: sfinalcopy;
+}
+
+transducerStateGuessing: 1 .. 5;
+automatonStateGuessing: 0 .. 4;
+
+monolithicWitness;
+
+// noPrecomputedInvariant;
+useRankingFunctions;
+
+logLevel: 1;
+parallel: 1;
+
+// explicitChecksUntilLength: 20;

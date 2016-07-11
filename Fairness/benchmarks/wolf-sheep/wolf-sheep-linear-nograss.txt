@@ -1,0 +1,189 @@
+// A simplification of the wolf-sheep predation model on a linear array without grass
+//
+// S ... sheep
+// W ... wolf
+// D ... dirt
+//
+// all processes can self-loop:
+//   S -> S
+//   W -> W
+//   D -> D
+//
+// sheep and wolfs can die:
+//   S -> D
+//   W -> D
+//
+// sheep and wolfs can move around:
+//   SD -> DS
+//   DS -> SD
+//   WD -> DW
+//   DW -> WD
+//
+// sheep and wolfs can reproduce:
+//   SD -> SS
+//   DS -> SS
+//   WD -> WW
+//   DW -> WW
+//
+// wolfs can eat sheep (unless they are vegans):
+//   WS -> WD
+//   SW -> DW
+//
+
+// initial: words of length >= 1
+I0 {
+  init: s0;
+
+  s0 -> s0p S;
+  s0 -> s0p W;
+  s0 -> s0p D;
+  s0p -> s0 delim;
+
+  s0 -> s1p S;
+  s0 -> s1p W;
+
+  s1p -> s1 delim;
+
+  s1 -> s1p S;
+  s1 -> s1p W;
+  s1 -> s1p D;
+
+  accepting: s1;
+}
+
+closedUnderTransitions;
+
+// final: TODO
+F {
+  init: s0;
+
+  s0 -> ss S;
+  ss -> ss S;
+  ss -> ss delim;
+
+  s0 -> sw W;
+  sw -> sw W;
+  sw -> sw delim;
+
+  s0 -> sd D;
+  sd -> sd D;
+  sd -> sd delim;
+
+  accepting: ss, sw, sd;
+}
+
+// everything is enabled
+Enabled {
+  init: s1;
+
+  s1p -> s1 enabled;
+
+  s1 -> s1p S;
+  s1 -> s1p W;
+  s1 -> s1p D;
+
+  accepting: s1;
+}
+
+// Process: copy type to one of the neighbours
+P2 {
+  init: s0;
+
+  s0 -> s0 S/S;
+  s0 -> s0 W/W;
+  s0 -> s0 D/D;
+  s0 -> s0 delim/delim;
+
+  // all processes can self-loop:
+  //   S -> S
+  //   W -> W
+  //   D -> D
+  s0 -> ssl1;
+
+  ssl1 -> sfinalcopy chosen/delim;
+
+  sfinalcopy -> sfinalcopy S/S;
+  sfinalcopy -> sfinalcopy W/W;
+  sfinalcopy -> sfinalcopy D/D;
+  sfinalcopy -> sfinalcopy delim/delim;
+
+  // sheep and wolfs can die:
+  //   S -> D
+  //   W -> D
+  s0 -> sdie1;
+
+  sdie1 -> sdie2 S/D;
+  sdie1 -> sdie2 W/D;
+
+  sdie2 -> sfinalcopy chosen/delim;
+
+  // sheep and wolfs can move around and reproduce
+  //   SD -> DS
+  //   SD -> SS
+  s0 -> smsr1;
+
+  smsr1 -> smsr2 S/D;
+  smsr1 -> smsr2 S/S;
+  smsr2 -> smsr3 chosen/delim;
+  smsr3 -> sfinalcopy D/S;
+
+  //   DS -> SD
+  //   DS -> SS
+  s0 -> smsl1;
+
+  smsl1 -> smsl2 D/S;
+  smsl2 -> smsl3 delim/delim;
+  smsl3 -> smsl4 S/D;
+  smsl3 -> smsl4 S/S;
+  smsl4 -> sfinalcopy chosen/delim;
+
+  //   WD -> DW
+  //   WD -> WW
+  s0 -> smwr1;
+
+  smwr1 -> smwr2 W/D;
+  smwr1 -> smwr2 W/W;
+  smwr2 -> smwr3 chosen/delim;
+  smwr3 -> sfinalcopy D/W;
+
+  //   DW -> WD
+  //   DW -> WW
+  s0 -> smwl1;
+
+  smwl1 -> smwl2 D/W;
+  smwl2 -> smwl3 delim/delim;
+  smwl3 -> smwl4 W/D;
+  smwl3 -> smwl4 W/W;
+  smwl4 -> sfinalcopy chosen/delim;
+
+  // wolfs can eat sheep:
+  //   WS -> WD
+  s0 -> swesr1;
+
+  swesr1 -> swesr2 W/W;
+  swesr2 -> swesr3 chosen/delim;
+  swesr3 -> sfinalcopy S/D;
+
+  //   SW -> DW
+  s0 -> swesl1;
+
+  swesl1 -> swesl2 S/D;
+  swesl2 -> swesl3 delim/delim;
+  swesl3 -> swesl4 W/W;
+  swesl4 -> sfinalcopy chosen/delim;
+
+  accepting: sfinalcopy;
+}
+
+transducerStateGuessing: 1 .. 5;
+automatonStateGuessing: 0 .. 4;
+
+// monolithicWitness;
+
+noPrecomputedInvariant;
+useRankingFunctions;
+
+logLevel: 1;
+parallel: 1;
+
+explicitChecksUntilLength: 20;
