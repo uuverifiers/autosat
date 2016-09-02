@@ -12,6 +12,8 @@ using an automata method.
 
 ## Usage
 
+Binary releases can be found here: https://github.com/uuverifiers/autosat/releases
+
 SLRP requires Java 1.8 to run. On a Linux/UNIX or Mac system, SLRP can
 be invoked using the provided script:
 
