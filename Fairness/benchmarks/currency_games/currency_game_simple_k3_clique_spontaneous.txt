@@ -1,0 +1,263 @@
+// same as currency_game_simple_k3_clique.txt
+// but with the additional possibility of G switching to S (and vice versa)
+// spontaneously
+
+I0 {
+  init: s0;
+
+  // at least 4 agents
+  //
+  s0 -> s1d G;
+  s0 -> s1d S;
+  s1d -> s1 delim;
+
+  s1 -> s2d G;
+  s1 -> s2d S;
+  s2d -> s2 delim;
+
+  s2 -> s3d G;
+  s2 -> s3d S;
+  s3d -> s3 delim;
+
+  s3 -> s4d G;
+  s3 -> s4d S;
+  s4d -> s4 delim;
+
+  s4 -> s4d G;
+  s4 -> s4d S;
+
+  accepting: s4;
+}
+
+closedUnderTransitions;
+
+
+F {
+  init: s0;
+
+  s0 -> s1;
+  s0 -> s2;
+
+  s1 -> s1d G;
+  s1d -> s1 delim;
+
+  s2 -> s2d S;
+  s2d -> s2 delim;
+
+  accepting: s1, s2;
+}
+
+Enabled {
+  init: s0;
+
+  s0 -> s0d G;
+  s0 -> s0d S;
+  s0d ->  s0 enabled;
+
+  accepting: s0;
+}
+
+P2 {
+  init: si;
+
+  si -> s0;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // prefix
+
+  s0 -> s0 G/G;
+  s0 -> s0 S/S;
+  s0 -> s0 delim/delim;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // spontaneous switch
+
+  s0 -> sfd G/S;
+  s0 -> sfd S/G;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Identity transitions
+
+  //--------------------------------------------------
+  // at least two G, identity, choosing right G
+
+  s0 -> s1 G/G;
+
+  s1 -> s1 G/G;
+  s1 -> s1 S/S;
+  s1 -> s1 delim/delim;
+
+  s1 -> sfd G/G;
+
+  //--------------------------------------------------
+  // at least two G, identity, choosing left G
+  
+  s0 -> s5d G/G;
+  s5d -> s5 chosen/delim;
+
+  s5 -> s5 G/G;
+  s5 -> s5 S/S;
+  s5 -> s5 delim/delim;
+
+  s5 -> sf G/G;
+
+  //--------------------------------------------------
+  // at least two S, identity, choosing right S
+
+  s0 -> s6 S/S;
+
+  s6 -> s6 G/G;
+  s6 -> s6 S/S;
+  s6 -> s6 delim/delim;
+
+  s6 -> sfd S/S;
+
+  //--------------------------------------------------
+  // at least two S, identity, choosing left S
+  
+  s0 -> s7d S/S;
+  s7d -> s7 chosen/delim;
+
+  s7 -> s7 G/G;
+  s7 -> s7 S/S;
+  s7 -> s7 delim/delim;
+
+  s7 -> sf S/S;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Changing S to G if there are at least two G
+
+  //--------------------------------------------------
+  // G G S
+
+  s0 -> s10 G/G;
+
+  s10 -> s10 G/G;
+  s10 -> s10 S/S;
+  s10 -> s10 delim/delim;
+
+  s10 -> s11 G/G;
+
+  s11 -> s11 G/G;
+  s11 -> s11 S/S;
+  s11 -> s11 delim/delim;
+
+  s11 -> sfd S/G;
+
+  //--------------------------------------------------
+  // G S G
+
+  s0 -> s12 G/G;
+
+  s12 -> s12 G/G;
+  s12 -> s12 S/S;
+  s12 -> s12 delim/delim;
+
+  s12 -> s13d S/G;
+  s13d -> s13 chosen/delim;
+
+  s13 -> s13 G/G;
+  s13 -> s13 S/S;
+  s13 -> s13 delim/delim;
+
+  s13 -> sf G/G;
+
+  //--------------------------------------------------
+  // S G G
+
+  s0 -> s14d S/G;
+  s14d -> s14 chosen/delim;
+
+  s14 -> s14 G/G;
+  s14 -> s14 S/S;
+  s14 -> s14 delim/delim;
+
+  s14 -> s15 G/G;
+
+  s15 -> s15 G/G;
+  s15 -> s15 S/S;
+  s15 -> s15 delim/delim;
+
+  s15 -> sf G/G;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Changing G to S if there are at least two S
+
+  //--------------------------------------------------
+  // S S G
+
+  s0 -> s20 S/S;
+
+  s20 -> s20 G/G;
+  s20 -> s20 S/S;
+  s20 -> s20 delim/delim;
+
+  s20 -> s21 S/S;
+
+  s21 -> s21 G/G;
+  s21 -> s21 S/S;
+  s21 -> s21 delim/delim;
+
+  s21 -> sfd G/S;
+
+  //--------------------------------------------------
+  // S G S
+
+  s0 -> s22 S/S;
+
+  s22 -> s22 G/G;
+  s22 -> s22 S/S;
+  s22 -> s22 delim/delim;
+
+  s22 -> s23d G/S;
+  s23d -> s23 chosen/delim;
+
+  s23 -> s23 G/G;
+  s23 -> s23 S/S;
+  s23 -> s23 delim/delim;
+
+  s23 -> sf S/S;
+
+  //--------------------------------------------------
+  // G S S
+
+  s0 -> s24d G/S;
+  s24d -> s24 chosen/delim;
+
+  s24 -> s24 G/G;
+  s24 -> s24 S/S;
+  s24 -> s24 delim/delim;
+
+  s24 -> s25 S/S;
+
+  s25 -> s25 G/G;
+  s25 -> s25 S/S;
+  s25 -> s25 delim/delim;
+
+  s25 -> sf S/S;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // suffix
+
+  sfd -> sf chosen/delim;
+  sf -> sf G/G;
+  sf -> sf S/S;
+  sf -> sf delim/delim;
+
+
+  accepting: sf;
+}
+
+symmetries: rotationStartingWith { G, S };
+
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 0 .. 10;
+
+explicitChecksUntilLength: 20;
+
+// noPrecomputedInvariant;
+// monolithicWitness;
+
+logLevel: 1;
+parallel: 1;
+
