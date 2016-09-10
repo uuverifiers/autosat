@@ -1,3 +1,4 @@
+// vim: ft=cpp
 // Currency game on a clique with k = 3
 //
 // Taken from Rupak's email:
@@ -86,18 +87,20 @@ P2 {
   s0 -> majority_switch;
 
   // copy
-  spont_flip -> spont_flipd G/G;
-  spont_flip -> spont_flipd S/S;
-  spont_flipd -> spont_flip delim/delim;
+  spont_flip -> spont_flip G/G;
+  spont_flip -> spont_flip S/S;
+  spont_flip -> spont_flip delim/delim;
 
   // flip
-  spont_flip -> spont_flip_flippeddnow G/S;
-  spont_flip -> spont_flip_flippeddnow S/G;
+  spont_flip -> spont_flip_flippeddnow G/G;
+  // spont_flip -> spont_flip_flippeddnow G/S;
+  spont_flip -> spont_flip_flippeddnow S/S;
+  // spont_flip -> spont_flip_flippeddnow S/G;
   spont_flip_flippeddnow -> spont_flip_flipped chosen/delim;
 
-  spont_flip_flipped -> spont_flip_flippedd G/G;
-  spont_flip_flipped -> spont_flip_flippedd S/S;
-  spont_flip_flippedd -> spont_flip_flipped delim/delim;
+  spont_flip_flipped -> spont_flip_flipped G/G;
+  spont_flip_flipped -> spont_flip_flipped S/S;
+  spont_flip_flipped -> spont_flip_flipped delim/delim;
 
   // Names of states are like this:
   //
@@ -305,12 +308,20 @@ P2 {
 	sfinalc -> sfinal chosen/delim;
 
 
+  // accepting: spont_flip_flipped;
   accepting: spont_flip_flipped, sfinal;
 }
 
-transducerStateGuessing: 1 .. 10;
-automatonStateGuessing: 0 .. 4;
+// monolithicWitness;
 
-explicitChecksUntilLength: 6;
+symmetries: rotationStartingWith { G, S };
+
+transducerStateGuessing: 1 .. 4;
+automatonStateGuessing: 0 .. 10;
+
+explicitChecksUntilLength: 26;
+
+
 
 logLevel: 1;
+parallel: 1;
