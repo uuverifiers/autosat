@@ -1,3 +1,4 @@
+// vim: ft=cpp
 // Currency game on a ring with neigbourhood k = 3 (left-leaning: N N S N)
 //
 // Taken from Rupak's email:
@@ -86,9 +87,9 @@ P2 {
   s0 -> majority_switch;
 
   // copy
-  spont_flip -> spont_flipd G/G;
-  spont_flip -> spont_flipd S/S;
-  spont_flipd -> spont_flip delim/delim;
+  spont_flip -> spont_flip G/G;
+  spont_flip -> spont_flip S/S;
+  spont_flip -> spont_flip delim/delim;
 
   // flip
   //spont_flip -> spont_flip_flippeddnow G/S;
@@ -99,9 +100,9 @@ P2 {
 
   spont_flip_flippeddnow -> spont_flip_flipped chosen/delim;
 
-  spont_flip_flipped -> spont_flip_flippedd G/G;
-  spont_flip_flipped -> spont_flip_flippedd S/S;
-  spont_flip_flippedd -> spont_flip_flipped delim/delim;
+  spont_flip_flipped -> spont_flip_flipped G/G;
+  spont_flip_flipped -> spont_flip_flipped S/S;
+  spont_flip_flipped -> spont_flip_flipped delim/delim;
 
   // Names of states are like this:
   //
@@ -130,9 +131,9 @@ P2 {
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// initial state =====================================================
-	no_s0_0_X -> no_s0_0_Xd G/G;
-	no_s0_0_X -> no_s0_0_Xd S/S;
-	no_s0_0_Xd -> no_s0_0_X delim/delim;
+	no_s0_0_X -> no_s0_0_X G/G;
+	no_s0_0_X -> no_s0_0_X S/S;
+	no_s0_0_X -> no_s0_0_X delim/delim;
 	// a G neighbour
 	no_s0_0_X -> no_s1_0_Xd G/G;
 	// an S neighbour
@@ -170,18 +171,18 @@ P2 {
 	// 2 gold, 0 silver, selected is G ==================================
 	no_s2_0_Gc -> no_s2_0_G chosen/delim;
 	// a G or S neighbour
-	no_s2_0_G -> no_sfinald G/G;
-	no_s2_0_G -> no_sfinald S/S;
+	no_s2_0_G -> no_sfinal G/G;
+	no_s2_0_G -> no_sfinal S/S;
 
 	// 1 gold, 1 silver, selected is S ==================================
 	no_s1_1_Sc -> no_s1_1_S chosen/delim;
 	// an S neighbour
-	no_s1_1_S -> no_sfinald S/S;
+	no_s1_1_S -> no_sfinal S/S;
 
 	// 1 gold, 1 silver, selected is G ==================================
 	no_s1_1_Gc -> no_s1_1_G chosen/delim;
 	// a G neighbour
-	no_s1_1_G -> no_sfinald G/G;
+	no_s1_1_G -> no_sfinal G/G;
 
 	// 0 gold, 2 silver, selected not yet read ===========================
 	no_s0_2_Xd -> no_s0_2_X delim/delim;
@@ -192,13 +193,13 @@ P2 {
 	// 0 gold, 2 silver, selected is S ==================================
 	no_s0_2_Sc -> no_s0_2_S chosen/delim;
 	// a G or S neighbour
-	no_s0_2_S -> no_sfinald G/G;
-	no_s0_2_S -> no_sfinald S/S;
+	no_s0_2_S -> no_sfinal G/G;
+	no_s0_2_S -> no_sfinal S/S;
 
 	// final state
-	no_sfinal -> no_sfinald G/G;
-	no_sfinal -> no_sfinald S/S;
-	no_sfinald -> no_sfinal delim/delim;
+	no_sfinal -> no_sfinal G/G;
+	no_sfinal -> no_sfinal S/S;
+	no_sfinal -> no_sfinal delim/delim;
 
 
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -209,23 +210,23 @@ P2 {
 
 	// initial state =====================================================
 	// a G neighbour
-	w1_s0_0_X -> w1_s1_0_Xd G/G;
+	w1_s0_0_X -> w1_s1_0_X G/G;
 	// an S neighbour
-	w1_s0_0_X -> w1_s0_1_Xd S/S;
+	w1_s0_0_X -> w1_s0_1_X S/S;
 
 	// 1 gold, 0 silver, selected not yet read ===========================
-	w1_s1_0_X -> w1_s1_0_Xd G/G;
-	w1_s1_0_X -> w1_s1_0_Xd S/S;
-	w1_s1_0_Xd -> w1_s1_0_X delim/delim;
+	w1_s1_0_X -> w1_s1_0_X G/G;
+	w1_s1_0_X -> w1_s1_0_X S/S;
+	w1_s1_0_X -> w1_s1_0_X delim/delim;
 	// a G neighbour
 	w1_s1_0_X -> w1_s2_0_Xd G/G;
 	// an S neighbour
 	w1_s1_0_X -> w1_s1_1_Xd S/S;
 
 	// 0 gold, 1 silver, selected not yet read ==========================
-	w1_s0_1_X -> w1_s0_1_Xd G/G;
-	w1_s0_1_X -> w1_s0_1_Xd S/S;
-	w1_s0_1_Xd -> w1_s0_1_X delim/delim;
+	w1_s0_1_X -> w1_s0_1_X G/G;
+	w1_s0_1_X -> w1_s0_1_X S/S;
+	w1_s0_1_X -> w1_s0_1_X delim/delim;
 	// a G neighbour
 	w1_s0_1_X -> w1_s1_1_Xd G/G;
 	// an S neighbour
@@ -283,44 +284,44 @@ P2 {
 	// 0 gold, 0 silver, selected is G ==================================
 	w2_s0_0_Gc -> w2_s0_0_G chosen/delim;
 	// a G neighbour
-	w2_s0_0_G -> w2_s1_0_Gd G/G;
+	w2_s0_0_G -> w2_s1_0_G G/G;
 	// an S neighbour
-	w2_s0_0_G -> w2_s0_1_Gd S/S;
+	w2_s0_0_G -> w2_s0_1_G S/S;
 
 	// 0 gold, 0 silver, selected is S ==================================
 	w2_s0_0_Sc -> w2_s0_0_S chosen/delim;
 	// a G neighbour
-	w2_s0_0_S -> w2_s1_0_Sd G/G;
+	w2_s0_0_S -> w2_s1_0_S G/G;
 	// an S neighbour
-	w2_s0_0_S -> w2_s0_1_Sd S/S;
+	w2_s0_0_S -> w2_s0_1_S S/S;
 
 	// 1 gold, 0 silver, selected is G ==================================
-	w2_s1_0_G -> w2_s1_0_Gd G/G;
-	w2_s1_0_G -> w2_s1_0_Gd S/S;
-	w2_s1_0_Gd -> w2_s1_0_G delim/delim;
+	w2_s1_0_G -> w2_s1_0_G G/G;
+	w2_s1_0_G -> w2_s1_0_G S/S;
+	w2_s1_0_G -> w2_s1_0_G delim/delim;
 	// a G neighbour
 	w2_s1_0_G -> w2_s2_0_Gd G/G;
 	// an S neighbour
 	w2_s1_0_G -> w2_s1_1_Gd S/S;
 
 	// 1 gold, 0 silver, selected is S ==================================
-	w2_s1_0_S -> w2_s1_0_Sd G/G;
-	w2_s1_0_S -> w2_s1_0_Sd S/S;
-	w2_s1_0_Sd -> w2_s1_0_S delim/delim;
+	w2_s1_0_S -> w2_s1_0_S G/G;
+	w2_s1_0_S -> w2_s1_0_S S/S;
+	w2_s1_0_S -> w2_s1_0_S delim/delim;
 	// an S neighbour
 	w2_s1_0_S -> w2_s1_1_Sd S/S;
 
 	// 0 gold, 1 silver, selected is G ==================================
-	w2_s0_1_G -> w2_s0_1_Gd G/G;
-	w2_s0_1_G -> w2_s0_1_Gd S/S;
-	w2_s0_1_Gd -> w2_s0_1_G delim/delim;
+	w2_s0_1_G -> w2_s0_1_G G/G;
+	w2_s0_1_G -> w2_s0_1_G S/S;
+	w2_s0_1_G -> w2_s0_1_G delim/delim;
 	// a G neighbour
 	w2_s0_1_G -> w2_s1_1_Gd G/G;
 
 	// 0 gold, 1 silver, selected is S ==================================
-	w2_s0_1_S -> w2_s0_1_Sd G/G;
-	w2_s0_1_S -> w2_s0_1_Sd S/S;
-	w2_s0_1_Sd -> w2_s0_1_S delim/delim;
+	w2_s0_1_S -> w2_s0_1_S G/G;
+	w2_s0_1_S -> w2_s0_1_S S/S;
+	w2_s0_1_S -> w2_s0_1_S delim/delim;
 	// a G neighbour
 	w2_s0_1_S -> w2_s1_1_Sd G/G;
 	// an S neighbour
@@ -385,53 +386,53 @@ P2 {
 	// 1 gold, 0 silver, selected is G ==================================
 	w3_s1_0_Gc -> w3_s1_0_G chosen/delim;
 	// a G neighbour
-	w3_s1_0_G -> w3_s2_0_Gd G/G;
+	w3_s1_0_G -> w3_s2_0_G G/G;
 	// an S neighbour
-	w3_s1_0_G -> w3_s1_1_Gd S/S;
+	w3_s1_0_G -> w3_s1_1_G S/S;
 
 	// 1 gold, 0 silver, selected is S ==================================
 	w3_s1_0_Sc -> w3_s1_0_S chosen/delim;
 	// an S neighbour
-	w3_s1_0_S -> w3_s1_1_Sd S/S;
+	w3_s1_0_S -> w3_s1_1_S S/S;
 
 	// 0 gold, 1 silver, selected is G ==================================
 	w3_s0_1_Gc -> w3_s0_1_G chosen/delim;
 	// a G neighbour
-	w3_s0_1_G -> w3_s1_1_Gd G/G;
+	w3_s0_1_G -> w3_s1_1_G G/G;
 
 	// 0 gold, 1 silver, selected is S ==================================
 	w3_s0_1_Sc -> w3_s0_1_S chosen/delim;
 	// a G neighbour
-	w3_s0_1_S -> w3_s1_1_Sd G/G;
+	w3_s0_1_S -> w3_s1_1_S G/G;
 	// an S neighbour
-	w3_s0_1_S -> w3_s0_2_Sd S/S;
+	w3_s0_1_S -> w3_s0_2_S S/S;
 
 	// 2 gold, 0 silver, selected is G ==================================
-	w3_s2_0_G -> w3_s2_0_Gd G/G;
-	w3_s2_0_G -> w3_s2_0_Gd S/S;
-	w3_s2_0_Gd -> w3_s2_0_G delim/delim;
+	w3_s2_0_G -> w3_s2_0_G G/G;
+	w3_s2_0_G -> w3_s2_0_G S/S;
+	w3_s2_0_G -> w3_s2_0_G delim/delim;
 	// a G or S neighbour
 	w3_s2_0_G -> w3_sfinald G/G;
 	w3_s2_0_G -> w3_sfinald S/S;
 
 	// 1 gold, 1 silver, selected is S ==================================
-	w3_s1_1_S -> w3_s1_1_Sd G/G;
-	w3_s1_1_S -> w3_s1_1_Sd S/S;
-	w3_s1_1_Sd -> w3_s1_1_S delim/delim;
+	w3_s1_1_S -> w3_s1_1_S G/G;
+	w3_s1_1_S -> w3_s1_1_S S/S;
+	w3_s1_1_S -> w3_s1_1_S delim/delim;
 	// an S neighbour
 	w3_s1_1_S -> w3_sfinald S/S;
 
 	// 1 gold, 1 silver, selected is G ==================================
-	w3_s1_1_G -> w3_s1_1_Gd G/G;
-	w3_s1_1_G -> w3_s1_1_Gd S/S;
-	w3_s1_1_Gd -> w3_s1_1_G delim/delim;
+	w3_s1_1_G -> w3_s1_1_G G/G;
+	w3_s1_1_G -> w3_s1_1_G S/S;
+	w3_s1_1_G -> w3_s1_1_G delim/delim;
 	// a G neighbour
 	w3_s1_1_G -> w3_sfinald G/G;
 
 	// 0 gold, 2 silver, selected is S ==================================
-	w3_s0_2_S -> w3_s0_2_Sd G/G;
-	w3_s0_2_S -> w3_s0_2_Sd S/S;
-	w3_s0_2_Sd -> w3_s0_2_S delim/delim;
+	w3_s0_2_S -> w3_s0_2_S G/G;
+	w3_s0_2_S -> w3_s0_2_S S/S;
+	w3_s0_2_S -> w3_s0_2_S delim/delim;
 	// a G or S neighbour
 	w3_s0_2_S -> w3_sfinald G/G;
 	w3_s0_2_S -> w3_sfinald S/S;
@@ -442,12 +443,14 @@ P2 {
   accepting: spont_flip_flipped, no_sfinal, w1_sfinal, w2_sfinal, w3_sfinal;
 }
 
+symmetries: rotationStartingWith { G, S };
+
 transducerStateGuessing: 1 .. 10;
 automatonStateGuessing: 0 .. 4;
 
-explicitChecksUntilLength: 12;
+explicitChecksUntilLength: 26;
 
 // noPrecomputedInvariant;
-monolithicWitness;
+// monolithicWitness;
 
 logLevel: 1;
