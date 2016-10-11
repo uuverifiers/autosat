@@ -327,24 +327,25 @@ Encodes the counter decrement transitions.
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
                 oneState = tgt + "_enXenX1"
                 zeroState = tgt + "_enXenX0"
-                output.addTrans(transition = (src, oneState))
-                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
-                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState)
-                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState)
-                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
+                newTransitions.append(Automaton.makeEpsTrans(src, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
+                newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState))
+                newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState))
             elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
                 chEnOneState = tgt + "_chXenX1"
                 chEnState = tgt + "_chXen"
-                output.addTrans(transition = (src, chEnOneState))
-                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState)
-                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, endState)
+                newTransitions.append(Automaton.makeEpsTrans(src, chEnOneState))
+                newTransitions.append(Automaton.makeTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState))
+                newTransitions.append(Automaton.makeTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, endState))
             else:
                 raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
 
+            # deal with the delimiter
             if options.discardDelimiter:
-                output.addTrans(transition = Automaton.makeEpsTrans(endState, tgt))
+                newTransitions.append(Automaton.makeEpsTrans(endState, tgt))
             else:
-                output.addTransTransd(endState, symb1, symb2, tgt)
+                newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, tgt))
         else:
             raise Exception("Invalid encoding: " + encoding)
 
