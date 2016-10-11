@@ -249,6 +249,44 @@ def autPlay1ToFair(aut):
 
 Encodes fairness into aut for Player 1.
 '''
+    ###########################################
+    def encodeCntChooseTrans(src, symb1, symb2, dst, encoding, discardDelim):
+        '''encodeCntChooseTrans(src, symb1, symb2, dst, encoding, discardDelim) -> [Transition]
+
+Encodes a transition for choosing process.
+'''
+        newTransitions = []
+        if encoding == CounterEncoding.unary:
+            cntState = dst + "_" + symb1 + "_" + symb2
+            endState = cntState + "_end"
+            newTransitions.append(Automaton.makeEpsTrans(src, cntState))
+            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, endState))
+            elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_CHOSEN):
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, endState))
+            else:
+                raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
+                    symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
+
+            # transition from endState
+            if options.discardDelimiter:
+                newTransitions.append(Automaton.makeEpsTrans(endState, dst))
+            else:
+                newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, dst))
+        elif encoding == CounterEncoding.binary:
+            assert False
+        else:
+            raise Exception("Invalid encoding: " + encoding)
+
+        return newTransitions
+    ######################################################
+
+
+
     output = Automaton()
     output.startStates = aut.startStates[:]
     output.acceptStates = aut.acceptStates[:]
@@ -276,29 +314,34 @@ Encodes fairness into aut for Player 1.
         elif (Automaton.getSymbol1(trans) in ENCODING_ALPHABET):
             # delimiters
             (src, symb1, symb2, tgt) = trans
-            cntState = tgt + "_" + symb1 + "_" + symb2
-            endState = cntState + "_end"
-            output.addTrans(transition = (src, cntState))
-            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
-                # TODO: these are bad
-                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState)
-                output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
-                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
-            elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_CHOSEN):
-                # TODO: these are bad
-                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState)
-                output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
-                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, endState)
-            else:
-                raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
-                    symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
+            counterTransitions = encodeCntChooseTrans(
+                    src, symb1, symb2, tgt, options.encoding, options.discardDelimiter)
 
-            # transition from endState
-            if options.discardDelimiter:
-                output.addTrans(transition =
-                    Automaton.makeEpsTrans(endState, tgt))
-            else:
-                output.addTransTransd(endState, symb1, symb2, tgt)
+            output.addTransitions(counterTransitions)
+
+            # cntState = tgt + "_" + symb1 + "_" + symb2
+            # endState = cntState + "_end"
+            # output.addTrans(transition = (src, cntState))
+            # if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+            #     # TODO: these are bad
+            #     output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState)
+            #     output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
+            #     output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
+            # elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_CHOSEN):
+            #     # TODO: these are bad
+            #     output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState)
+            #     output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
+            #     output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, endState)
+            # else:
+            #     raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
+            #         symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
+            #
+            # # transition from endState
+            # if options.discardDelimiter:
+            #     output.addTrans(transition =
+            #         Automaton.makeEpsTrans(endState, tgt))
+            # else:
+            #     output.addTransTransd(endState, symb1, symb2, tgt)
 
         else:
             # other transitions
@@ -323,18 +366,19 @@ Encodes the counter decrement transitions.
 '''
         newTransitions = []
         if encoding == CounterEncoding.unary:
-            endState = tgt + "_end"
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
-                oneState = tgt + "_enXenX1"
-                zeroState = tgt + "_enXenX0"
+                oneState = dst + "_enXenX1"
+                zeroState = dst + "_enXenX0"
+                endState = zeroState + "_end"
                 newTransitions.append(Automaton.makeEpsTrans(src, oneState))
                 newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState))
                 newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
                 newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState))
                 newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState))
             elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
-                chEnOneState = tgt + "_chXenX1"
-                chEnState = tgt + "_chXen"
+                chEnOneState = dst + "_chXenX1"
+                chEnState = dst + "_chXen"
+                endState = chEnOneState + "_end"
                 newTransitions.append(Automaton.makeEpsTrans(src, chEnOneState))
                 newTransitions.append(Automaton.makeTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState))
                 newTransitions.append(Automaton.makeTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, endState))
@@ -343,9 +387,9 @@ Encodes the counter decrement transitions.
 
             # deal with the delimiter
             if options.discardDelimiter:
-                newTransitions.append(Automaton.makeEpsTrans(endState, tgt))
+                newTransitions.append(Automaton.makeEpsTrans(endState, dst))
             else:
-                newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, tgt))
+                newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, dst))
         else:
             raise Exception("Invalid encoding: " + encoding)
 
