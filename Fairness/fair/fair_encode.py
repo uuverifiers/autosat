@@ -87,7 +87,7 @@ parameter is a Boolean flag that when set to True allows the value of the
 counter to be zero.
 '''
     ##########################################################
-    def encodeCounterTransition(src, dst, symbol, encoding, discardDelim, allowZero):
+    def encodeCntTrans(src, dst, symbol, encoding, discardDelim, allowZero):
         newTransitions = []
         if encoding == CounterEncoding.unary:
             oneState = dst + "_" + symb + "_" + SYMBOL_ONE
@@ -131,7 +131,7 @@ counter to be zero.
         if symb == SYMBOL_ENABLED:
             # for end-of-subword transitions
 
-            counterTransitions = encodeCounterTransition(
+            counterTransitions = encodeCntTrans(
                 src, tgt, symb, encoding, discardDelim, allowZero)
             result.addTransitions(counterTransitions)
 
@@ -315,6 +315,43 @@ def autPlay2ToFair(aut):
 
 Encodes fairness into aut for Player 2.
 '''
+    ###########################################
+    def encodeCntDecTrans(src, symb1, symb2, dst, encoding, discardDelim):
+        '''encodeCntDecTrans(src, symb1, symb2, dst, encoding, discardDelim) -> [Transition]
+
+Encodes the counter decrement transitions.
+'''
+        newTransitions = []
+        if encoding == CounterEncoding.unary:
+            endState = tgt + "_end"
+            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                oneState = tgt + "_enXenX1"
+                zeroState = tgt + "_enXenX0"
+                output.addTrans(transition = (src, oneState))
+                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
+                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState)
+                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState)
+                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
+            elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
+                chEnOneState = tgt + "_chXenX1"
+                chEnState = tgt + "_chXen"
+                output.addTrans(transition = (src, chEnOneState))
+                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState)
+                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, endState)
+            else:
+                raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
+
+            if options.discardDelimiter:
+                output.addTrans(transition = Automaton.makeEpsTrans(endState, tgt))
+            else:
+                output.addTransTransd(endState, symb1, symb2, tgt)
+        else:
+            raise Exception("Invalid encoding: " + encoding)
+
+        return newTransitions
+    #################################################
+
+
     output = Automaton()
     output.startStates  = aut.startStates[:]
     output.acceptStates  = aut.acceptStates[:]
@@ -368,35 +405,15 @@ Encodes fairness into aut for Player 2.
             #
             #     output.addTrans(transition = trans)
 
-            defaultCase = False
-            endState = tgt + "_end"
-            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
-                oneState = tgt + "_enXenX1"
-                zeroState = tgt + "_enXenX0"
-                output.addTrans(transition = (src, oneState))
-                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
-                output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState)
-                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState)
-                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
-            elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
-                chEnOneState = tgt + "_chXenX1"
-                chEnState = tgt + "_chXen"
-                output.addTrans(transition = (src, chEnOneState))
-                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState)
-                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, endState)
+            if symb1 in FAIR_ENCODING_ALPHABET and symb2 in FAIR_ENCODING_ALPHABET:
+                counterTransitions = encodeCntDecTrans(src, symb1, symb2, tgt,
+                        options.encoding, options.discardDelimiter,)
+                output.addTransitions(counterTransitions)
             else:
                 assert symb1 not in FAIR_ENCODING_ALPHABET
                 assert symb2 not in FAIR_ENCODING_ALPHABET
 
-                defaultCase = True
                 output.addTrans(transition = trans)
-
-            # deal with delimiter
-            if not defaultCase:
-                if options.discardDelimiter:
-                    output.addTrans(transition = Automaton.makeEpsTrans(endState, tgt))
-                else:
-                    output.addTransTransd(endState, symb1, symb2, tgt)
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output
