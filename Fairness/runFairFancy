@@ -26,7 +26,7 @@ FAIR_ENC_FILE=`mktemp /tmp/fair.XXXXXXXXXXX`
 # enabledness encoder
 ENABLED_ENCODER="fair/enabled_encode.py"
 # fairness encoder
-FAIR_ENCODER="fair/fair_encode.py"
+FAIR_ENCODER="fair/fair_encode.py -e unary"
 
 
 OUTPUT_DIR="./output"

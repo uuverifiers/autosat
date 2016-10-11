@@ -3,6 +3,7 @@
 import argparse
 import os
 import sys
+from enum import Enum
 
 from problem import Problem
 from automaton import Automaton
@@ -20,6 +21,8 @@ FAIR_ENCODING_ALPHABET = ENCODING_ALPHABET | {
         SYMBOL_ENABLED_TIMEOUT
     }
 
+CounterEncoding = Enum("Counter Encoding", "unary binary")
+
 # special states
 FINAL_START_STATE = "XXXinit"
 
@@ -32,51 +35,60 @@ Parses command-line options and returns them as an object with the following
 attributes:
 
   filename - the name of the input file as a String
+  encoding - the encoding of counters
 '''
-    parser = argparse.ArgumentParser(description="Encodes weak fairness"
+    parser = argparse.ArgumentParser(description="Encodes fairness"
         " into a two-player transition system (with enabledness encoded beforehand)")
     parser.add_argument("filename", metavar="file")
+    parser.add_argument("-e",
+            dest="encoding",
+            choices=["unary", "binary"],
+            default="unary",
+            required=True,
+            help="encoding of counters [default=%(default)s]"
+        )
+    parser.add_argument("-d",
+            dest="discardDelimiter",
+            choices=["discard", "keep"],
+            default="discard",
+            required=False,
+            help="discard delimiter [default=%(default)s]"
+        )
     args = parser.parse_args()
+
+    # sanitize encoding
+    if args.encoding == "unary":
+        args.encoding = CounterEncoding.unary
+    elif args.encoding == "binary":
+        args.encoding = CounterEncoding.binary
+    else:
+        raise Exception("Invalid encoding type: " + args.encoding)
+
+    # sanitize discard of delimiter
+    if args.discardDelimiter == "keep":
+        args.discardDelimiter = False
+    elif args.discardDelimiter == "discard":
+        args.discardDelimiter = True
+    else:
+        raise Exception("Invalid type of handling delimiter: " +
+                args.discardDelimiter)
+
     return args
 
 ###########################################
-def encodeCounter(aut):
-    '''encodeCounter(aut) -> Automaton
+def encodeCounter(aut, encoding, discardDelim, allowZero):
+    '''encodeCounter(aut, encoding, discardDelim, allowZero) -> Automaton
 
-Encode counters into aut, yielding a new automaton.
+Encode counters using a given encoding into aut, yielding a new automaton.  In
+particular, every delimiter 'D' is substituted with a sub-automaton accepting
+the language of all valid counter configurations (depending on the encoding).
+Depending on discardDelim, 'D' is kept or discarded. The allowZero
+parameter is a Boolean flag that when set to True allows the value of the
+counter to be zero.
 '''
-    result = Automaton()
-    result.startStates = aut.startStates[:]
-    result.acceptStates = aut.acceptStates[:]
+    def encodeCounterTransition(src, dst, symbol, allowZero, discardDelim):
+        return
 
-    for trans in aut.transitions:
-        (src, symb, tgt) = trans
-        if symb in {SYMBOL_ENABLED, SYMBOL_DISABLED}:
-            # for end-of-subword transitions
-            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
-            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
-            symbState = tgt + "_" + symb
-            result.addTrans(transition = (src, oneState))
-            result.addTrans(oneState, SYMBOL_ONE, oneState)
-            result.addTrans(oneState, SYMBOL_ONE, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, symbState)
-            result.addTrans(symbState, symb, tgt)
-        else:
-            # for ordinary transitions
-            result.addTrans(transition = trans)
-
-    result.transitions = list(set(result.transitions)) # kill duplicates
-
-    return result.removeUseless()
-
-
-###########################################
-def encodeCounterNoEnabled(aut):
-    '''encodeCounteNoEnabledr(aut) -> Automaton
-
-Encode counters into aut, yielding a new automaton.  Uses optimized encoding.
-'''
     result = Automaton()
     result.startStates = aut.startStates[:]
     result.acceptStates = aut.acceptStates[:]
@@ -86,80 +98,31 @@ Encode counters into aut, yielding a new automaton.  Uses optimized encoding.
         assert symb != SYMBOL_DISABLED
         if symb == SYMBOL_ENABLED:
             # for end-of-subword transitions
-            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
-            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
-            symbState = tgt + "_" + symb
-            result.addTrans(transition = (src, oneState))
-            result.addTrans(oneState, SYMBOL_ONE, oneState)
-            result.addTrans(oneState, SYMBOL_ONE, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, tgt)
-        else:
-            # for ordinary transitions
-            result.addTrans(transition = trans)
 
-    result.transitions = list(set(result.transitions)) # kill duplicates
+            if encoding == CounterEncoding.unary:
+                oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
+                zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
+                symbState = tgt + "_" + symb
+                result.addTrans(transition = (src, oneState))
+                result.addTrans(oneState, SYMBOL_ONE, oneState)
 
-    return result.removeUseless()
+                if allowZero:
+                    result.addTrans(transition = (oneState, zeroState))
+                else:
+                    result.addTrans(oneState, SYMBOL_ONE, zeroState)
 
+                result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
+                result.addTrans(zeroState, SYMBOL_ZERO, symbState)
 
-###########################################
-def encodeCounterWithZero(aut):
-    '''encodeCounterWithZero(aut) -> Automaton
+                if discardDelim:
+                    result.addTrans(transition = (symbState, tgt))
+                else:
+                    result.addTrans(symbState, symb, tgt)
 
-Encode counters (with potentially all zeros) into aut, yielding a new
-automaton.
-'''
-    result = Automaton()
-    result.startStates = aut.startStates[:]
-    result.acceptStates = aut.acceptStates[:]
-
-    for trans in aut.transitions:
-        (src, symb, tgt) = trans
-        if symb in {SYMBOL_ENABLED, SYMBOL_DISABLED}:
-            # for end-of-subword transitions
-            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
-            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
-            symbState = tgt + "_" + symb
-            result.addTrans(transition = (src, oneState))
-            result.addTrans(oneState, SYMBOL_ONE, oneState)
-            result.addTrans(transition = (oneState, zeroState))
-            result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, symbState)
-            result.addTrans(symbState, symb, tgt)
-        else:
-            # for ordinary transitions
-            result.addTrans(transition = trans)
-
-    result.transitions = list(set(result.transitions)) # kill duplicates
-
-    return result.removeUseless()
-
-
-###########################################
-def encodeCounterWithZeroNoEnabled(aut):
-    '''encodeCounterWithZeroNoEnabled(aut) -> Automaton
-
-Encode counters (with potentially all zeros) into aut, yielding a new
-automaton.  Uses optimized encoding.
-'''
-    result = Automaton()
-    result.startStates = aut.startStates[:]
-    result.acceptStates = aut.acceptStates[:]
-
-    for trans in aut.transitions:
-        (src, symb, tgt) = trans
-        assert symb != SYMBOL_DISABLED
-        if symb == SYMBOL_ENABLED:
-            # for end-of-subword transitions
-            oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
-            zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
-            symbState = tgt + "_" + symb
-            result.addTrans(transition = (src, oneState))
-            result.addTrans(oneState, SYMBOL_ONE, oneState)
-            result.addTrans(transition = (oneState, zeroState))
-            result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            result.addTrans(zeroState, SYMBOL_ZERO, tgt)
+            elif encoding == CounterEncoding.Binary:
+                assert False
+            else:
+                raise Exception("Invalid type of counter encoding")
         else:
             # for ordinary transitions
             result.addTrans(transition = trans)
@@ -170,24 +133,31 @@ automaton.  Uses optimized encoding.
 
 
 ###############################################################################
-def autInitToFair(aut):
-    '''autInitToFair(aut) -> Automaton
+def autInitToFair(aut, options):
+    '''autInitToFair(aut, options) -> Automaton
 
 Encodes fairness into an automaton representing initial configurations of
-a system.
+a system, w.r.t. given options.
 '''
-    # return encodeCounter(aut)
-    return encodeCounterNoEnabled(aut)
+    # return encodeUnaryCounter(aut)
+    # return encodeUnaryCounterNoEnabled(aut)
+    return encodeCounter(
+            aut,
+            encoding = options.encoding,
+            discardDelim = options.discardDelimiter,
+            allowZero = False
+        )
 
 
 ###############################################################################
-def autFinalToFair(aut, autEnabled):
-    '''autFinalToFair(aut, autEnabled) -> Automaton
+def autFinalToFair(aut, autEnabled, options):
+    '''autFinalToFair(aut, autEnabled, options) -> Automaton
 
 Encodes fairness into an automaton representing final configurations of
 a system, w.r.t. enabled transitions given by autEnabled.  The final states are
 states given by aut with fairness encoded, or states corresponding to one
-enabled process's counter reaching zero.
+enabled process's counter reaching zero.  The options parameter contains
+command line arguments.
 '''
     aut1 = autEnabled.renameStates(lambda x: x + "Y1")
     aut1 = aut1.clearAcceptStates()
@@ -200,13 +170,17 @@ enabled process's counter reaching zero.
         if symb == SYMBOL_ENABLED:
             aut3.addTrans(src + "Y1", SYMBOL_ENABLED_TIMEOUT, tgt + "Y2")
 
-    # aut4 = encodeCounterWithZero(aut3)
-    aut4 = encodeCounterWithZeroNoEnabled(aut3)
+    aut4 = encodeCounter(aut3,
+            encoding = options.encoding,
+            discardDelim = options.discardDelimiter,
+            allowZero = True
+        )
 
     aut5 = Automaton()
     aut5.startStates = aut4.startStates[:]
     aut5.acceptStates = aut4.acceptStates[:]
 
+    # encode the timeout condition
     for trans in aut4.transitions:
         if (not Automaton.isEpsilonTrans(trans) and
             Automaton.getSymbol(trans) == SYMBOL_ENABLED_TIMEOUT):
@@ -220,8 +194,11 @@ enabled process's counter reaching zero.
             # for other symbols
             aut5.addTrans(transition = trans)
 
-    # autB = encodeCounterWithZero(aut)
-    autB = encodeCounterWithZeroNoEnabled(aut)
+    autB = encodeCounter(aut,
+            encoding = options.encoding,
+            discardDelim = options.discardDelimiter,
+            allowZero = True
+        )
 
     output = Automaton.autUnion(aut5, autB)
     output = output.singleStartState(FINAL_START_STATE)
@@ -395,8 +372,8 @@ if __name__ == '__main__':
     assert hasattr(problem, 'autPlay2')
     assert hasattr(problem, 'autEnabled')
 
-    fairInit = autInitToFair(problem.autInit)
-    fairFinal = autFinalToFair(problem.autFinal, problem.autEnabled)
+    fairInit = autInitToFair(problem.autInit, options)
+    fairFinal = autFinalToFair(problem.autFinal, problem.autEnabled, options)
     fairPlay1 = autPlay1ToFair(problem.autPlay1)
     fairPlay2 = autPlay2ToFair(problem.autPlay2)
     fairEnabled = enabledToFair(problem.autEnabled)
