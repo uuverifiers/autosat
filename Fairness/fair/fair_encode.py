@@ -86,8 +86,40 @@ Depending on discardDelim, 'D' is kept or discarded. The allowZero
 parameter is a Boolean flag that when set to True allows the value of the
 counter to be zero.
 '''
-    def encodeCounterTransition(src, dst, symbol, allowZero, discardDelim):
-        return
+    ##########################################################
+    def encodeCounterTransition(src, dst, symbol, encoding, discardDelim, allowZero):
+        newTransitions = []
+        if encoding == CounterEncoding.unary:
+            oneState = dst + "_" + symb + "_" + SYMBOL_ONE
+            zeroState = dst + "_" + symb + "_" + SYMBOL_ZERO
+            symbState = dst + "_" + symb
+            newTransitions.append(Automaton.makeEpsTrans(src, oneState))
+            newTransitions.append(Automaton.makeTrans(oneState, SYMBOL_ONE, oneState))
+
+            if allowZero:
+                newTransitions.append(
+                    Automaton.makeEpsTrans(oneState, zeroState))
+            else:
+                newTransitions.append(
+                    Automaton.makeTrans(oneState, SYMBOL_ONE, zeroState))
+
+            newTransitions.append(
+                Automaton.makeTrans(zeroState, SYMBOL_ZERO, zeroState))
+            newTransitions.append(
+                Automaton.makeTrans(zeroState, SYMBOL_ZERO, symbState))
+
+            if discardDelim:
+                newTransitions.append(Automaton.makeEpsTrans(symbState, dst))
+            else:
+                newTransitions.append(Automaton.makeTrans(symbState, symb, dst))
+
+        elif encoding == CounterEncoding.binary:
+            assert False
+        else:
+            raise Exception("Invalid type of counter encoding")
+
+        return newTransitions
+    ##############################################################
 
     result = Automaton()
     result.startStates = aut.startStates[:]
@@ -99,30 +131,34 @@ counter to be zero.
         if symb == SYMBOL_ENABLED:
             # for end-of-subword transitions
 
-            if encoding == CounterEncoding.unary:
-                oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
-                zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
-                symbState = tgt + "_" + symb
-                result.addTrans(transition = (src, oneState))
-                result.addTrans(oneState, SYMBOL_ONE, oneState)
+            counterTransitions = encodeCounterTransition(
+                src, tgt, symb, encoding, discardDelim, allowZero)
+            result.addTransitions(counterTransitions)
 
-                if allowZero:
-                    result.addTrans(transition = (oneState, zeroState))
-                else:
-                    result.addTrans(oneState, SYMBOL_ONE, zeroState)
-
-                result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-                result.addTrans(zeroState, SYMBOL_ZERO, symbState)
-
-                if discardDelim:
-                    result.addTrans(transition = (symbState, tgt))
-                else:
-                    result.addTrans(symbState, symb, tgt)
-
-            elif encoding == CounterEncoding.Binary:
-                assert False
-            else:
-                raise Exception("Invalid type of counter encoding")
+            # if encoding == CounterEncoding.unary:
+            #     oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
+            #     zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
+            #     symbState = tgt + "_" + symb
+            #     result.addTrans(transition = (src, oneState))
+            #     result.addTrans(oneState, SYMBOL_ONE, oneState)
+            #
+            #     if allowZero:
+            #         result.addTrans(transition = (oneState, zeroState))
+            #     else:
+            #         result.addTrans(oneState, SYMBOL_ONE, zeroState)
+            #
+            #     result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
+            #     result.addTrans(zeroState, SYMBOL_ZERO, symbState)
+            #
+            #     if discardDelim:
+            #         result.addTrans(transition = (symbState, tgt))
+            #     else:
+            #         result.addTrans(symbState, symb, tgt)
+            #
+            # elif encoding == CounterEncoding.Binary:
+            #     assert False
+            # else:
+            #     raise Exception("Invalid type of counter encoding")
         else:
             # for ordinary transitions
             result.addTrans(transition = trans)
@@ -241,18 +277,29 @@ Encodes fairness into aut for Player 1.
             # delimiters
             (src, symb1, symb2, tgt) = trans
             cntState = tgt + "_" + symb1 + "_" + symb2
+            endState = cntState + "_end"
             output.addTrans(transition = (src, cntState))
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                # TODO: these are bad
                 output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState)
                 output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
-                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, tgt)
+                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
             elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_CHOSEN):
+                # TODO: these are bad
                 output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState)
                 output.addTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState)
-                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, tgt)
+                output.addTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, endState)
             else:
                 raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
                     symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
+
+            # transition from endState
+            if options.discardDelimiter:
+                output.addTrans(transition =
+                    Automaton.makeEpsTrans(endState, tgt))
+            else:
+                output.addTransTransd(endState, symb1, symb2, tgt)
+
         else:
             # other transitions
             output.addTrans(transition = trans)
@@ -321,6 +368,8 @@ Encodes fairness into aut for Player 2.
             #
             #     output.addTrans(transition = trans)
 
+            defaultCase = False
+            endState = tgt + "_end"
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
                 oneState = tgt + "_enXenX1"
                 zeroState = tgt + "_enXenX0"
@@ -328,18 +377,26 @@ Encodes fairness into aut for Player 2.
                 output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState)
                 output.addTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState)
                 output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState)
-                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, tgt)
+                output.addTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState)
             elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
                 chEnOneState = tgt + "_chXenX1"
                 chEnState = tgt + "_chXen"
                 output.addTrans(transition = (src, chEnOneState))
                 output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState)
-                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, tgt)
+                output.addTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ZERO, endState)
             else:
                 assert symb1 not in FAIR_ENCODING_ALPHABET
                 assert symb2 not in FAIR_ENCODING_ALPHABET
 
+                defaultCase = True
                 output.addTrans(transition = trans)
+
+            # deal with delimiter
+            if not defaultCase:
+                if options.discardDelimiter:
+                    output.addTrans(transition = Automaton.makeEpsTrans(endState, tgt))
+                else:
+                    output.addTransTransd(endState, symb1, symb2, tgt)
 
     output.transitions = list(set(output.transitions)) # kill duplicates
     return output

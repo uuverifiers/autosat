@@ -113,6 +113,33 @@ Determine an epsilon transition.
 
 
     ###########################################
+    def makeEpsTrans(src, tgt):
+        '''makeTrans(src, tgt) -> transition
+
+Makes an epsilon transition.
+'''
+        return (src, tgt)
+
+
+    ###########################################
+    def makeTrans(src, symbol, tgt):
+        '''makeTrans(src, symbol, tgt) -> transition
+
+Makes a transition.
+'''
+        return (src, symbol, tgt)
+
+
+    ###########################################
+    def makeTransTransd(src, symbol1, symbol2, tgt):
+        '''makeTrans(src, symbol1, symbol2, tgt) -> transition
+
+Makes a transducer transition.
+'''
+        return (src, symbol1, symbol2, tgt)
+
+
+    ###########################################
     def singleStartState(self, name):
         '''singleStartState(self, name) -> Automaton
 
@@ -125,7 +152,7 @@ original start states.
         result.clearStartStates()
         result.startStates = [name]
         for state in startingStates:
-            result.addTrans(transition = (name, state))
+            result.addTrans(transition = Automaton.makeEpsTrans(name, state))
 
         return result
 
@@ -157,7 +184,7 @@ Add a new transition src --symb--> tgt.
 '''
         if transition is None:
             assert (src is not None) and (symb is not None) and (tgt is not None)
-            self.transitions.append((src, symb, tgt))
+            self.transitions.append(Automaton.makeTrans(src, symb, tgt))
         else:
             assert (src is None) and (symb is None) and (tgt is None)
             self.transitions.append(transition)
@@ -173,10 +200,19 @@ Add a new transition src --symb1/symb2--> tgt.
         if transition is None:
             assert ((src is not None) and (symb1 is not None) and (symb2 is not None) and
                 (tgt is not None))
-            self.transitions.append((src, symb1, symb2, tgt))
+            self.transitions.append(Automaton.makeTransTransd(src, symb1, symb2, tgt))
         else:
             assert (src is None) and (symb1 is None) and (symb2 is None) and (tgt is None)
             self.transitions.append(transition)
+
+
+    ###########################################
+    def addTransitions(self, transitions):
+        '''addTransitions(transitions)
+
+Adds a set of transitions into the automaton.
+'''
+        self.transitions.extend(transitions)
 
 
     ###########################################
@@ -250,8 +286,11 @@ determined using funDetSymb.  Generates only reachable transitions and states.
                             if newState in allAcceptStates:
                                 result.acceptStates.append(newState)
 
-                        result.addTrans((lhs, rhs), funDetSymb(symbLhs,
-                            symbRhs), newState)
+                        result.addTrans(transition = Automaton.makeTrans(
+                                (lhs, rhs),
+                                funDetSymb(symbLhs, symbRhs),
+                                newState
+                            ))
 
         return result.flattenProductStateNames()
 
