@@ -21,7 +21,7 @@ FAIR_ENCODING_ALPHABET = ENCODING_ALPHABET | {
         SYMBOL_ENABLED_TIMEOUT
     }
 
-CounterEncoding = Enum("Counter Encoding", "unary binary")
+CounterEncoding = Enum("CounterEncoding", "unary binary")
 
 # special states
 FINAL_START_STATE = "XXXinit"
@@ -90,9 +90,9 @@ counter to be zero.
     def encodeCntTrans(src, dst, symbol, encoding, discardDelim, allowZero):
         newTransitions = []
         if encoding == CounterEncoding.unary:
-            oneState = dst + "_" + symb + "_" + SYMBOL_ONE
-            zeroState = dst + "_" + symb + "_" + SYMBOL_ZERO
-            symbState = dst + "_" + symb
+            oneState = dst + "_" + symbol + "_" + SYMBOL_ONE
+            zeroState = dst + "_" + symbol + "_" + SYMBOL_ZERO
+            symbState = dst + "_" + symbol
             newTransitions.append(Automaton.makeEpsTrans(src, oneState))
             newTransitions.append(Automaton.makeTrans(oneState, SYMBOL_ONE, oneState))
 
@@ -111,15 +111,39 @@ counter to be zero.
             if discardDelim:
                 newTransitions.append(Automaton.makeEpsTrans(symbState, dst))
             else:
-                newTransitions.append(Automaton.makeTrans(symbState, symb, dst))
+                newTransitions.append(Automaton.makeTrans(symbState, symbol, dst))
 
         elif encoding == CounterEncoding.binary:
-            assert False
+            cntState  = dst + "_cnt"
+
+            newTransitions.append(Automaton.makeEpsTrans(src, cntState))
+
+            newTransitions.append(Automaton.makeTrans(cntState, SYMBOL_ZERO, cntState))
+            newTransitions.append(Automaton.makeTrans(cntState, SYMBOL_ONE, cntState))
+
+            if allowZero:
+                endState = cntState
+            else:
+                cntState2  = cntState + "2"
+                endState = cntState2
+
+                newTransitions.append(Automaton.makeTrans(cntState, SYMBOL_ONE, cntState2))
+                newTransitions.append(Automaton.makeTrans(cntState2, SYMBOL_ZERO, cntState2))
+                newTransitions.append(Automaton.makeTrans(cntState2, SYMBOL_ONE, cntState2))
+
+            # how to treat the delimiter
+            if discardDelim:
+                newTransitions.append(Automaton.makeEpsTrans(endState, dst))
+            else:
+                newTransitions.append(Automaton.makeTrans(endState, symbol, dst))
+
+            pass
         else:
             raise Exception("Invalid type of counter encoding")
 
         return newTransitions
     ##############################################################
+
 
     result = Automaton()
     result.startStates = aut.startStates[:]
@@ -134,31 +158,6 @@ counter to be zero.
             counterTransitions = encodeCntTrans(
                 src, tgt, symb, encoding, discardDelim, allowZero)
             result.addTransitions(counterTransitions)
-
-            # if encoding == CounterEncoding.unary:
-            #     oneState = tgt + "_" + symb + "_" + SYMBOL_ONE
-            #     zeroState = tgt + "_" + symb + "_" + SYMBOL_ZERO
-            #     symbState = tgt + "_" + symb
-            #     result.addTrans(transition = (src, oneState))
-            #     result.addTrans(oneState, SYMBOL_ONE, oneState)
-            #
-            #     if allowZero:
-            #         result.addTrans(transition = (oneState, zeroState))
-            #     else:
-            #         result.addTrans(oneState, SYMBOL_ONE, zeroState)
-            #
-            #     result.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            #     result.addTrans(zeroState, SYMBOL_ZERO, symbState)
-            #
-            #     if discardDelim:
-            #         result.addTrans(transition = (symbState, tgt))
-            #     else:
-            #         result.addTrans(symbState, symb, tgt)
-            #
-            # elif encoding == CounterEncoding.Binary:
-            #     assert False
-            # else:
-            #     raise Exception("Invalid type of counter encoding")
         else:
             # for ordinary transitions
             result.addTrans(transition = trans)
@@ -175,8 +174,6 @@ def autInitToFair(aut, options):
 Encodes fairness into an automaton representing initial configurations of
 a system, w.r.t. given options.
 '''
-    # return encodeUnaryCounter(aut)
-    # return encodeUnaryCounterNoEnabled(aut)
     return encodeCounter(
             aut,
             encoding = options.encoding,
@@ -195,6 +192,31 @@ states given by aut with fairness encoded, or states corresponding to one
 enabled process's counter reaching zero.  The options parameter contains
 command line arguments.
 '''
+    ###########################################
+    def encodeCntTimeout(src, symbol, dst, encoding, discardDelim):
+        '''encodeCntTimeout(src, symbol, dst, encoding, discardDelim) -> [Transition]
+
+Encodes a counter timeout in the place of the transition.
+'''
+        newTransitions = []
+        if encoding in {CounterEncoding.unary, CounterEncoding.binary}:
+            zeroState = dst + "Y0"
+            endState = zeroState + "_end"
+            newTransitions.append(Automaton.makeEpsTrans(src, zeroState))
+            newTransitions.append(Automaton.makeTrans(zeroState, SYMBOL_ZERO, zeroState))
+            newTransitions.append(Automaton.makeTrans(zeroState, SYMBOL_ZERO, endState))
+        else:
+            raise Exception("Invalid encoding: " + str(encoding))
+
+        if discardDelim:
+            newTransitions.append(Automaton.makeEpsTrans(endState, dst))
+        else:
+            newTransitions.append(Automaton.makeTrans(endState, SYMBOL_ENABLED, dst))
+
+        return newTransitions
+    #############################################
+
+
     aut1 = autEnabled.renameStates(lambda x: x + "Y1")
     aut1 = aut1.clearAcceptStates()
 
@@ -220,12 +242,15 @@ command line arguments.
     for trans in aut4.transitions:
         if (not Automaton.isEpsilonTrans(trans) and
             Automaton.getSymbol(trans) == SYMBOL_ENABLED_TIMEOUT):
-            (src, _, tgt) = trans
+            (src, symb, tgt) = trans
+            # zeroState = tgt + "Y0"
+            # aut5.addTrans(transition = (src, zeroState))
+            # aut5.addTrans(zeroState, SYMBOL_ZERO, zeroState)
+            # aut5.addTrans(zeroState, SYMBOL_ZERO, tgt)
+
             # for the special timeout symbol
-            zeroState = tgt + "Y0"
-            aut5.addTrans(transition = (src, zeroState))
-            aut5.addTrans(zeroState, SYMBOL_ZERO, zeroState)
-            aut5.addTrans(zeroState, SYMBOL_ZERO, tgt)
+            counterTransitions = encodeCntTimeout(src, symb, tgt, options.encoding, options.discardDelimiter)
+            aut5.addTransitions(counterTransitions)
         else:
             # for other symbols
             aut5.addTrans(transition = trans)
@@ -255,11 +280,13 @@ Encodes fairness into aut for Player 1.
 
 Encodes a transition for choosing process.
 '''
+        cntState = dst + "_" + symb1 + "_" + symb2
+
         newTransitions = []
+        newTransitions.append(Automaton.makeEpsTrans(src, cntState))
+
         if encoding == CounterEncoding.unary:
-            cntState = dst + "_" + symb1 + "_" + symb2
             endState = cntState + "_end"
-            newTransitions.append(Automaton.makeEpsTrans(src, cntState))
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
                 newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState))
                 newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
@@ -272,15 +299,25 @@ Encodes a transition for choosing process.
                 raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
                     symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
 
-            # transition from endState
-            if options.discardDelimiter:
-                newTransitions.append(Automaton.makeEpsTrans(endState, dst))
-            else:
-                newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, dst))
         elif encoding == CounterEncoding.binary:
-            assert False
+            endState = cntState
+            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
+            elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_CHOSEN):
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
+            else:
+                raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
+                    symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
         else:
             raise Exception("Invalid encoding: " + encoding)
+
+        # transition from endState
+        if discardDelim:
+            newTransitions.append(Automaton.makeEpsTrans(endState, dst))
+        else:
+            newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, dst))
 
         return newTransitions
     ######################################################
@@ -377,7 +414,6 @@ Encodes the counter decrement transitions.
                 newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, endState))
             elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
                 chEnOneState = dst + "_chXenX1"
-                chEnState = dst + "_chXen"
                 endState = chEnOneState + "_end"
                 newTransitions.append(Automaton.makeEpsTrans(src, chEnOneState))
                 newTransitions.append(Automaton.makeTransTransd(chEnOneState, SYMBOL_ONE, SYMBOL_ONE, chEnOneState))
@@ -385,13 +421,34 @@ Encodes the counter decrement transitions.
             else:
                 raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
 
-            # deal with the delimiter
-            if options.discardDelimiter:
-                newTransitions.append(Automaton.makeEpsTrans(endState, dst))
+        elif encoding == CounterEncoding.binary:
+            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                oneState = dst + "_enXenX1"
+                zeroState = dst + "_enXenX0"
+                endState = zeroState
+                # binary decrement
+                newTransitions.append(Automaton.makeEpsTrans(src, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ZERO, SYMBOL_ONE, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
+                newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ZERO, zeroState))
+                newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ONE, SYMBOL_ONE, zeroState))
+            elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
+                oneState = dst + "_chXenX1"
+                zeroState = dst + "_chXenX0"
+                endState = zeroState
+                newTransitions.append(Automaton.makeEpsTrans(src, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
+                newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ONE, SYMBOL_ONE, zeroState))
             else:
-                newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, dst))
+                raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
         else:
-            raise Exception("Invalid encoding: " + encoding)
+            raise Exception("Invalid encoding: " + str(encoding))
+
+        # deal with the delimiter
+        if options.discardDelimiter:
+            newTransitions.append(Automaton.makeEpsTrans(endState, dst))
+        else:
+            newTransitions.append(Automaton.makeTransTransd(endState, symb1, symb2, dst))
 
         return newTransitions
     #################################################
