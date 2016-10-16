@@ -127,7 +127,8 @@ counter to be zero.
                 cntState2  = cntState + "2"
                 endState = cntState2
 
-                newTransitions.append(Automaton.makeTrans(cntState, SYMBOL_ONE, cntState2))
+                newTransitions.append(Automaton.makeTrans(cntState, SYMBOL_ZERO, cntState2))
+                # newTransitions.append(Automaton.makeTrans(cntState, SYMBOL_ONE, cntState2))
                 newTransitions.append(Automaton.makeTrans(cntState2, SYMBOL_ZERO, cntState2))
                 newTransitions.append(Automaton.makeTrans(cntState2, SYMBOL_ONE, cntState2))
 
@@ -300,13 +301,19 @@ Encodes a transition for choosing process.
                     symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
 
         elif encoding == CounterEncoding.binary:
-            endState = cntState
+            cntState2 = cntState + "_2"
+            endState = cntState2
+
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
-                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState))
                 newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ZERO, cntState2))
+                newTransitions.append(Automaton.makeTransTransd(cntState2, SYMBOL_ZERO, SYMBOL_ZERO, cntState2))
+                newTransitions.append(Automaton.makeTransTransd(cntState2, SYMBOL_ONE, SYMBOL_ONE, cntState2))
             elif (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_CHOSEN):
-                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState))
                 newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ONE, SYMBOL_ONE, cntState))
+                newTransitions.append(Automaton.makeTransTransd(cntState, SYMBOL_ZERO, SYMBOL_ONE, cntState2))
+                newTransitions.append(Automaton.makeTransTransd(cntState2, SYMBOL_ZERO, SYMBOL_ONE, cntState2))
+                newTransitions.append(Automaton.makeTransTransd(cntState2, SYMBOL_ONE, SYMBOL_ONE, cntState2))
             else:
                 raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
                     symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
