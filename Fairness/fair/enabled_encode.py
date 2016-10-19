@@ -214,5 +214,8 @@ if __name__ == '__main__':
     for option in problem.options:
         outlines.append(option + ";\n")
 
+    if hasattr(problem, 'encoding'):
+        outlines.append("encoding: " + problem.encoding + ";\n")
+
     for line in outlines:
         print(line, end="")

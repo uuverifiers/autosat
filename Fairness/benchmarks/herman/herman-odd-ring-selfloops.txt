@@ -115,3 +115,7 @@ explicitChecksUntilLength: 15;
 
 logLevel: 1;
 parallel: 1;
+
+// encoding: unaryDiscard;
+// encoding: binaryLittleEndianDiscard;
+encoding: binaryBigEndianDiscard;

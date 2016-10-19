@@ -21,7 +21,7 @@ FAIR_ENCODING_ALPHABET = ENCODING_ALPHABET | {
         SYMBOL_ENABLED_TIMEOUT
     }
 
-CounterEncoding = Enum("CounterEncoding", "unary binary")
+CounterEncoding = Enum("CounterEncoding", "unary binaryLittleEndian binaryBigEndian")
 
 # special states
 FINAL_START_STATE = "XXXinit"
@@ -34,44 +34,46 @@ def parseOptions():
 Parses command-line options and returns them as an object with the following
 attributes:
 
+    OUT OF DATE! ENCODING IS DONE AS A PART OF THE INPUT
+
   filename - the name of the input file as a String
   encoding - the encoding of counters
 '''
     parser = argparse.ArgumentParser(description="Encodes fairness"
         " into a two-player transition system (with enabledness encoded beforehand)")
     parser.add_argument("filename", metavar="file")
-    parser.add_argument("-e",
-            dest="encoding",
-            choices=["unary", "binary"],
-            default="unary",
-            required=True,
-            help="encoding of counters [default=%(default)s]"
-        )
-    parser.add_argument("-d",
-            dest="discardDelimiter",
-            choices=["discard", "keep"],
-            default="discard",
-            required=False,
-            help="discard delimiter [default=%(default)s]"
-        )
+    # parser.add_argument("-e",
+    #         dest="encoding",
+    #         choices=["unary", "binaryLittleEndian", "binaryBigEndian"],
+    #         default="unary",
+    #         required=True,
+    #         help="encoding of counters [default=%(default)s]"
+    #     )
+    # parser.add_argument("-d",
+    #         dest="discardDelimiter",
+    #         choices=["discard", "keep"],
+    #         default="discard",
+    #         required=False,
+    #         help="discard delimiter [default=%(default)s]"
+    #     )
     args = parser.parse_args()
 
     # sanitize encoding
-    if args.encoding == "unary":
-        args.encoding = CounterEncoding.unary
-    elif args.encoding == "binary":
-        args.encoding = CounterEncoding.binary
-    else:
-        raise Exception("Invalid encoding type: " + args.encoding)
-
-    # sanitize discard of delimiter
-    if args.discardDelimiter == "keep":
-        args.discardDelimiter = False
-    elif args.discardDelimiter == "discard":
-        args.discardDelimiter = True
-    else:
-        raise Exception("Invalid type of handling delimiter: " +
-                args.discardDelimiter)
+    # if args.encoding == "unary":
+    #     args.encoding = CounterEncoding.unary
+    # elif args.encoding == "binary":
+    #     args.encoding = CounterEncoding.binary
+    # else:
+    #     raise Exception("Invalid encoding type: " + args.encoding)
+    #
+    # # sanitize discard of delimiter
+    # if args.discardDelimiter == "keep":
+    #     args.discardDelimiter = False
+    # elif args.discardDelimiter == "discard":
+    #     args.discardDelimiter = True
+    # else:
+    #     raise Exception("Invalid type of handling delimiter: " +
+    #             args.discardDelimiter)
 
     return args
 
@@ -113,7 +115,8 @@ counter to be zero.
             else:
                 newTransitions.append(Automaton.makeTrans(symbState, symbol, dst))
 
-        elif encoding == CounterEncoding.binary:
+        elif encoding in {CounterEncoding.binaryLittleEndian,
+                CounterEncoding.binaryBigEndian}:
             cntState  = dst + "_cnt"
 
             newTransitions.append(Automaton.makeEpsTrans(src, cntState))
@@ -200,7 +203,8 @@ command line arguments.
 Encodes a counter timeout in the place of the transition.
 '''
         newTransitions = []
-        if encoding in {CounterEncoding.unary, CounterEncoding.binary}:
+        if encoding in {CounterEncoding.unary,
+                CounterEncoding.binaryLittleEndian, CounterEncoding.binaryBigEndian}:
             zeroState = dst + "Y0"
             endState = zeroState + "_end"
             newTransitions.append(Automaton.makeEpsTrans(src, zeroState))
@@ -300,7 +304,8 @@ Encodes a transition for choosing process.
                 raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
                     symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
 
-        elif encoding == CounterEncoding.binary:
+        elif encoding in {CounterEncoding.binaryLittleEndian,
+                CounterEncoding.binaryBigEndian}:
             cntState2 = cntState + "_2"
             endState = cntState2
 
@@ -318,7 +323,7 @@ Encodes a transition for choosing process.
                 raise Exception("Invalid delimiter symbol \'" + symb1 + "/" +
                     symb2 + "\' (only 'enabled' and 'chosen' are allowed)")
         else:
-            raise Exception("Invalid encoding: " + encoding)
+            raise Exception("Invalid encoding: " + str(encoding))
 
         # transition from endState
         if discardDelim:
@@ -428,7 +433,7 @@ Encodes the counter decrement transitions.
             else:
                 raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
 
-        elif encoding == CounterEncoding.binary:
+        elif encoding == CounterEncoding.binaryLittleEndian:
             if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
                 oneState = dst + "_enXenX1"
                 zeroState = dst + "_enXenX0"
@@ -446,6 +451,26 @@ Encodes the counter decrement transitions.
                 newTransitions.append(Automaton.makeEpsTrans(src, oneState))
                 newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
                 newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ONE, SYMBOL_ONE, zeroState))
+            else:
+                raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
+        elif encoding == CounterEncoding.binaryBigEndian:
+            if (symb1, symb2) == (SYMBOL_ENABLED, SYMBOL_ENABLED):
+                oneState = dst + "_enXenX1"
+                zeroState = dst + "_enXenX0"
+                endState = zeroState
+                # binary decrement
+                newTransitions.append(Automaton.makeEpsTrans(src, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ZERO, SYMBOL_ZERO, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
+                newTransitions.append(Automaton.makeTransTransd(zeroState, SYMBOL_ZERO, SYMBOL_ONE, zeroState))
+            elif (symb1, symb2) == (SYMBOL_CHOSEN, SYMBOL_ENABLED):
+                oneState = dst + "_chXenX1"
+                zeroState = dst + "_chXenX0"
+                endState = zeroState
+                newTransitions.append(Automaton.makeEpsTrans(src, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ONE, oneState))
+                newTransitions.append(Automaton.makeTransTransd(oneState, SYMBOL_ONE, SYMBOL_ZERO, zeroState))
             else:
                 raise Exception("Unexpected symbols: (" + symb1 + ", " + symb2 + ")")
         else:
@@ -554,6 +579,29 @@ if __name__ == '__main__':
     assert hasattr(problem, 'autPlay1')
     assert hasattr(problem, 'autPlay2')
     assert hasattr(problem, 'autEnabled')
+
+    assert(hasattr(problem, 'encoding'))
+    if problem.encoding == "unaryDiscard":
+        options.encoding = CounterEncoding.unary
+        options.discardDelimiter = True
+    elif problem.encoding == "unaryKeep":
+        options.encoding = CounterEncoding.unary
+        options.discardDelimiter = False
+    elif problem.encoding == "binaryLittleEndianDiscard":
+        options.encoding = CounterEncoding.binaryLittleEndian
+        options.discardDelimiter = True
+    elif problem.encoding == "binaryLittleEndianKeep":
+        options.encoding = CounterEncoding.binaryLittleEndian
+        options.discardDelimiter = False
+    elif problem.encoding == "binaryBigEndianDiscard":
+        options.encoding = CounterEncoding.binaryBigEndian
+        options.discardDelimiter = True
+    elif problem.encoding == "binaryBigEndianKeep":
+        options.encoding = CounterEncoding.binaryBigEndian
+        options.discardDelimiter = False
+    else:
+        raise Exception("Invalid encoding: " + problem.encoding)
+
 
     fairInit = autInitToFair(problem.autInit, options)
     fairFinal = autFinalToFair(problem.autFinal, problem.autEnabled, options)

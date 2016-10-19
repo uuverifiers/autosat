@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import sys
 
 from automaton import Automaton
 from problem import Problem
@@ -33,6 +34,8 @@ reOptionNoParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+)\ *;$')
 # regex for an option with a parameter
 reOptionWithParam = re.compile(r'^(?P<option>[a-zA-Z0-9]+:.+)\ *;$')
 
+# regex for matching encoding option
+reOptionEncoding = re.compile(r'^encoding:\ *(?P<name>[a-zA-Z0-9_]+)\ *;$');
 
 ##############################################################################
 class Parser:
@@ -153,6 +156,10 @@ Parses top file structures of a problem in a file.  Modifies it.
                 pass
             elif (line == ""): # empty string
                 pass
+            elif reOptionEncoding.match(line):
+                match = reOptionEncoding.match(line)
+                assert match is not None
+                problem.encoding = match.group('name')
             elif (reOptionNoParam.match(line)): # option
                 match = reOptionNoParam.match(line)
                 assert match is not None
@@ -178,6 +185,14 @@ Parses top file structures of a problem in a file.  Modifies it.
                     # raise Exception("Invalid automaton name: " + name)
             else:
                 raise Exception("Syntax error: " + line)
+
+        # # process encoding if present
+        # for option in problem.options:
+        #     print("Option " + option, file=sys.stderr)
+        #     if reOptionEncoding.match(option):
+        #         match = reOptionEncoding.match(option)
+        #         assert match is not None
+        #         problem.encoding = match.group('name')
 
         return problem
 
