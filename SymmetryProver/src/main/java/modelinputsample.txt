@@ -1,1 +1,39 @@
-/Users/truongkhanh/Documents/Code/CSP/symmetryencoding/modelinputsample.txt
+model
+{
+systemTransitions{
+	init: 0;
+	loop: s3, 4;
+	
+	5 -> 5 a/b;
+	12 -> s2 0/s1;
+	13 -> 15;
+	accepting: 2 , 5;
+}
+
+statesGuessing : 2..5; //number of states to guess from 2 to 5
+validConfigurations{ //valid configuration is represented as automata
+	init: 0;
+	0 -> 0 1; //transition labeled 1 from state 0 to state 0
+	0 -> 1; //empty transition from state 0 to state 1
+	1 -> 1 0;
+	1 -> 2;
+	2 -> 2 3;
+	2 -> 3;
+	3 -> 3 2;
+	accepting: 3;
+}
+
+forcedSymmetryGenerators:
+		(3, (1 2 3)); //one symmetry instance with 1 generator
+		
+forcedSymmetryInstances :
+	(0 2 0 2 0 0 ,0 2 0 2 1 0 ), //a concrete symmetry pair of input word and output word
+	(0 2 0 2 1 0 ,0 2 0 2 0 1 );
+
+outputBoundedLetters: a0, a1; //0, 1 are output appearing finitely
+
+impossible pairs: (0, 1), (2, 3); //impossible pair of input/output 0/1 and 2/3
+
+off: parikh, automorphism, permutative, injectiveoutput, injectiveinput, copycat, outputUniversal, inputUniversal;
+}
+
