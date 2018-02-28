@@ -5,6 +5,21 @@ import java.util.Stack;
 
 
 public class BellmanFordSP {
+
+    /**
+     * Simple test
+     */
+    public static void main(String[] args) {
+        final EdgeWeightedDigraph graph = new EdgeWeightedDigraph(3);
+        graph.addEdge(new DirectedEdge(0, 1, 2));
+        graph.addEdge(new DirectedEdge(1, 2, -1));
+        graph.addEdge(new DirectedEdge(2, 1, -3));
+
+        final BellmanFordSP bf = new BellmanFordSP(graph, 0);
+
+        System.out.println(bf.negativeCycle());
+    }
+
     private double[] distTo;               // distTo[v] = distance  of shortest s->v path
     private DirectedEdge[] edgeTo;         // edgeTo[v] = last edge on shortest s->v path
     private boolean[] onQueue;             // onQueue[v] = is v currently on the queue?
@@ -51,9 +66,9 @@ public class BellmanFordSP {
                     onQueue[w] = true;
                 }
             }
-            if (cost++ % G.V() == 0)
-                findNegativeCycle();
         }
+        if (cost++ % G.V() == 0)
+            findNegativeCycle();
     }
 
     /**
