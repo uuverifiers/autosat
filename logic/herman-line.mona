@@ -1,0 +1,73 @@
+# Encoding of Herman's protocol on a line without fairness into MSO
+
+# turn on MSO(Str)
+m2l-str;
+
+# variables for tracks
+var2 track0_bit0 where track0_bit0 sub $, track0_bit1 where track0_bit1 sub $
+		,track1_bit0 where track1_bit0 sub $, track1_bit1 where track1_bit1 sub $
+		;
+
+# we represent the alphabet as follows:
+#
+#     +---------+--------+--------+
+#     |symbol   |  bit0  |  bit1  |
+#     +---------+--------+--------+
+#     |   N     |    0   |    1   |
+#     |   T     |    1   |    0   |
+#     |   Tm    |    1   |    1   |  (marked T)
+#     +---------+--------+--------+
+#
+
+################### MACROS ############################
+
+# encoding of symbols for track 0
+macro track0_is_N(var1 i)  = i    in track0_bit0 & i notin track0_bit1;
+macro track0_is_T(var1 i)  = i notin track0_bit0 & i    in track0_bit1;
+macro track0_is_Tm(var1 i) = i    in track0_bit0 & i    in track0_bit1;
+
+# encoding of symbols for track 1
+macro track1_is_N(var1 i)  = i    in track1_bit0 & i notin track1_bit1;
+macro track1_is_T(var1 i)  = i notin track1_bit0 & i    in track1_bit1;
+macro track1_is_Tm(var1 i) = i    in track1_bit0 & i    in track1_bit1;
+
+# identity relation
+macro no_change(var1 i) =
+	(track0_is_N(i) & (track1_is_N(i))) |
+	(track0_is_T(i) & (track1_is_T(i)));
+
+
+############# PREDICATES FOR THE SYSTEM ###############
+
+# predicate for initial configurations
+pred init() =
+	(all1 i: track0_is_N(i) | track0_is_T(i)) &
+	( ex1 i: track0_is_T(i));
+
+# predicate for final configurations
+pred final() =
+	ex1 i: track1_is_T(i) &
+		all1 j: i ~= j => track1_is_N(j);
+
+# predicate for the transition relation of Player 1 (the scheduler)
+pred P1() =
+	(all1 i: track0_is_N(i) & track1_is_N(i)) |
+	(ex1 i: i+1 in $ &
+		track0_is_T(i) & track1_is_Tm(i) &
+		all1 j: i ~= j => no_change(i));
+
+# predicate for the transition relation of Player 2 (the process)
+pred P2() =
+	ex1 i: track0_is_Tm(i) &
+		(
+			(track1_is_T(i) &
+				all1 j: i ~= j => no_change(j)) |
+			(i+1 in $ & track1_is_N(i) & track1_is_T(i+1) &
+				all1 j: j ~= i & j ~= i+1 => no_change(j)));
+
+
+# init() & final();
+
+# P1();
+
+P2();
