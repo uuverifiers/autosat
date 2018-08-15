@@ -66,8 +66,30 @@ pred P2() =
 				all1 j: j ~= i & j ~= i+1 => no_change(j)));
 
 
+# init();
 # init() & final();
 
 # P1();
 
-P2();
+# P2();
+
+###################### ADVICE BITS ##########################################
+pred inv_t0() =
+  import("herman-line-inv.dfa", bit0 -> track0_bit0, bit1 -> track0_bit1);
+
+pred inv_t1() =
+  import("herman-line-inv.dfa", bit0 -> track1_bit0, bit1 -> track1_bit1);
+
+################ TESTING PROPERTIES OF ADVICE BITS ##########################
+
+# checking property L1 (invariant includes initial states)
+pred L1() =
+  init() => inv_t0();
+
+# checking property L2 (invariant is inductive)
+pred L2() =
+  (inv_t0() & (P1() | P2())) => inv_t1();
+
+L1() & L2();
+
+
