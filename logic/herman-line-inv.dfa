@@ -6,12 +6,12 @@ states: 4
 initial: 0
 bdd nodes: 8
 final: 0 0 1 0
-behaviour: 5 0 3 6
+behaviour: 5 0 3 7
 bdd:
   0 1 2
   1 7 5
-  1 6 7
-  0 4 2
+  1 6 5
+  0 4 6
 	1 7 6
  -1 1 0
  -1 2 0
