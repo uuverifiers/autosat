@@ -1,9 +1,18 @@
 #!/bin/sh
 
+# Check the number of command-line arguments
+if [ \( "$#" -eq 0 \) ] ; then
+	echo "usage: ${0} <file> [params]"
+	exit 1
+fi
+
 if [ $(uname) = "Linux" ]; then
     pathCmd="readlink -f"
 elif [ $(uname) = "Darwin" ]; then
-    pathCmd="stat -f %N"
+    # pathCmd="stat -f %N"
+
+		# should work when 'coreutils' from 'brew' are installed
+    pathCmd="readlink -f" 
 else
     pathCmd="realpath"
 fi
