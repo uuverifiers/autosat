@@ -1,4 +1,9 @@
 # Encoding of Herman's protocol on a line without fairness into MSO
+#
+# run as
+#  $ mona -o0 herman-line.mona
+#
+# the -o0 parameter is required in order to turn off optimizations that 
 
 # turn on MSO(Str)
 m2l-str;
@@ -13,6 +18,10 @@ m2l-str;
 #     |   Tm    |    1   |    1   |  (marked T)
 #     +---------+--------+--------+
 #
+
+################### ALPHABET TRACKS ############################
+
+var2 track0_bit0, track0_bit1, track1_bit0, track1_bit1;
 
 ################### MACROS ############################
 
@@ -43,7 +52,7 @@ pred P1(var2 t0b0, t0b1, t1b0, t1b1) =
 	(all1 i: is_N(i, t0b0, t0b1) & is_N(i, t1b0, t1b1)) |
 	(ex1 i: i+1 in $ &
 		is_T(i, t0b0, t0b1) & is_Tm(i, t1b0, t1b1) &
-		all1 j: i ~= j => no_change(i, t0b0, t0b1, t1b0, t1b1));
+		all1 j: i ~= j => no_change(j, t0b0, t0b1, t1b0, t1b1));
 
 # predicate for the transition relation of Player 2 (the process)
 pred P2(var2 t0b0, t0b1, t1b0, t1b1) =
@@ -56,6 +65,7 @@ pred P2(var2 t0b0, t0b1, t1b0, t1b1) =
 
 ###################### ADVICE BITS ##########################################
 pred inv(var2 b0, b1) =
+  # import("herman-line-inv-fault.dfa", bit0 -> b0, bit1 -> b1);
   import("herman-line-inv.dfa", bit0 -> b0, bit1 -> b1);
 
 pred rel(var2 t0b0, t0b1, t1b0, t1b1) =
@@ -67,32 +77,43 @@ pred rel(var2 t0b0, t0b1, t1b0, t1b1) =
 ################ TESTING PROPERTIES OF ADVICE BITS ##########################
 
 # checking property L1 (invariant includes initial states)
-pred L1() = all2 b0, b1:
-  init(b0, b1) => inv(b0, b1);
+pred L1() = 
+  init(track0_bit0, track0_bit1) => inv(track0_bit0, track0_bit1);
 
-pred L2() = all2 t0b0, t0b1, t1b0, t1b1:
-  (inv(t0b0, t0b1) &
-    (P1(t0b0, t0b1, t1b0, t1b1) | P2(t0b0, t0b1, t1b0, t1b1)))
-  => inv(t1b0, t1b1);
+# checking property L2 (invariant is inductive)
+# difference from the CAV'16 paper: instead of $\forall x \in A$, we use
+# $\forall x \in (A \setminus F)$
+pred L2() =
+  (inv(track0_bit0, track0_bit1) &
+    ~final(track0_bit0, track0_bit1) &
+    (P1(track0_bit0, track0_bit1, track1_bit0, track1_bit1) |
+    P2(track0_bit0, track0_bit1, track1_bit0, track1_bit1)))
+  => inv(track1_bit0, track1_bit1);
 
 # checking property L3 (relation is a strict preorder)
-pred L3_reflex() = all2 t0b0, t0b1, t1b0, t1b1:
-  ~rel(t0b0, t0b1, t1b0, t1b1) |
-    t0b0 ~= t1b0 | t0b1 ~= t1b1;
+pred L3_reflex() =
+  ~rel(track0_bit0, track0_bit1, track1_bit0, track1_bit1) |
+    track0_bit0 ~= track1_bit0 | track0_bit1 ~= track1_bit1;
 
-pred L3_transitive() = all2 t0b0, t0b1, t1b0, t1b1, t2b0, t2b1:
-  (rel(t0b0, t0b1, t1b0, t1b1) & rel(t1b0, t1b1, t2b0, t2b1))
-  => rel(t0b0, t0b1, t2b0, t2b1);
+# the 't's used due to BDD variable ordering
+pred L3_transitive() =
+  (ex2 aux_bit0, aux_bit1, t_bit0, t_bit1:
+    rel(track0_bit0, track0_bit1, aux_bit0, aux_bit1) &
+    rel(aux_bit0, aux_bit1, t_bit0, t_bit1) & track1_bit0 = t_bit0 & track1_bit1 = t_bit1)
+  => rel(track0_bit0, track0_bit1, track1_bit0, track1_bit1);
 
 pred L3() =
   L3_reflex() & L3_transitive();
 
 # checking property L4 (relation progresses)
-pred L4() = all2 t0b0, t0b1, t1b0, t1b1:
-  (inv(t0b0, t0b1) & ~final(t0b0, t0b1) & ~final(t1b0, t1b1) &
-    P1(t0b0, t0b1, t1b0, t1b1)) =>
-  (ex2 t2b0, t2b1:
-    inv(t2b0, t2b1) & P2(t1b0, t1b1, t2b0, t2b1) & rel(t1b0, t1b1, t2b0, t2b1));
+pred L4() =
+  (inv(track0_bit0, track0_bit1) & ~final(track0_bit0, track0_bit1) & ~final(track1_bit0, track1_bit1) &
+    P1(track0_bit0, track0_bit1, track1_bit0, track1_bit1)) =>
+  (ex2 aux_bit0, aux_bit1, t_bit0, t_bit1:
+    inv(aux_bit0, aux_bit1) &
+    P2(track1_bit0, track1_bit1, aux_bit0, aux_bit1) &
+    rel(aux_bit0, aux_bit1, t_bit0, t_bit1) &
+    track0_bit0 = t_bit0 & track0_bit1 = t_bit1);
 
 # checking that all properties hold
 L1() & L2() & L3() & L4();
