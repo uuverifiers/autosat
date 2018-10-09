@@ -15,6 +15,10 @@ BENCHMARKS="\
 	benchmarks/cell-cycle-switch/cell-cycle-switch-linear.txt \
 	"
 
+TMPFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
 for i in ${BENCHMARKS} ; do
 	./runSingleBenchmark.sh ${i}
-done
+done | tee ${TMPFILE}
+
+echo "=========================== OUTPUT ==========================="
+cat ${TMPFILE} | column -t
