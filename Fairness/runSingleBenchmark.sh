@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check the number of command-line arguments
 if [ \( "$#" -ne 1 \) ] ; then
