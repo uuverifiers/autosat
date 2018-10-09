@@ -13,7 +13,7 @@ proc_bench() {
 		uniq_str="${in_file}-${enc}"
 		uniq_str_hash=$(echo ${uniq_str} | sha256sum | head -c 10)
 		in_file_base=$(basename ${in_file})
-		out_file="${RUN_DIR}/${uniq_str_hash}-${in_file_base}-${enc}"
+		out_file="${RUN_DIR}/${in_file_base}-${enc}-${uniq_str_hash}"
 		echo "creating ${out_file}"
 		cat ${in_file} \
 			| grep -v '^encoding' \

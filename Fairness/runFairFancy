@@ -6,16 +6,15 @@ if [ \( "$#" -eq 0 \) ] ; then
 	exit 1
 fi
 
-if [ "$2" == "--silent" ] ; then
-	SILENT="1"
-	shift
-fi
-
 # source file
 FILE=$1
 # get rid of the first argument
 shift
 
+if [ "$1" == "--silent" ] ; then
+	SILENT="1"
+	shift
+fi
 
 # name of the file with encoded enabledness
 ENABLED_ENC_FILE=$(mktemp /tmp/fair.XXXXXXXXXXX)
