@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 
+RFFSCRIPT="./runFairFancy"
+
 # Check the number of command-line arguments
 if [ \( "$#" -ne 1 \) ] ; then
-	echo "usage: ${0} <file>"
+	echo "usage: ${0} <file> [arguments]"
+	echo "where [arguments] are passed to the script \"${RFFSCRIPT}\" (see the script for the possible arguments)"
 	exit 1
 fi
 
 INPUT="${1}"
 
-RUNCMD="./runFairFancy --silent"
+RUNCMD="${RFFSCRIPT} $@"
 
 TMPFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
 OUTFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)

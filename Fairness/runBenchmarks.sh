@@ -21,4 +21,4 @@ for i in ${BENCHMARKS} ; do
 done | tee ${TMPFILE}
 
 echo "=========================== OUTPUT ==========================="
-cat ${TMPFILE} | column -t
+column -t -s '	' ${TMPFILE}
