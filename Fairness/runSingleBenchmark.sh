@@ -3,15 +3,16 @@
 RFFSCRIPT="./runFairFancy"
 
 # Check the number of command-line arguments
-if [ \( "$#" -ne 1 \) ] ; then
+if [ \( "$#" -eq 0 \) ] ; then
 	echo "usage: ${0} <file> [arguments]"
 	echo "where [arguments] are passed to the script \"${RFFSCRIPT}\" (see the script for the possible arguments)"
 	exit 1
 fi
 
 INPUT="${1}"
+shift
 
-RUNCMD="${RFFSCRIPT} $@"
+RUNCMD="${RFFSCRIPT}"
 
 TMPFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
 OUTFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
@@ -24,9 +25,9 @@ echo "logLevel: 1;" >> ${TMPFILE}
 
 echo -n "$(date "+%y-%m-%d %H:%M:%S");	"
 echo -n "${INPUT};	"
-echo "Running  ${RUNCMD} ${TMPFILE}" >> ${LOGFILE}
+echo "Running  ${RUNCMD} ${TMPFILE} $@" >> ${LOGFILE}
 STARTTIME=$(date +%s.%N)
-${RUNCMD} ${TMPFILE} >> ${OUTFILE} 2>> ${LOGFILE}
+${RUNCMD} ${TMPFILE} $@ >> ${OUTFILE} 2>> ${LOGFILE}
 ENDTIME=$(date +%s.%N)
 DIFFTIME=$(echo "$ENDTIME - $STARTTIME" | bc)
 
@@ -40,7 +41,7 @@ else
 fi
 
 # merge out and log file
-echo "======== OUT FILE ========" >> ${LOGFILE}
+echo "======== OUTPUT FILE ========" >> ${LOGFILE}
 cat ${OUTFILE} >> ${LOGFILE}
 
 echo -n "${DIFFTIME};	"
