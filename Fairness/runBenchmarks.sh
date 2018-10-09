@@ -1,22 +1,9 @@
 #!/bin/bash
 
-BENCHMARKS="\
-	benchmarks/wolf-sheep/wolf-sheep-linear-nograss.txt \
-	benchmarks/clustering/clustering-line.txt \
-	benchmarks/currency_games/flip-game.txt \
-	benchmarks/herman/herman-linear-selfloops.txt \
-	benchmarks/herman/herman-ring-selfloops.txt \
-	benchmarks/herman/herman-odd-linear-selfloops.txt \
-	benchmarks/herman/herman-odd-ring-selfloops.txt \
-	benchmarks/cell-cycle-switch/cell-cycle-switch-n2-randomswitch-linear.txt \
-	benchmarks/moran/moran-linear-fair-AB.txt \
-	benchmarks/moran/moran-linear-fair-ABC.txt \
-	benchmarks/cell-cycle-switch/cell-cycle-switch-n2-linear.txt \
-	benchmarks/cell-cycle-switch/cell-cycle-switch-linear.txt \
-	"
+RUN_DIR="to_run"
 
 TMPFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
-for i in ${BENCHMARKS} ; do
+for i in ${RUN_DIR}/* ; do
 	./runSingleBenchmark.sh ${i}
 done | tee ${TMPFILE}
 

@@ -26,6 +26,15 @@ CounterEncoding = Enum("CounterEncoding", "unary binaryLittleEndian binaryBigEnd
 # special states
 FINAL_START_STATE = "XXXinit"
 
+# list of all encodings
+ALL_ENCODINGS = [ "unaryDiscard"
+                , "unaryKeep"
+                , "binaryLittleEndianDiscard"
+                , "binaryLittleEndianKeep"
+                , "binaryBigEndianDiscard"
+                , "binaryBigEndianKeep"
+                ]
+
 
 ###############################################################################
 def parseOptions():
@@ -39,9 +48,20 @@ attributes:
   filename - the name of the input file as a String
   encoding - the encoding of counters
 '''
+    ##########################################
+    class PrintEncodingsAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            for enc in ALL_ENCODINGS:
+                print(enc)
+
+            parser.exit()
+    ##########################################
+
     parser = argparse.ArgumentParser(description="Encodes fairness"
         " into a two-player transition system (with enabledness encoded beforehand)")
     parser.add_argument("filename", metavar="file")
+    parser.add_argument('-e', nargs=0, action=PrintEncodingsAction,
+                                help="Prints all available encodings")
     # parser.add_argument("-e",
     #         dest="encoding",
     #         choices=["unary", "binaryLittleEndian", "binaryBigEndian"],

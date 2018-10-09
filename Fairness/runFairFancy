@@ -18,9 +18,9 @@ shift
 
 
 # name of the file with encoded enabledness
-ENABLED_ENC_FILE=`mktemp /tmp/fair.XXXXXXXXXXX`
+ENABLED_ENC_FILE=$(mktemp /tmp/fair.XXXXXXXXXXX)
 # name of the file with encoded fairness
-FAIR_ENC_FILE=`mktemp /tmp/fair.XXXXXXXXXXX`
+FAIR_ENC_FILE=$(mktemp /tmp/fair.XXXXXXXXXXX)
 
 
 # enabledness encoder
