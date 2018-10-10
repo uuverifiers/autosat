@@ -11,15 +11,19 @@ if [ "$1" = "-h" ] ; then
 	exit 0
 fi
 
+OUTFILE_NAME="output-$(date "+%y-%m-%d_%H-%M-%S").csv"
+
 TMPFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
-echo "tmpfile = ${TMPFILE}"
+# echo "output file = ${TMPFILE}"
+echo "output file = ${OUTFILE_NAME}"
 
 echo "date_time;	benchmark;	status;	total_wall_time;	sat_time;	sat_queries;	log_file;" \
-	| tee ${TMPFILE}
+	| tee ${OUTFILE_NAME}
 
 for i in ${RUN_DIR}/* ; do
 	./runSingleBenchmark.sh ${i} $@
-done | tee -a ${TMPFILE}
+done | tee -a ${OUTFILE_NAME}
 
 echo "=========================== OUTPUT ==========================="
-column -t -s '	' ${TMPFILE}
+column -t -s '	' ${OUTFILE_NAME}
+echo "Output written to ${OUTFILE_NAME}"
