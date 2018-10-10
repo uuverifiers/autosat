@@ -21,7 +21,8 @@ cat ${INPUT} \
 	| grep -v '^logLevel' \
 	| grep -v '^explicitChecksUntilLength' \
 	> ${TMPFILE}
-echo "logLevel: 1;" >> ${TMPFILE}
+# echo "logLevel: 1;" >> ${TMPFILE}
+echo "logLevel: 2;" >> ${TMPFILE}
 
 echo -n "$(date "+%y-%m-%d %H:%M:%S");	"
 echo -n "${INPUT};	"
@@ -40,9 +41,24 @@ else
 	echo -e -n "--\e[1;31mFAILURE\e[0m--;	"
 fi
 
+# print the measured time
+echo -n "${DIFFTIME};	"
+
+# compute the time taken by the SAT solver and the number of queries
+SAT_TIME_ARRAY=$(cat ${OUTFILE} \
+	| grep "encoding.SatSolver - Solving time" \
+	| sed 's/^.*Solving time//' \
+	| sed 's/ms*$//')
+SAT_TIME_MS=$(echo "${SAT_TIME_ARRAY}" \
+	| paste -sd+ \
+	| bc)
+SAT_TIME=$(echo "scale=3; ${SAT_TIME_MS} / 1000" | bc)
+SAT_QUERIES=$(echo "${SAT_TIME_ARRAY}" | wc -l)
+echo -n "${SAT_TIME};	"
+echo -n "${SAT_QUERIES};	"
+
 # merge out and log file
 echo "======== OUTPUT FILE ========" >> ${LOGFILE}
 cat ${OUTFILE} >> ${LOGFILE}
 
-echo -n "${DIFFTIME};	"
-echo "(log: ${LOGFILE} )"
+echo "${LOGFILE};"

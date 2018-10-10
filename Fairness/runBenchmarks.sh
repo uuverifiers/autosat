@@ -12,9 +12,14 @@ if [ "$1" = "-h" ] ; then
 fi
 
 TMPFILE=$(mktemp /tmp/bench.XXXXXXXXXXX)
+echo "tmpfile = ${TMPFILE}"
+
+echo "date_time;	benchmark;	status;	total_wall_time;	sat_time;	sat_queries;	log_file;" \
+	| tee ${TMPFILE}
+
 for i in ${RUN_DIR}/* ; do
 	./runSingleBenchmark.sh ${i} $@
-done | tee ${TMPFILE}
+done | tee -a ${TMPFILE}
 
 echo "=========================== OUTPUT ==========================="
 column -t -s '	' ${TMPFILE}
